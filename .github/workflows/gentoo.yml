@@ -1,0 +1,23 @@
+name: Gentoo
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    
+    container: madhacking/gentoo
+
+    steps:
+      - run: emerge dev-vcs/git
+
+      - uses: actions/checkout@v2
+
+      - run: |
+          ls -a .
+          cp -r . ..
+          ls -a ..

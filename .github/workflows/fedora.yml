@@ -1,0 +1,29 @@
+name: Fedora
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: [28, 30, 33, latest, rawhide]
+
+    container: fedora:${{ matrix.tag }}
+
+    steps:
+      - run: dnf -y update && dnf -y install git
+        if: ${{ matrix.tag != 'rawhide' }}
+
+      - uses: actions/checkout@v2
+
+      - run: |
+          ls -a .
+          cp -r . ..
+          ls -a ..

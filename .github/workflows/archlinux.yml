@@ -1,0 +1,23 @@
+name: ArchLinux
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    
+    container: archlinux
+
+    steps:
+      - run: pacman -Syy --noconfirm
+      - run: pacman -S   --noconfirm git
+
+      - uses: actions/checkout@v2
+      - run: |
+          ls -a .
+          cp -r . ..
+          ls -a ..

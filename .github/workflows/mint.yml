@@ -1,0 +1,29 @@
+name: LinuxMint
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: [19.3, 20.1]
+
+    container: linuxmintd/mint${{ matrix.tag }}-amd64
+
+    steps:
+      - run: apt -y update
+      - run: apt -y install git
+
+      - uses: actions/checkout@v2
+
+      - run: |
+          ls -a .
+          cp -r . ..
+          ls -a ..

@@ -1,0 +1,27 @@
+name: VoidLinux-musl
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    
+    container: voidlinux/voidlinux-musl
+
+    steps:
+      - run: xbps-install -Sy git
+
+      - run: git init
+      - run: git remote add origin https://github.com/${{github.repository}}
+      - run: git config --local gc.auto 0
+      - run: git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +${{github.sha}}:refs/remotes/origin/master
+      - run: git checkout --progress --force -B master refs/remotes/origin/master
+      - run: ls
+      - run: |
+          ls -a .
+          cp -r . ..
+          ls -a ..

@@ -1,0 +1,29 @@
+name: Debian GNU/Linux
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: ['8.11', '9.13', '10.7']
+
+    container: debian:${{ matrix.tag }}
+
+    steps:
+      - run: apt -y update
+      - run: apt -y install git
+
+      - uses: actions/checkout@v2
+
+      - run: |
+          ls -a .
+          cp -r . ..
+          ls -a ..

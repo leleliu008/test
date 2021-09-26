@@ -1,0 +1,24 @@
+name: Manjaro Linux
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    
+    container: zelec/manjarolinux
+
+    steps:
+      - run: pacman -Syyuu --noconfirm
+      - run: pacman -S     --noconfirm git
+
+      - uses: actions/checkout@v2
+
+      - run: |
+          ls -a .
+          cp -r . ..
+          ls -a ..

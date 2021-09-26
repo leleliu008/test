@@ -1,0 +1,29 @@
+name: openSUSE Leap
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: [15.1, 15.2]
+
+    container: opensuse/leap:${{ matrix.tag }}
+
+    steps:
+      - run: zypper update -y
+      - run: zypper install -y git
+
+      - uses: actions/checkout@v2
+
+      - run: |
+          ls -a .
+          cp -r . ..
+          ls -a ..
