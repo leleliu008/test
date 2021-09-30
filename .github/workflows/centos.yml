@@ -30,3 +30,4 @@ jobs:
           ls -a .
           cp -r . ..
           ls -a ..
+          cat /etc/redhat-release
