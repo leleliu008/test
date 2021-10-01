@@ -27,4 +27,4 @@ jobs:
           run cp -r . ..
           run ls -a ..
           run pkg search autoconf
-          run pkg show autoconf
+          run pkg show autoconf || true
