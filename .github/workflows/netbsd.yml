@@ -25,9 +25,10 @@ jobs:
         run: |
           run id
           run pkgin -y install mozilla-rootcerts
-          run rootcerts install
+          run mozilla-rootcerts install
           run pkgin -y install mozilla-rootcerts
-          run rootcerts install
+          run mozilla-rootcerts install
+          run mozilla-rootcerts --help
           run ls -a .
           run cp -r . ..
           run ls -a ..
