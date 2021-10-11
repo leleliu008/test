@@ -26,8 +26,10 @@ jobs:
           run id
           run pkgin -y install mozilla-rootcerts
           run mozilla-rootcerts install
-          run ls -a /usr/pkg/etc/openssl/certs
           run ls -a /usr/pkg/share/mozilla-rootcerts
           run ls -a .
           run cp -r . ..
           run ls -a ..
+          run pkgin search tar
+          run pkgin -y install gtar
+          run gtar --version
