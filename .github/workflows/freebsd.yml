@@ -27,4 +27,5 @@ jobs:
           run cp -r . ..
           run ls -a ..
           run pkg search autoconf
-          run pkg show autoconf || true
+          #run pkg show autoconf || true
+          run sysctl -n hw.ncpu
