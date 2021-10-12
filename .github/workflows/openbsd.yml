@@ -22,4 +22,6 @@ jobs:
           run cp -r . ..
           run ls -a ..
           run pkg_info -Q tree
+          run pkg_add tree
+          run pkg_info -Qd tree
           run tree --help
