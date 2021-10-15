@@ -20,8 +20,8 @@ jobs:
       - run:  vagrant init generic/freebsd${{matrix.version}}
 
       - name: gen shell.sh
-      - run: |
-        cat >> shell.sh <<EOF
+        run: |
+        cat >> shell.sh <<'EOF'
         run() {
           printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
           eval "$*"
@@ -50,10 +50,10 @@ jobs:
 
         run cp ~/.zpkg/binary.d/* .
         run ls
-EOF
+        EOF
 
       - name: gen Vagrantfile
-      - run: |
+        run: |
         cat > Vagrantfile <<'EOF'
           Vagrant.configure("2") do |config|
             config.vm.box = "freebsd${{matrix.version}}"
