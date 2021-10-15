@@ -22,11 +22,11 @@ jobs:
       - uses: actions/checkout@v2
       - run:  vagrant init generic/freebsd${{matrix.version}}
 
-      - name: gen shell.sh
+      - name: gen Vagrantprovision.sh
         run: |
-          printf 'set -e\n' > shell.sh
-          export -p | grep 'GITHUB_' >> shell.sh
-          cat >> shell.sh <<'EOF'
+          printf 'set -e\n' > Vagrantprovision.sh
+          export -p | grep 'GITHUB_' >> Vagrantprovision.sh
+          cat >> Vagrantprovision.sh <<'EOF'
           run() {
             printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
             eval "$*"
@@ -65,12 +65,12 @@ jobs:
                 vb.memory = "2048"
               end
               config.vm.synced_folder "${{github.workspace}}", "/home/vagrant/${{github.repository}}", type: "rsync"
-              config.vm.provision "shell", path: "shell.sh"
+              config.vm.provision "shell", path: "Vagrantprovision.sh"
             end
           EOF
 
       - run: cat Vagrantfile
-      - run: cat shell.sh
+      - run: cat Vagrantprovision.sh
 
       - run: vagrant up --provision
       - run: vagrant ssh-config
