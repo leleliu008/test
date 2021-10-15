@@ -68,6 +68,9 @@ jobs:
       - run: cat shell.sh
 
       - run: vagrant up --provision
+      - run: vagrant ssh-config
+
+      - run: vagrant ssh-config | awk -v ORS=' ' '{print "-o " $1 "=" $2}'
 
         #- run: vagrant scp :/root/.zpkg/binary.d/ .
       - run: scp -r -P 2222 vagrant@localhost:/root/.zpkg/binary.d .
