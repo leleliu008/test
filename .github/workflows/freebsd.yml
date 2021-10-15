@@ -21,17 +21,15 @@ jobs:
 
       - name: gen shell.sh
         run: |
+          printf 'set -e\n' > shell.sh
+          export -p | grep 'GITHUB_' >> shell.sh
           cat >> shell.sh <<EOF
           run() {
             printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
             eval "$*"
           }
 
-          set -e
-
-          $(export -p | grep 'GITHUB_')
-
-          run cd /home/vagrant/${GITHUB_REPOSITORY}
+          run cd /home/vagrant/${{github.repository}}
 
           run pwd
           run ls
@@ -56,11 +54,11 @@ jobs:
         run: |
           cat > Vagrantfile <<EOF
             Vagrant.configure("2") do |config|
-              config.vm.box = "freebsd${{matrix.version}}"
+              config.vm.box = "generic/freebsd${{matrix.version}}"
               config.vm.provider "virtualbox" do |vb|
                 vb.memory = "2048"
               end
-              config.vm.synced_folder "${GITHUB_WORKSPACE}", "/home/vagrant/${GITHUB_REPOSITORY}"
+              config.vm.synced_folder "${{github.workspace}}", "/home/vagrant/${github.repository}"
               config.vm.provision "shell", path: "shell.sh"
             end
           EOF
