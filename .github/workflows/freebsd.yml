@@ -21,49 +21,49 @@ jobs:
 
       - name: gen shell.sh
         run: |
-        cat >> shell.sh <<'EOF'
-        run() {
-          printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
-          eval "$*"
-        }
+          cat >> shell.sh <<'EOF'
+          run() {
+            printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+            eval "$*"
+          }
 
-        set -e
+          set -e
 
-        $(export -p | grep 'GITHUB_')
+          $(export -p | grep 'GITHUB_')
 
-        run cd /home/vagrant/${GITHUB_REPOSITORY}
+          run cd /home/vagrant/${GITHUB_REPOSITORY}
 
-        run pwd
-        run ls
+          run pwd
+          run ls
 
-        run id
+          run id
 
-        run pkg install -y curl
+          run pkg install -y curl
 
-        run curl -LO https://raw.githubusercontent.com/leleliu008/zpkg/master/bin/zpkg
+          run curl -LO https://raw.githubusercontent.com/leleliu008/zpkg/master/bin/zpkg
 
-        run chmod +x zpkg
+          run chmod +x zpkg
 
-        run ./zpkg env
-        run ./zpkg update
-        run ./zpkg install base64
+          run ./zpkg env
+          run ./zpkg update
+          run ./zpkg install base64
 
-        run cp ~/.zpkg/binary.d/* .
-        run ls
-        EOF
+          run cp ~/.zpkg/binary.d/* .
+          run ls
+          EOF
 
       - name: gen Vagrantfile
         run: |
-        cat > Vagrantfile <<'EOF'
-          Vagrant.configure("2") do |config|
-            config.vm.box = "freebsd${{matrix.version}}"
-            config.vm.provider "virtualbox" do |vb|
-              vb.memory = "2048"
+          cat > Vagrantfile <<'EOF'
+            Vagrant.configure("2") do |config|
+              config.vm.box = "freebsd${{matrix.version}}"
+              config.vm.provider "virtualbox" do |vb|
+                vb.memory = "2048"
+              end
+              config.vm.synced_folder "${GITHUB_WORKSPACE}", "/home/vagrant/${GITHUB_REPOSITORY}"
+              config.vm.provision "shell", path: "shell.sh"
             end
-            config.vm.synced_folder "${GITHUB_WORKSPACE}", "/home/vagrant/${GITHUB_REPOSITORY}"
-            config.vm.provision "shell", path: "shell.sh"
-          end
-        EOF
+          EOF
 
       - run: cat Vagrantfile
       - run: cat shell.sh
