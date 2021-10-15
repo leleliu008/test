@@ -15,10 +15,11 @@ jobs:
       matrix:
         version: [11, 12]
     
+    env:
+      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
     steps:
       - uses: actions/checkout@v2
-      - run:  vagrant plugin install vagrant-scp
-
       - run:  vagrant init generic/freebsd${{matrix.version}}
 
       - name: gen shell.sh
@@ -70,9 +71,10 @@ jobs:
       - run: vagrant up --provision
       - run: vagrant ssh-config
 
-      - run: vagrant ssh-config | awk -v ORS=' ' '{print "-o " $1 "=" $2}'
-
-        #- run: vagrant scp :/root/.zpkg/binary.d/ .
       - run: scp -i .vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/root/.zpkg/binary.d .
 
       - run: ls
+      - run: ls binary.d
+
+      - run: printf '%s\n' "$RELEASE_TOKEN" | gh auth login --with-token
+      - run: gh release create $(date +%Y%m%d) $(ls binary.d)
