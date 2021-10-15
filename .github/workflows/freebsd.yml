@@ -21,7 +21,7 @@ jobs:
 
       - name: gen shell.sh
         run: |
-          cat >> shell.sh <<'EOF'
+          cat >> shell.sh <<EOF
           run() {
             printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
             eval "$*"
@@ -54,7 +54,7 @@ jobs:
 
       - name: gen Vagrantfile
         run: |
-          cat > Vagrantfile <<'EOF'
+          cat > Vagrantfile <<EOF
             Vagrant.configure("2") do |config|
               config.vm.box = "freebsd${{matrix.version}}"
               config.vm.provider "virtualbox" do |vb|
