@@ -25,7 +25,7 @@ jobs:
         run: |
           printf 'set -e\n' > shell.sh
           export -p | grep 'GITHUB_' >> shell.sh
-          cat >> shell.sh <<EOF
+          cat >> shell.sh <<'EOF'
           run() {
             printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
             eval "$*"
