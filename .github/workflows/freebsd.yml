@@ -69,6 +69,7 @@ jobs:
 
       - run: vagrant up --provision
 
-      - run: vagrant scp :/root/.zpkg/binary.d/ .
+        #- run: vagrant scp :/root/.zpkg/binary.d/ .
+      - run: scp -r -P 2222 vagrant@localhost:/root/.zpkg/binary.d .
 
       - run: ls
