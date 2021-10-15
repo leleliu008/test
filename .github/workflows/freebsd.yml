@@ -65,8 +65,7 @@ jobs:
       - run: cat Vagrantfile
       - run: cat shell.sh
 
-      - run: vagrant up
-      - run: vagrant provision
+      - run: vagrant up --provision
 
       - run: vagrant scp :/home/vagrant/.zpkg/binary.d/ .
 
