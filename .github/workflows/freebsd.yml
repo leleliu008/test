@@ -47,9 +47,13 @@ jobs:
 
           run ./zpkg env
           run ./zpkg update
-          run ./zpkg install base64
-          run ./zpkg tree base64
-          run ./zpkg pack base64
+
+          for item in base64 cmake gmake gsed gawk gtar gzip xz bzip2 lzip p7zip zip unzip tree
+          do
+            run ./zpkg install $item
+            run ./zpkg tree $item
+            run ./zpkg pack $item
+          done
           EOF
 
       - name: gen Vagrantfile
@@ -77,4 +81,4 @@ jobs:
       - run: ls binary.d
 
       - run: printf '%s\n' "$RELEASE_TOKEN" | gh auth login --with-token
-      - run: gh release create $(date +%Y%m%d) $(ls binary.d/*)
+      - run: gh release create $(date +%Y%m%d) $(ls binary.d/*) --notes 'new release'
