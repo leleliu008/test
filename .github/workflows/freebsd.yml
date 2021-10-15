@@ -77,4 +77,4 @@ jobs:
       - run: ls binary.d
 
       - run: printf '%s\n' "$RELEASE_TOKEN" | gh auth login --with-token
-      - run: gh release create $(date +%Y%m%d) $(ls binary.d)
+      - run: gh release create $(date +%Y%m%d) $(ls binary.d/*)
