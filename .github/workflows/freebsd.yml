@@ -47,6 +47,8 @@ jobs:
           run ./zpkg env
           run ./zpkg update
           run ./zpkg install base64
+          run ./zpkg tree base64
+          run ./zpkg pack base64
           EOF
 
       - name: gen Vagrantfile
