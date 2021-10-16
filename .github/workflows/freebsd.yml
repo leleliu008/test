@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [11, 12]
+        version: [12]
     
     env:
       RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
@@ -48,7 +48,7 @@ jobs:
           run ./zpkg env
           run ./zpkg update
 
-          for item in base64 cmake gmake gsed gawk gtar gzip xz bzip2 lzip p7zip zip unzip tree
+          for item in base64 gsed gawk gtar gzip xz bzip2 lzip p7zip zip unzip tree
           do
             run ./zpkg install $item
             run ./zpkg tree $item
