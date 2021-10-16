@@ -50,7 +50,7 @@ jobs:
           run ./zpkg env
           run ./zpkg update
 
-          for item in base64 gsed gtar gzip xz bzip2 lzip cmake gmake
+          for item in base64 cmake gmake gsed gtar gzip xz bzip2 lzip
           do
             run ./zpkg install $item -x
             run ./zpkg tree $item
