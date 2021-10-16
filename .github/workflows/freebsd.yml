@@ -50,7 +50,7 @@ jobs:
 
           for item in base64 gsed gawk gtar gzip xz bzip2 lzip p7zip zip unzip tree
           do
-            run ./zpkg install $item
+            run ./zpkg install $item -x
             run ./zpkg tree $item
             run ./zpkg pack $item
           done
