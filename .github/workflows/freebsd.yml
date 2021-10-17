@@ -52,7 +52,7 @@ jobs:
 
           for item in base64 curl cmake gmake gsed gtar gzip xz bzip2 lzip
           do
-            run ./zpkg install $item -x
+            run ./zpkg install $item --tree --tree-args=--dirsfirst --pack
             run ./zpkg tree $item
             run ./zpkg pack $item
           done
