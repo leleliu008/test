@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         version: [12]
-    
+
     steps:
       - uses: actions/checkout@v2
 
@@ -23,12 +23,7 @@ jobs:
           mem: 2048
           box: generic/freebsd${{ matrix.version }}
           run: |
-            run ls -a .
-            run cp -r . ..
-            run ls -a ..
-            run pkg search autoconf
-            #run pkg show autoconf || true
-            run sysctl -n hw.ncpu
+            run pkg install -y gmake
             run pkg install -y curl
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/zpkg/master/bin/zpkg
@@ -37,5 +32,17 @@ jobs:
 
             run ./zpkg env
             run ./zpkg update
-            run ./zpkg depends p7zip
-            run ./zpkg depends p7zip -x
+
+            for item in base64 curl cmake gmake gsed gtar gzip xz bzip2 lzip
+            do
+              run ./zpkg install $item --tree --tree-args=--dirsfirst --pack
+            done
+      - run: vagrant ssh-config
+
+      - run: scp -i .vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/root/.zpkg/binary.d .
+
+      - run: ls
+      - run: ls binary.d
+
+      - run: printf '%s\n' "$RELEASE_TOKEN" | gh auth login --with-token
+      - run: gh release create $(date +%Y%m%d) $(ls binary.d/*) --notes 'new release'

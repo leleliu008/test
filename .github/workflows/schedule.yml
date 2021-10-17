@@ -5,32 +5,26 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  schedule:
+    - cron:  '0 0 * * *'
 
 jobs:
   test:
 
     strategy:
       matrix:
-        version: [10.15, 11]
+        version: [11]
 
     runs-on: macos-${{ matrix.version }}
 
     steps:
-      #- uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - run: brew update
+
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/zpkg/master/bin/zpkg
 
       - run: chmod +x zpkg
-     
+
       - run: ./zpkg env
-      - run: command -v nproc
-      - run: nproc
-      - run: ./zpkg nproc -x
 
       - run: ./zpkg update
-
-      - run: ./zpkg install zlib --tree --pack -x
-    
-      - run: |
-          ls -a .
-          cp -r . ..
-          ls -a ..
