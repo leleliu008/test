@@ -1,0 +1,36 @@
+name: build-android-on-macOS
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  ndk-pkg:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [10.15]
+
+    runs-on: macos-${{ matrix.version }}
+
+    steps:
+      #- uses: actions/checkout@v2
+    
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/zpkg/master/bin/zpkg
+
+      - run: chmod +x zpkg
+
+      - run: ./ndk-pkg --help
+      - run: ./ndk-pkg --version
+
+      - run: ./ndk-pkg env
+
+      - run: ./ndk-pkg update
+
+      - run: ./ndk-pkg install bash --tree --pack
+
+      - run: printf '%s\n' "$RELEASE_TOKEN" | gh auth login --with-token
+      - run: gh release create $(date +%Y%m%d) $(ls ~/.ndk-pkg/binary.d/*) --notes 'new release ndk-pkg packages'
