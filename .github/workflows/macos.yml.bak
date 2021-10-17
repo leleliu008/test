@@ -16,9 +16,18 @@ jobs:
     runs-on: macos-${{ matrix.version }}
 
     steps:
-    - uses: actions/checkout@v2
+      #- uses: actions/checkout@v2
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/zpkg/master/bin/zpkg
+
+      - run: chmod +x zpkg
+     
+      - run: ./zpkg env
+
+      - run: ./zpkg update
+
+      - run: ./zpkg install zlib --tree --pack -x
     
-    - run: |
-        ls -a .
-        cp -r . ..
-        ls -a ..
+      - run: |
+          ls -a .
+          cp -r . ..
+          ls -a ..
