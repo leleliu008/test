@@ -22,6 +22,8 @@ jobs:
       - run: chmod +x zpkg
      
       - run: ./zpkg env
+      - run: command -v nproc
+      - run: nproc
       - run: ./zpkg nproc -x
 
       - run: ./zpkg update
