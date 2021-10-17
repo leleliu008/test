@@ -16,6 +16,9 @@ jobs:
 
     runs-on: macos-${{ matrix.version }}
 
+    env:
+      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
     steps:
       #- uses: actions/checkout@v2
     
