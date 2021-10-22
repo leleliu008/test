@@ -17,7 +17,7 @@ jobs:
       - run: pacman -S   --noconfirm git
 
       - uses: actions/checkout@v2
-      - run: pacman -Ss "^cmake"
-      - run: pacman -Ss "^make"
+      - run: pacman -Ss "^cmake$"
+      - run: pacman -Ss "^make$"
       - run: pacman -Ss "^git"
-      - run: pacman -Ss "^sdfsdf"
+      - run: pacman -Ss "^sdfsdf$"
