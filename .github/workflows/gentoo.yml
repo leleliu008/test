@@ -17,7 +17,9 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - run: |
-          ls -a .
-          cp -r . ..
-          ls -a ..
+      - run: emerge -s "%^cmake$"
+      - run: emerge -s "%^make$"
+      - run: emerge -s "%^git$"
+
+      - run: emerge -s "%@^dev-vcs/git$"
+      - run: emerge -s "%^kkkhhggff$"
