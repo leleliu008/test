@@ -24,3 +24,10 @@ jobs:
       - run: xbps-query -R --property=pkgver cmake
       - run: xbps-query -R --property=pkgver  make
       - run: xbps-query -R --property=pkgver   git
+
+      - run: |
+          xbps-query -R --property=pkgver cmake | cut -d- -f2 | cut -d_ -f1
+      - run: |
+          xbps-query -R --property=pkgver  make | cut -d- -f2 | cut -d_ -f1
+      - run: |
+          xbps-query -R --property=pkgver   git | cut -d- -f2 | cut -d_ -f1
