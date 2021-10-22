@@ -29,7 +29,13 @@ jobs:
       - run: zypper info make
       - run: zypper info git
 
-      - run: zypper info cmake | sed -n '/Version        :/p' | sed 's/Version        : \(.*\)/\1/' | cut -d- -f1
-      - run: zypper info   make | sed -n '/Version        :/p' | sed 's/Version        : \(.*\)/\1/' | cut -d- -f1
-      - run: zypper info   git | sed -n '/Version        :/p' | sed 's/Version        : \(.*\)/\1/' | cut -d- -f1
+      - run: |
+          zypper info cmake | sed -n '/Version        :/p' | sed 's/Version        : \(.*\)/\1/' | cut -d- -f1
+
+      - run: |
+         zypper info   make | sed -n '/Version        :/p' | sed 's/Version        : \(.*\)/\1/' | cut -d- -f1
+
+      - run: |
+          zypper info   git | sed -n '/Version        :/p' | sed 's/Version        : \(.*\)/\1/' | cut -d- -f1
+
       - run: zypper info gitcdfg
