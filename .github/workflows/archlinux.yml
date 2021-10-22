@@ -21,6 +21,6 @@ jobs:
       - run: pacman -Ss "^make$"
       - run: pacman -Ss "^git$"
 
-      - run: pacman -Ss "^cmake$" | cut -f2 | cut -d- -f1
-      - run: pacman -Ss "^make$"  | cut -f2 | cut -d- -f1
-      - run: pacman -Ss "^git$"   | cut -f2 | cut -d- -f1
+      - run: pacman -Ss "^cmake$" | head -n 1 | cut -f2 | cut -d- -f1
+      - run: pacman -Ss "^make$"  | head -n 1 | cut -f2 | cut -d- -f1
+      - run: pacman -Ss "^git$"   | head -n 1 | cut -f2 | cut -d- -f1
