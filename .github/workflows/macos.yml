@@ -28,8 +28,11 @@ jobs:
 
         #- run: ./zpkg install zlib --tree --pack -x
     
-      - run: |
-          brew info --json cmake
-          brew info --json  make
-          brew info --json   git
-          brew info sdfsfdfsdf
+      - run: brew info --json cmake
+      - run: brew info --json  make
+      - run: brew info --json   git
+
+      - run: brew info cmake
+      - run: brew info make
+      - run: brew info git
+      - run: brew info sdfsfdfsdf
