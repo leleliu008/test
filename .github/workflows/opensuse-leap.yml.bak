@@ -23,7 +23,7 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - run: |
-          ls -a .
-          cp -r . ..
-          ls -a ..
+      - run: zypper help info
+      - run: zypper info cmake
+      - run: zypper info make
+      - run: zypper info git
