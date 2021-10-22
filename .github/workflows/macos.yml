@@ -37,15 +37,15 @@ jobs:
       - run: brew info git
 
       - run: |
-          brew info cmake | sed -n '/^cmake:/p'
+          brew info cmake | sed -n '/cmake:/p'
       - run: |
-          brew info make  | sed -n '/^make:/p'
+          brew info make  | sed -n '/make:/p'
       - run: |
-          brew info git   | sed -n '/^git:/p'
+          brew info git   | sed -n '/git:/p'
 
       - run: |
-          brew info cmake | sed -n '/^cmake:/p' 2> /dev/null | cut -d ' ' -f3
+          brew info cmake | sed -n '/cmake:/p' 2> /dev/null | cut -d ' ' -f3
       - run: |
-          brew info make  | sed -n '/^make:/p'  2> /dev/null | cut -d ' ' -f3
+          brew info make  | sed -n '/make:/p'  2> /dev/null | cut -d ' ' -f3
       - run: |
-          brew info git   | sed -n '/^git:/p'   2> /dev/null | cut -d ' ' -f3
+          brew info git   | sed -n '/git:/p'   2> /dev/null | cut -d ' ' -f3
