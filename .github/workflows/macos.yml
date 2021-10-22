@@ -44,8 +44,8 @@ jobs:
           brew info git   | grep 'git:'
 
       - run: |
-          brew info cmake | grep 'cmake:' 2> /dev/null | cut -d ' ' -f3
+          brew info cmake 2>/dev/null | grep 'cmake:' | cut -d ' ' -f3
       - run: |
-          brew info make  | grep 'make:'  2> /dev/null | cut -d ' ' -f3
+          brew info make  2>/dev/null | grep 'make:'  | cut -d ' ' -f3
       - run: |
-          brew info git   | grep 'git:'   2> /dev/null | cut -d ' ' -f3
+          brew info git   2>/dev/null | grep 'git:'   | cut -d ' ' -f3
