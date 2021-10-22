@@ -23,3 +23,7 @@ jobs:
 
       - run: emerge -s "%@^dev-vcs/git$"
       - run: emerge -s "%^kkkhhggff$"
+
+      - run: emerge -s "%^cmake$" | sed -n '/Latest version available:/p' | cut -d: -f2
+      - run: emerge -s "%^make$"  | sed -n '/Latest version available:/p' | cut -d: -f2
+      - run: emerge -s "%^git$"   | sed -n '/Latest version available:/p' | cut -d: -f2
