@@ -17,7 +17,7 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - run: xbps-query cmake
-      - run: xbps-query  make
-      - run: xbps-query   git
-      - run: xbps-query sfdad
+      - run: xbps-query -R cmake
+      - run: xbps-query -R  make
+      - run: xbps-query -R  git
+      - run: xbps-query -R sfdad
