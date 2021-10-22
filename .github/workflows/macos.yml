@@ -35,4 +35,10 @@ jobs:
       - run: brew info cmake
       - run: brew info make
       - run: brew info git
-      - run: brew info sdfsfdfsdf
+
+      - run: |
+          brew info cmake | sed '/^cmake:/p'
+      - run: |
+          brew info make  | sed '/^make:/p'
+      - run: |
+          brew info git   | sed '/^git:/p'
