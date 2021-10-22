@@ -19,5 +19,8 @@ jobs:
       - uses: actions/checkout@v2
       - run: pacman -Ss "^cmake$"
       - run: pacman -Ss "^make$"
-      - run: pacman -Ss "^git"
-      - run: pacman -Ss "^sdfsdf$"
+      - run: pacman -Ss "^git$"
+
+      - run: pacman -Ss "^cmake$" | cut -f2 | cut -d- -f1
+      - run: pacman -Ss "^make$"  | cut -f2 | cut -d- -f1
+      - run: pacman -Ss "^git$"   | cut -f2 | cut -d- -f1
