@@ -34,7 +34,7 @@ jobs:
       - run: ./ndk-pkg update
 
       - run: brew install gnu-sed
-      - run: gsed -i '/bsystem/a package set ldflags -fPIE' ~/.ndk-pkg/repos.d/offical/formula/bash.sh
+      - run: gsed -i '/bsystem/a package set ccflags -fPIE' ~/.ndk-pkg/repos.d/offical/formula/bash.sh
 
       - run: ./ndk-pkg install bash --tree --pack --pack-type=tar.xz
 
