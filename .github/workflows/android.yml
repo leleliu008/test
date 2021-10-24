@@ -39,4 +39,4 @@ jobs:
       - run: ./ndk-pkg install bash --tree --pack --pack-type=tar.xz
 
       - run: printf '%s\n' "$RELEASE_TOKEN" | gh auth login --with-token
-      - run: gh release create $(date +%Y%m%d) $(ls ~/.ndk-pkg/binary.d/*) --notes 'new release ndk-pkg packages'
+      - run: gh release create $(date +%Y%m%d-%H%M) $(ls ~/.ndk-pkg/binary.d/*) --notes 'new release ndk-pkg packages'
