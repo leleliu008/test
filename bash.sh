@@ -10,6 +10,10 @@ package set dep.pkg "readline ncurses"
 package set ccflags "-pie -fPIE"
 package set ldflags "-pie -fPIE"
 
+# int mblen(const char* __s, size_t __n) __INTRODUCED_IN(26)
+# void endgrent(void) __INTRODUCED_IN(26);
+package set sdk.api 26
+
 prepare() {
     sed_in_place 's|$(BUILTINS_LIB) $(LIBRARIES)|-Wl,--Bstatic $(BUILTINS_LIB) $(LIBRARIES) -Wl,--Bdynamic|' Makefile.in
 }
