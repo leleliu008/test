@@ -30,7 +30,6 @@ jobs:
       - run: ./ndk-pkg --version
 
       - run: ./ndk-pkg env
-      - run: ./ndk-pkg install-android-ndk
 
       - run: ./ndk-pkg update
 
@@ -38,7 +37,9 @@ jobs:
       - run: sed -i '2a package set ccflags -pie -fPIE' ~/.ndk-pkg/repos.d/offical/formula/packcc.sh
         #- run: gsed -i '/bsystem/a package set ldflags -pie -fPIE' ~/.ndk-pkg/repos.d/offical/formula/packcc.sh
 
-      - run: ./ndk-pkg install packcc --tree --pack --pack-type=tar.xz
+      - run: |
+          export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
+          ./ndk-pkg install packcc --tree --pack --pack-type=tar.xz
 
       - run: printf '%s\n' "$RELEASE_TOKEN" | gh auth login --with-token
       - run: gh release create $(date +%Y%m%d-%H%M) $(ls ~/.ndk-pkg/binary.d/*) --notes 'new release ndk-pkg packages'
