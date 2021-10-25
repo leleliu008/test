@@ -34,8 +34,8 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: brew install gnu-sed
-      - run: gsed -i '2a package set ccflags -pie -fPIE' ~/.ndk-pkg/repos.d/offical/formula/packcc.sh
+        #- run: brew install gnu-sed
+      - run: sed -i '2a package set ccflags -pie -fPIE' ~/.ndk-pkg/repos.d/offical/formula/packcc.sh
         #- run: gsed -i '/bsystem/a package set ldflags -pie -fPIE' ~/.ndk-pkg/repos.d/offical/formula/packcc.sh
 
       - run: ./ndk-pkg install packcc --tree --pack --pack-type=tar.xz
