@@ -12,9 +12,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [10.15]
+        version: [20.04]
 
-    runs-on: macos-${{ matrix.version }}
+    runs-on: ubuntu-${{ matrix.version }}
 
     env:
       RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
@@ -30,6 +30,7 @@ jobs:
       - run: ./ndk-pkg --version
 
       - run: ./ndk-pkg env
+      - run: ./ndk-pkg install-android-ndk
 
       - run: ./ndk-pkg update
 
