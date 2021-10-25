@@ -37,6 +37,8 @@ jobs:
       - run: sed -i '/bsystem/a package set ccflags -fcommon' ~/.ndk-pkg/repos.d/offical/formula/packcc.sh
       - run: sed -i '/bsystem/a package set ldflags -fcommon' ~/.ndk-pkg/repos.d/offical/formula/packcc.sh
 
+      - run: sed -i 's/--enable-static-link/--enable-static-link ac_cv_func_strchrnul=yes/' ~/.ndk-pkg/repos.d/offical/formula/bash.sh
+
       - run: |
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
           ./ndk-pkg install bash --tree --pack --pack-type=tar.xz
