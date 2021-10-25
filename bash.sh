@@ -19,6 +19,8 @@ prepare() {
 }
 
 build() {
+    CFLAGS=$(printf '%s\n' "$CFLAGS" | sed 's/-fpic//')
+    export CFLAGS
     configure \
         --with-curses \
         --without-bash-malloc \
