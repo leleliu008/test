@@ -37,7 +37,7 @@ jobs:
       - run: gsed -i '/bsystem/a package set ccflags -pie -fPIE' ~/.ndk-pkg/repos.d/offical/formula/bash.sh
       - run: gsed -i '/bsystem/a package set ldflags -pie -fPIE' ~/.ndk-pkg/repos.d/offical/formula/bash.sh
 
-      - run: ./ndk-pkg install bash --link-type=static-only --tree --pack --pack-type=tar.xz
+      - run: ./ndk-pkg install bash --jobs=1 -d --link-type=static-only --tree --pack --pack-type=tar.xz
 
       - run: printf '%s\n' "$RELEASE_TOKEN" | gh auth login --with-token
       - run: gh release create $(date +%Y%m%d-%H%M) $(ls ~/.ndk-pkg/binary.d/*) --notes 'new release ndk-pkg packages'
