@@ -33,7 +33,7 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp bash ~/.ndk-pkg/repos.d/offical/formula/bash.sh
+      - run: cp bash.sh ~/.ndk-pkg/repos.d/offical/formula/bash.sh
 
       - run: |
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
