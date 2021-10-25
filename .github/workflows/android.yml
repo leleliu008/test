@@ -34,8 +34,8 @@ jobs:
       - run: ./ndk-pkg update
 
       - run: brew install gnu-sed
-        #- run: gsed -i '/bsystem/a package set ccflags -pie -fPIE' ~/.ndk-pkg/repos.d/offical/formula/bash.sh
-        #- run: gsed -i '/bsystem/a package set ldflags -pie -fPIE' ~/.ndk-pkg/repos.d/offical/formula/bash.sh
+      - run: gsed -i '/bsystem/a package set ccflags -static' ~/.ndk-pkg/repos.d/offical/formula/bash.sh
+      - run: gsed -i '/bsystem/a package set ldflags -static' ~/.ndk-pkg/repos.d/offical/formula/bash.sh
 
       - run: ./ndk-pkg install zsh --tree --pack --pack-type=tar.xz
 
