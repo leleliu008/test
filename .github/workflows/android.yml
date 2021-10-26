@@ -33,11 +33,11 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp bash.sh ~/.ndk-pkg/repos.d/offical/formula/bash.sh
+      - run: cp xz.sh ~/.ndk-pkg/repos.d/offical/formula/xz.sh
 
       - run: |
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-          ./ndk-pkg install bash --tree --pack --pack-type=tar.xz
+          ./ndk-pkg install xz --tree --pack --pack-type=tar.xz
 
       - run: printf '%s\n' "$RELEASE_TOKEN" | gh auth login --with-token
       - run: gh release create $(date +%Y%m%d-%H%M) $(ls ~/.ndk-pkg/binary.d/*) --notes 'new release ndk-pkg packages'
