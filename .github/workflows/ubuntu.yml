@@ -31,8 +31,10 @@ jobs:
 
       - run: ./ndk-pkg update
 
+      - run: cp libgit2 ~/.ndk-pkg/repos.d/offical/formula/
+
       - run: |
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-          ./ndk-pkg install gh sd --tree
+          ./ndk-pkg install libgit2 --tree
 
 
