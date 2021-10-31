@@ -31,7 +31,7 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp libgit2 ~/.ndk-pkg/repos.d/offical/formula/
+      - run: cp libgit2.sh ~/.ndk-pkg/repos.d/offical/formula/
 
       - run: |
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
