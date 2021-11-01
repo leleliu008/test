@@ -9,7 +9,6 @@ package set bsystem "cmake"
 
 build() {
     cmakew \
-        -DCMAKE_FIND_ROOT_PATH="$CMAKE_FRAMEWORK_PATH" \
         -DENABLE_UNIT_TESTS=OFF \
         -DENABLE_FUNC_TESTS=OFF
 }
