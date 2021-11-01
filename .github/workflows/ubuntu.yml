@@ -37,4 +37,6 @@ jobs:
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
           ./ndk-pkg install bear --tree
 
-
+      - run: |
+          export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
+          ./ndk-pkg install libgit2 --tree
