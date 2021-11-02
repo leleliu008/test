@@ -31,8 +31,8 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp fzf.sh ~/.ndk-pkg/repos.d/offical/formula/
+      - run: cp bear.sh ~/.ndk-pkg/repos.d/offical/formula/
 
       - run: |
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-          ./ndk-pkg install fzf --tree
+          ./ndk-pkg install bear --tree
