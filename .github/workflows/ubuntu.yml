@@ -31,12 +31,13 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp bear.sh ~/.ndk-pkg/repos.d/offical/formula/
+      - run: cp fish.sh ~/.ndk-pkg/repos.d/offical/formula/
+      - run: cp glog.sh ~/.ndk-pkg/repos.d/offical/formula/
 
       - run: |
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-          ./ndk-pkg install bear --tree
+          ./ndk-pkg install fish --tree
 
       - run: |
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-          ./ndk-pkg install libgit2 --tree
+          ./ndk-pkg install glog --tree
