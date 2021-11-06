@@ -17,7 +17,7 @@ build() {
         --with-libpng="$libpng_INSTALL_DIR" \
         CC="$CC" \
         CFLAGS="'$CFLAGS $CPPFLAGS -static'" \
-        LDFLAGS="'$LDFLAGS" &&
+        LDFLAGS="'$LDFLAGS'" &&
     makew clean &&
     makew install
 }
