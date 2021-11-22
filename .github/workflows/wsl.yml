@@ -20,6 +20,9 @@ jobs:
         shell: wsl-ash_${{ matrix.distribution }} {0}
 
     steps:
+      - run: wsl --help
+        shell: pwsh
+
       # https://github.com/marketplace/actions/setup-wsl
       - uses: Vampire/setup-wsl@v1
         with:
