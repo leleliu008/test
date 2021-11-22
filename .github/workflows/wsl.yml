@@ -20,19 +20,13 @@ jobs:
         shell: wsl-bash {0}
 
     steps:
-      - run: wsl --help
-        shell: pwsh
-
-      - run: wsl --install --distribution ${{ matrix.distribution }}
-        shell: pwsh
-
-      - run: wsl --distribution ${{ matrix.distribution }} -u root ls /mnt/d/
-        shell: pwsh
-
       # https://github.com/marketplace/actions/setup-wsl
       - uses: Vampire/setup-wsl@v1
         with:
           distribution: ${{ matrix.distribution }}
+
+      - run: wsl --distribution ${{ matrix.distribution }} -u root ls /mnt/d/
+        shell: pwsh
 
       - uses: actions/checkout@v2
 
