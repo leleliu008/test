@@ -17,7 +17,7 @@ jobs:
 
     defaults:
       run:
-        shell: wsl-bash {0}
+        shell: wsl-ash_${{ matrix.distribution }} {0}
 
     steps:
       # https://github.com/marketplace/actions/setup-wsl
