@@ -30,3 +30,4 @@ jobs:
       - run: pwd
       - run: ls
       - run: uname -a
+      - run: ./ndk-pkg
