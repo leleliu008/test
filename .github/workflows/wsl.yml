@@ -13,7 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        distribution: [Ubuntu-20.04, Debian, openSUSE-Leap-15.2]
+        distribution: [Ubuntu-20.04, Debian]
+        #distribution: [Ubuntu-20.04, Debian, openSUSE-Leap-15.2]
 
     defaults:
       run:
@@ -24,9 +25,6 @@ jobs:
       - uses: Vampire/setup-wsl@v1
         with:
           distribution: ${{ matrix.distribution }}
-
-      - run: wsl --distribution ${{ matrix.distribution }} -u root ls /mnt/d/
-        shell: pwsh
 
       - name: Use unix line endings
         shell: bash
@@ -44,4 +42,8 @@ jobs:
       - run: ls
       - run: uname -a
       - run: env
-      - run: ./ndk-pkg
+      - run: |
+          if command -v apt >/dev/null ; then
+            apt -y update
+            apt -y install curl
+          fi
