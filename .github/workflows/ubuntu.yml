@@ -1,0 +1,35 @@
+name: Ubuntu
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [18.04, 20.04]
+
+    runs-on: ubuntu-${{ matrix.version }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
+
+      - run: chmod +x ndk-pkg
+
+      - run: ./ndk-pkg env
+
+      - run: ./ndk-pkg update
+
+      - run: cp boost.sh ~/.ndk-pkg/repos.d/offical/formula/
+      - run: cp libdatrie.sh ~/.ndk-pkg/repos.d/offical/formula/
+
+      - run: |
+          export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
+          ./ndk-pkg install libdatrie libphonenumber libtorrent-rasterbar --tree
