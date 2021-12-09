@@ -33,4 +33,8 @@ jobs:
 
       - run: |
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-          ./ndk-pkg install libdatrie libphonenumber libtorrent-rasterbar --tree
+          ./ndk-pkg install libphonenumber --tree
+
+      - run: |
+          export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
+          ./ndk-pkg install libtorrent-rasterbar --tree
