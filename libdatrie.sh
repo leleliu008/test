@@ -8,6 +8,6 @@ package set ldflags "-lcharset"
 package set bsystem "autotools"
 
 build0() {
-    run autoreconf -ivf &&
+    sed_in_place '/$(LN_S) trietool/d' tools/Makefile.in &&
     configure
 }

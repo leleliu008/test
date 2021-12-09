@@ -27,14 +27,8 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp boost.sh ~/.ndk-pkg/repos.d/offical/formula/
       - run: cp libdatrie.sh ~/.ndk-pkg/repos.d/offical/formula/
-      - run: cp libpthread-fake.sh ~/.ndk-pkg/repos.d/offical/formula/
 
       - run: |
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-          ./ndk-pkg install libphonenumber --tree
-
-      - run: |
-          export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-          ./ndk-pkg install libtorrent-rasterbar --tree
+          ./ndk-pkg install libdatrie --tree
