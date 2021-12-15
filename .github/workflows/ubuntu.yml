@@ -27,8 +27,6 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp libdatrie.sh ~/.ndk-pkg/repos.d/offical/formula/
-
       - run: |
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-          ./ndk-pkg install libdatrie --tree
+          ./ndk-pkg install mimalloc --tree
