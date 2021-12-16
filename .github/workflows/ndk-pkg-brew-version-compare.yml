@@ -15,14 +15,23 @@ jobs:
       - run: brew update
       - run: brew install perl
       - run: perl -V
-
+      - run: cpan -i App::Docmake
+      - run: ls $(brew --prefix perl)
+      - run: |
+          if [ -d "$HOME/perl5" ] ; then
+            ls "$HOME/perl5"
+            if [ -d "$HOME/perl5/bin" ] ; then
+              ls "$HOME/perl5/bin"
+            fi
+          fi
+      - run: echo "$PATH" | tr : '\n'
       #- uses: actions/checkout@v2
 
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
+        #- run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
 
-      - run: chmod +x ndk-pkg
+        #- run: chmod +x ndk-pkg
 
-      - run: ./ndk-pkg --help
-      - run: ./ndk-pkg env
-      - run: ./ndk-pkg update
-      - run: ./ndk-pkg test
+        #- run: ./ndk-pkg --help
+        #- run: ./ndk-pkg env
+        #- run: ./ndk-pkg update
+        #- run: ./ndk-pkg test
