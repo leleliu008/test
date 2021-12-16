@@ -13,6 +13,8 @@ jobs:
 
     steps:
       - run: brew update
+      - run: brew install perl
+      - run: perl -V
 
       #- uses: actions/checkout@v2
 
