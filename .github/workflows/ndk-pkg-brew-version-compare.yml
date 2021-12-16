@@ -16,13 +16,17 @@ jobs:
       - run: brew install perl
       - run: perl -V
       - run: cpan -i App::Docmake
-      - run: ls $(brew --prefix perl)
+      - run: ls $(brew --prefix perl)/bin
       - run: |
           if [ -d "$HOME/perl5" ] ; then
             ls "$HOME/perl5"
             if [ -d "$HOME/perl5/bin" ] ; then
               ls "$HOME/perl5/bin"
+            else
+              echo '==============='
             fi
+          else
+            echo '-----'
           fi
       - run: |
           echo "$PATH" | tr : '\n'
