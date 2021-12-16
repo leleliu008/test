@@ -24,7 +24,8 @@ jobs:
               ls "$HOME/perl5/bin"
             fi
           fi
-      - run: echo "$PATH" | tr : '\n'
+      - run: |
+          echo "$PATH" | tr : '\n'
       #- uses: actions/checkout@v2
 
         #- run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
