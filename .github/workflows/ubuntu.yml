@@ -28,5 +28,6 @@ jobs:
       - run: ./ndk-pkg update
 
       - run: |
+          export PATH="$HOME/perl5/bin:$PATH"
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-          ./ndk-pkg install mimalloc --tree
+          ./ndk-pkg install fortune --tree
