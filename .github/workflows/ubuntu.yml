@@ -30,6 +30,7 @@ jobs:
       - run: cp fortune.sh ~/.ndk-pkg/repos.d/offical/formula
 
       - run: |
+          cpan -i App::Cpan
           #export PATH="$HOME/perl5/bin:$PATH"
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
           ./ndk-pkg install fortune --tree
