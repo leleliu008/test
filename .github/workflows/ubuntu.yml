@@ -27,8 +27,9 @@ jobs:
 
       - run: ./ndk-pkg update
 
+      - run: cp fortune.sh ~/.ndk-pkg/repos.d/offical/formula
+
       - run: |
-          brew install perl
-          export PATH="$HOME/perl5/bin:$PATH"
+          #export PATH="$HOME/perl5/bin:$PATH"
           export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
           ./ndk-pkg install fortune --tree
