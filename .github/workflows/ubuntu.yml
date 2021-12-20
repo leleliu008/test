@@ -33,10 +33,9 @@ jobs:
       - run: sudo apt -y install docbook-xsl
       - run: ls /etc/xml || true
       - run: ls /usr/share/xml/docbook/stylesheet || true
-        #- run: |
-        #apt-get -y install docbook-xsl docbook-xsl-ns
-        #  brew install perl docbook-xsl
-        # cpan -i App::Cpan
-        # export PATH="$HOME/perl5/bin:$PATH"
-        # export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-        # ./ndk-pkg install fortune --tree
+      - run: |
+          brew install perl
+          cpan -i App::Cpan
+          export PATH="$HOME/perl5/bin:$PATH"
+          export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
+          ./ndk-pkg install fortune --tree
