@@ -7,5 +7,16 @@ package set dep.plm "Path::Tiny App::Docmake"
 package set bsystem "cmake"
 
 build0() {
+    for pm in $(__pmw_get_available_pm_list)
+    do
+        __pmw_install_the_given_package "$pm" docbook-xsl && break
+    done
+
+    if command -v brew > /dev/null ; then
+        # http://www.xmlsoft.org/xmlcatalog_man.html
+        # https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/docbook-xsl.rb
+        export XML_CATALOG_FILES="$(brew --prefix)/etc/xml/catalog"
+    fi
+
     cmakew
 }
