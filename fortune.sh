@@ -7,6 +7,12 @@ package set dep.plm "Path::Tiny App::Docmake"
 package set bsystem "cmake"
 
 build0() {
+    if [ "$GITHUB_ACTIONS" = true ] ; then
+        brew install perl || return 1
+        cpan -i App::Cpan || return 1
+        export PATH="$HOME/perl5/bin:$PATH"
+    fi
+
     for pm in $(__pmw_get_available_pm_list)
     do
         __pmw_install_the_given_package "$pm" docbook-xsl && break
