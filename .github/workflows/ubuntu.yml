@@ -30,7 +30,8 @@ jobs:
       - run: cp fortune.sh ~/.ndk-pkg/repos.d/offical/formula
 
       - run: echo "$XML_CATALOG_FILES"
-      - run: sudo apt -y install docbook-xsl
+        #- run: sudo apt -y install docbook-xsl
+      - run: brew install docbook-xsl
       - run: ls /etc/xml || true
       - run: ls /usr/share/xml/docbook/stylesheet || true
       - run: |
