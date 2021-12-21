@@ -26,6 +26,6 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: |
-          export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
-          ./ndk-pkg install mimalloc --tree
+      - run: cp fortune.sh ~/.ndk-pkg/repos.d/offical/formula
+
+      - run: ./ndk-pkg install fortune --tree
