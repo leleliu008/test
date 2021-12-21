@@ -26,6 +26,6 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp fortune.sh ~/.ndk-pkg/repos.d/offical/formula
+      - run: cp netpbm.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install fortune --tree
+      - run: ./ndk-pkg install netpbm --tree
