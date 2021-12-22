@@ -26,6 +26,6 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp netpbm.sh ~/.ndk-pkg/repos.d/offical/formula
+      - run: cp basis_universal.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install netpbm --tree
+      - run: ./ndk-pkg install basis_universal --tree
