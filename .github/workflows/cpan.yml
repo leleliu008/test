@@ -57,6 +57,10 @@ jobs:
       - run: |
           env | grep ^PERL
 
+      - run: cpan -i App::Cpan
+      - run: cpan -i Path::Tiny
+      - run: cpan -i App::Docmake
+
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
 
       - run: chmod +x ndk-pkg
@@ -67,4 +71,4 @@ jobs:
 
         #- run: cp basis_universal.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install fortune --tree
+        #- run: ./ndk-pkg install fortune --tree
