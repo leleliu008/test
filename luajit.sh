@@ -19,13 +19,14 @@ prepare() {
 }
 
 build() {
+    unset ARCH_FOR_BUILD
     if [ "$NATIVE_OS_KIND" = darwin ] ; then
-        export CFLAGS_FOR_BUILD="$CFLAGS_FOR_BUILD -arch=$NATIVE_OS_ARCH"
+        ARCH_FOR_BUILD="-arch=$NATIVE_OS_ARCH"
     fi
     makew -C "$SOURCE_DIR" clean install \
         PREFIX="$ABI_INSTALL_DIR" \
         HOST_SYS=$(uname -s) \
-        HOST_CC="'$CC_FOR_BUILD -m$TARGET_OS_BIT'" \
+        HOST_CC="'$CC_FOR_BUILD -m$TARGET_OS_BIT $ARCH_FOR_BUILD'" \
         HOST_LD="$CC_FOR_BUILD" \
         HOST_CFLAGS="'$CPPFLAGS_FOR_BUILD $CFLAGS_FOR_BUILD'" \
         HOST_LDFLAGS="'$LDFLAGS_FOR_BUILD'" \
