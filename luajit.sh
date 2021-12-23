@@ -18,7 +18,7 @@ prepare() {
     }
 
     if [ "$NATIVE_OS_KIND" = darwin ] ; then
-        export CFLAGS="$CFLAGS -arch=$NATIVE_OS_ARCH"
+        export CFLAGS_FOR_BUILD="$CFLAGS_FOR_BUILD -arch=$NATIVE_OS_ARCH"
     fi
 }
 
