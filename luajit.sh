@@ -16,6 +16,10 @@ prepare() {
             run "$sudo" apt -y install gcc-multilib
         fi
     }
+
+    if [ "$NATIVE_OS_KIND" = darwin ] ; then
+        export CFLAGS="$CFLAGS -arch=$NATIVE_OS_ARCH"
+    fi
 }
 
 build() {
