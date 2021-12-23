@@ -1,4 +1,4 @@
-name: Ubuntu
+name: cpan
 
 on:
   push:
@@ -19,17 +19,28 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - run:  brew install tree
+
       - name: setup locallib
         run: |
-          wget https://cpan.metacpan.org/authors/id/H/HA/HAARG/local-lib-2.000024.tar.gz
-          tar zxvf local-lib-2.000024.tar.gz
-          cd local-lib-2.000024
+          COLOR_GREEN='\033[0;32m'        # Green
+          COLOR_PURPLE='\033[0;35m'       # Purple
+          COLOR_OFF='\033[0m'             # Reset
+
+          run() {
+            echo "$COLOR_PURPLE==>$COLOR_OFF $COLOR_GREEN$@$COLOR_OFF"
+            eval "$*"
+          }
+
+          run wget https://cpan.metacpan.org/authors/id/H/HA/HAARG/local-lib-2.000024.tar.gz
+          run tar zxvf local-lib-2.000024.tar.gz
+          run cd local-lib-2.000024
 
           PERL_LOCAL_LIB_ROOT=$GITHUB_WORKSPACE/perl5
 
-          perl Makefile.PL --bootstrap=$PERL_LOCAL_LIB_ROOT
-          make
-          make test
+          run perl Makefile.PL --bootstrap=$PERL_LOCAL_LIB_ROOT
+          run make
+          run make test
 
           echo >> "$GITHUB_ENV" <<EOF
           PERL_LOCAL_LIB_ROOT="$PERL_LOCAL_LIB_ROOT"
@@ -39,8 +50,8 @@ jobs:
           PATH="\$PERL_LOCAL_LIB_ROOT/bin:\$PATH"
           EOF
 
-          cat "$GITHUB_ENV"
-          ls "$PERL_LOCAL_LIB_ROOT"
+          run cat "$GITHUB_ENV"
+          run tree "$PERL_LOCAL_LIB_ROOT"
 
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
 
