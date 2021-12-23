@@ -11,7 +11,7 @@ prepare() {
     printf '%s\n' 'int main() {return 0;}' > test.c
 
     cc -m32 test.c 2> /dev/null || {
-        if command -v apt > /dev/null ; then
+        if command -v apt > /dev/null && apt show apt > /dev/null 2>&1 ; then
             run "$sudo" apt -y update &&
             run "$sudo" apt -y install gcc-multilib
         fi
