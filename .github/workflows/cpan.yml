@@ -41,7 +41,7 @@ jobs:
           run perl Makefile.PL --bootstrap=$PERL_LOCAL_LIB_ROOT
           run make
           run make test
-          run make install
+          #run make install
 
           printf '%s\n' "
           PERL_LOCAL_LIB_ROOT='$PERL_LOCAL_LIB_ROOT'
