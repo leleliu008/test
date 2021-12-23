@@ -16,13 +16,12 @@ prepare() {
             run "$sudo" apt -y install gcc-multilib
         fi
     }
-
-    if [ "$NATIVE_OS_KIND" = darwin ] ; then
-        export CFLAGS_FOR_BUILD="$CFLAGS_FOR_BUILD -arch=$NATIVE_OS_ARCH"
-    fi
 }
 
 build() {
+    if [ "$NATIVE_OS_KIND" = darwin ] ; then
+        export CFLAGS_FOR_BUILD="$CFLAGS_FOR_BUILD -arch=$NATIVE_OS_ARCH"
+    fi
     makew -C "$SOURCE_DIR" clean install \
         PREFIX="$ABI_INSTALL_DIR" \
         HOST_SYS=$(uname -s) \
