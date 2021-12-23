@@ -28,7 +28,7 @@ jobs:
           COLOR_OFF='\033[0m'             # Reset
 
           run() {
-            echo "$COLOR_PURPLE==>$COLOR_OFF $COLOR_GREEN$@$COLOR_OFF"
+            printf '%b\n' "$COLOR_PURPLE==>$COLOR_OFF $COLOR_GREEN$@$COLOR_OFF"
             eval "$*"
           }
 
@@ -41,17 +41,21 @@ jobs:
           run perl Makefile.PL --bootstrap=$PERL_LOCAL_LIB_ROOT
           run make
           run make test
+          run make install
 
-          echo >> "$GITHUB_ENV" <<EOF
-          PERL_LOCAL_LIB_ROOT="$PERL_LOCAL_LIB_ROOT"
-          PERL5LIB="\$PERL_LOCAL_LIB_ROOT/lib/perl5"
-          PERL_MB_OPT="--install_base \"\$PERL_LOCAL_LIB_ROOT/\""
-          PERL_MM_OPT="INSTALL_BASE=\$PERL_LOCAL_LIB_ROOT"
-          PATH="\$PERL_LOCAL_LIB_ROOT/bin:\$PATH"
-          EOF
+          printf '%s\n' "
+          PERL_LOCAL_LIB_ROOT=\"$PERL_LOCAL_LIB_ROOT\"
+          PERL5LIB=\"\$PERL_LOCAL_LIB_ROOT/lib/perl5\"
+          PERL_MB_OPT=\"--install_base \$PERL_LOCAL_LIB_ROOT/\"
+          PERL_MM_OPT=\"INSTALL_BASE=\$PERL_LOCAL_LIB_ROOT\"
+          PATH=\"\$PERL_LOCAL_LIB_ROOT/bin:\$PATH\"
+          "
 
           run cat "$GITHUB_ENV"
           run tree "$PERL_LOCAL_LIB_ROOT"
+
+      - run: |
+          env | grep ^PERL
 
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
 
