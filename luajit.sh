@@ -8,6 +8,10 @@ package set dep.cmd "cc"
 package set bsystem "make"
 
 prepare() {
+    if [ "$NATIVE_OS_KIND" = darwin ] ; then
+        die "can not cross compile luajit for android on macOS above 10.14, please use GNU/Linux, for more details please read https://github.com/LuaJIT/LuaJIT/issues/691"
+    fi
+
     printf '%s\n' 'int main() {return 0;}' > test.c
 
     cc -m32 test.c 2> /dev/null || {
@@ -19,10 +23,6 @@ prepare() {
 }
 
 build() {
-    unset ARCH_FOR_BUILD
-    if [ "$NATIVE_OS_KIND" = darwin ] ; then
-        ARCH_FOR_BUILD="-arch=$NATIVE_OS_ARCH"
-    fi
     makew -C "$SOURCE_DIR" clean install \
         PREFIX="$ABI_INSTALL_DIR" \
         HOST_SYS=$(uname -s) \
