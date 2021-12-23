@@ -44,11 +44,11 @@ jobs:
           run make install
 
           printf '%s\n' "
-          PERL_LOCAL_LIB_ROOT=\"$PERL_LOCAL_LIB_ROOT\"
-          PERL5LIB=\"\$PERL_LOCAL_LIB_ROOT/lib/perl5\"
-          PERL_MB_OPT=\"--install_base \$PERL_LOCAL_LIB_ROOT/\"
-          PERL_MM_OPT=\"INSTALL_BASE=\$PERL_LOCAL_LIB_ROOT\"
-          PATH=\"\$PERL_LOCAL_LIB_ROOT/bin:\$PATH\"
+          PERL_LOCAL_LIB_ROOT='$PERL_LOCAL_LIB_ROOT'
+          PERL5LIB='$PERL_LOCAL_LIB_ROOT/lib/perl5'
+          PERL_MB_OPT='--install_base $PERL_LOCAL_LIB_ROOT/'
+          PERL_MM_OPT='INSTALL_BASE=$PERL_LOCAL_LIB_ROOT'
+          PATH='$PERL_LOCAL_LIB_ROOT/bin:$PATH'
           " >> "$GITHUB_ENV"
 
           run cat "$GITHUB_ENV"
