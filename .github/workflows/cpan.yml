@@ -28,7 +28,7 @@ jobs:
           COLOR_OFF='\033[0m'             # Reset
 
           run() {
-            printf '%b\n' "$COLOR_PURPLE==>$COLOR_OFF $COLOR_GREEN$@$COLOR_OFF"
+            printf '%b\n' "$COLOR_PURPLE==>$COLOR_OFF $COLOR_GREEN$*$COLOR_OFF"
             eval "$*"
           }
 
@@ -49,7 +49,7 @@ jobs:
           PERL_MB_OPT=\"--install_base \$PERL_LOCAL_LIB_ROOT/\"
           PERL_MM_OPT=\"INSTALL_BASE=\$PERL_LOCAL_LIB_ROOT\"
           PATH=\"\$PERL_LOCAL_LIB_ROOT/bin:\$PATH\"
-          "
+          " >> "GITHUB_ENV"
 
           run cat "$GITHUB_ENV"
           run tree "$PERL_LOCAL_LIB_ROOT"
