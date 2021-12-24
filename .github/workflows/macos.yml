@@ -20,7 +20,7 @@ jobs:
       - run: brew install bison
       - run: brew --prefix bison
       - run: |
-          brew info --json=v2 "$2" | sed -n '/keg_only/p' | sed 's/ //g' | cut -d: -f2 | sed 's/,//'
+          brew info --json=v2 bison | sed -n '/keg_only/p' | sed 's/ //g' | cut -d: -f2 | sed 's/,//'
       - run: |
           ls $(brew --prefix bison)
 
