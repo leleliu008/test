@@ -26,6 +26,6 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp luajit.sh ~/.ndk-pkg/repos.d/offical/formula
+      - run: cp tesseract.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install luajit --tree
+      - run: ./ndk-pkg install libspectre --tree
