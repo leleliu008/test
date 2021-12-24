@@ -20,9 +20,9 @@ jobs:
       - run: brew install bison
       - run: brew --prefix bison
       - run: |
-          brew info --json=v2 bison | sed -n '/"keg_only"/p'
+          brew info --json=v2 bison | sed -n '/"keg_only":/p'
       - run: |
-          brew info --json=v2 bison | sed -n '/"keg_only"/p' | sed 's/ //g' | cut -d: -f2 | sed 's/,//'
+          brew info --json=v2 bison | sed -n '/"keg_only:"/p' | sed 's/ //g' | cut -d: -f2 | sed 's/,//'
       - run: |
           ls $(brew --prefix bison)
 
@@ -38,4 +38,4 @@ jobs:
 
         #- run: cp tesseract.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install libnl --tree -x
+      - run: ./ndk-pkg install libnl --tree
