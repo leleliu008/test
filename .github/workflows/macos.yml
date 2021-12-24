@@ -28,4 +28,4 @@ jobs:
 
         #- run: cp tesseract.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install libnl --tree
+      - run: ./ndk-pkg install libnl --tree -x
