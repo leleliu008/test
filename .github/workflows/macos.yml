@@ -38,4 +38,4 @@ jobs:
 
       - run: cp icu4c.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install icu4c --tree
+      - run: ./ndk-pkg install harfbuzz --tree
