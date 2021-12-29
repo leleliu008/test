@@ -1,0 +1,79 @@
+name: cross compile with android-ndk
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  cross-compile:
+    strategy:
+      fail-fast: false
+      matrix:
+        build-machine-os: [ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11]
+        target-abi: [armeabi-v7a, arm64-v8a, x86, x86_64]
+
+    runs-on: ${{ matrix.build-machine-os }}
+
+    steps:
+      - run:  brew install tree
+
+      - uses: actions/checkout@v2
+
+      - name: build for ${{ matrix.target-abi }}
+        run: |
+          COLOR_GREEN='\033[0;32m'        # Green
+          COLOR_PURPLE='\033[0;35m'       # Purple
+          COLOR_OFF='\033[0m'             # Reset
+
+          run() {
+            printf '%b\n' "$COLOR_PURPLE==>$COLOR_OFF $COLOR_GREEN$@$COLOR_OFF"
+            eval "$*"
+          }
+
+          run git clone https://github.com/log4cplus/log4cplus
+          run cd log4cplus
+          run "env | sed -n '/^ANDROID_/'"
+
+          BUILD_MACHINE_OS_TYPE=$(uname | tr A-Z a-z)
+          BUILD_MACHINE_OS_ARCH=$(uname -m)
+
+          ANDROID_NDK_VERS=$(grep "Pkg.Revision" "$ANDROID_NDK_HOME/source.properties" | cut -d " " -f3)
+          ANDROID_NDK_BASE=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/$BUILD_MACHINE_OS_TYPE-$BUILD_MACHINE_OS_ARCH
+          ANDROID_NDK_BIND=$ANDROID_NDK_BASE/bin
+          SYSROOT=$ANDROID_NDK_BASE/sysroot
+
+          export CXX=$TOOLCHAIN_BIN_DIR/armv7a-linux-androideabi21-clang
+          export AR=$TOOLCHAIN_BIN_DIR/arm-linux-androideabi-ar
+          export RANLIB=$TOOLCHAIN_BIN_DIR/arm-linux-androideabi-ranlib
+
+          export CXXFLAGS="--sysroot $SYSROOT -Qunused-arguments -Os -fpic"
+          export CPPFLAGS="--sysroot $SYSROOT -Qunused-arguments"
+          export LDFLAGS="--sysroot $SYSROOT"
+
+          printf '%s = %s\n' ANDROID_NDK_BASE "$ANDROID_NDK_BASE"
+          printf '%s = %s\n' ANDROID_NDK_VERS "$ANDROID_NDK_VERS"
+          printf '\n'
+          printf '%s = %s\n' BUILD_MACHINE_OS_TYPE "$BUILD_MACHINE_OS_TYPE"
+          printf '%s = %s\n' BUILD_MACHINE_OS_ARCH "$BUILD_MACHINE_OS_ARCH"
+
+          run cmake \
+            -DCMAKE_TOOLCHAIN_FILE='$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake' \
+            -DCMAKE_INSTALL_PREFIX=$PWD/out \
+            -DCMAKE_CXX_FLAGS="'$CXXFLAGS $CPPFLAGS $LDFLAGS'" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_VERBOSE_MAKEFILE=ON \
+            -DANDROID_TOOLCHAIN=clang \
+            -DANDROID_ABI=${{ matrix.target-abi }} \
+            -DANDROID_PLATFORM=21 \
+            -DANDROID_ARM_NEON=TRUE \
+            -S . \
+            -B build.d
+
+          run cmake --build   build.d
+
+          run cmake --install build.d
+
+          run tree out
+
