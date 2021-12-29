@@ -34,7 +34,7 @@ jobs:
 
           run git clone https://github.com/log4cplus/log4cplus
           run cd log4cplus
-          run "env | sed -n '/^ANDROID_/'"
+          run "env | sed -n '/^ANDROID_/p'"
 
           BUILD_MACHINE_OS_TYPE=$(uname | tr A-Z a-z)
           BUILD_MACHINE_OS_ARCH=$(uname -m)
