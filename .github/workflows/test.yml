@@ -44,24 +44,8 @@ jobs:
           ANDROID_NDK_BIND=$ANDROID_NDK_BASE/bin
           SYSROOT=$ANDROID_NDK_BASE/sysroot
 
-          unset CXX
-          unset CXXFLAGS
-          unset CPPFLAGS
-          unset LDFLAGS
-
-          #export CXX=$TOOLCHAIN_BIN_DIR/armv7a-linux-androideabi21-clang
-          #export AR=$TOOLCHAIN_BIN_DIR/arm-linux-androideabi-ar
-          #export RANLIB=$TOOLCHAIN_BIN_DIR/arm-linux-androideabi-ranlib
-
-          #export CXXFLAGS="--sysroot $SYSROOT -Qunused-arguments -Os -fpic"
-          #export CPPFLAGS="--sysroot $SYSROOT -Qunused-arguments"
-          #export LDFLAGS="--sysroot $SYSROOT"
-
           printf '%s = %s\n' ANDROID_NDK_BASE "$ANDROID_NDK_BASE"
           printf '%s = %s\n' ANDROID_NDK_VERS "$ANDROID_NDK_VERS"
-          printf '\n'
-          printf '%s = %s\n' BUILD_MACHINE_OS_TYPE "$BUILD_MACHINE_OS_TYPE"
-          printf '%s = %s\n' BUILD_MACHINE_OS_ARCH "$BUILD_MACHINE_OS_ARCH"
 
           run cmake --version
 
@@ -75,7 +59,8 @@ jobs:
             -DANDROID_PLATFORM=21 \
             -DANDROID_ARM_NEON=TRUE \
             -S . \
-            -B build.d
+            -B build.d \
+            -DWITH_UNIT_TESTS=OFF
 
           run cmake --build   build.d
 
