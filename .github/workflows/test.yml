@@ -63,10 +63,11 @@ jobs:
           printf '%s = %s\n' BUILD_MACHINE_OS_TYPE "$BUILD_MACHINE_OS_TYPE"
           printf '%s = %s\n' BUILD_MACHINE_OS_ARCH "$BUILD_MACHINE_OS_ARCH"
 
+          run cmake --version
+
           run cmake \
-            -DCMAKE_TOOLCHAIN_FILE='$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake' \
+            -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
             -DCMAKE_INSTALL_PREFIX=$PWD/out \
-            -DCMAKE_CXX_FLAGS="'$CXXFLAGS $CPPFLAGS $LDFLAGS'" \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_VERBOSE_MAKEFILE=ON \
             -DANDROID_TOOLCHAIN=clang \
