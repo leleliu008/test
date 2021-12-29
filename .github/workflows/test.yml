@@ -32,7 +32,7 @@ jobs:
             eval "$*"
           }
 
-          run git clone https://github.com/log4cplus/log4cplus
+          run git clone --recursive https://github.com/log4cplus/log4cplus
           run cd log4cplus
           run "env | sed -n '/^ANDROID_/p'"
 
