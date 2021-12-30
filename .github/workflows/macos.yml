@@ -38,4 +38,4 @@ jobs:
 
       - run: cp libdeflate.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install libdeflate --tree
+      - run: ./ndk-pkg install libdeflate --tree -d
