@@ -2,19 +2,18 @@ name: cross compile with android-ndk
 
 on:
   push:
-    branches: [ master ]
+    branches: [ 2.0.x ]
   pull_request:
-    branches: [ master ]
+    branches: [ 2.0.x ]
 
 jobs:
   cross-compile:
     strategy:
       fail-fast: false
       matrix:
-        build-machine-os: [ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11]
         target-abi: [armeabi-v7a, arm64-v8a, x86, x86_64]
 
-    runs-on: ${{ matrix.build-machine-os }}
+    runs-on: ubuntu-20.04
 
     steps:
       - run:  brew install tree
@@ -32,8 +31,6 @@ jobs:
             eval "$*"
           }
 
-          run git clone --recursive https://github.com/log4cplus/log4cplus
-          run cd log4cplus
           run "env | sed -n '/^ANDROID_/p'"
 
           BUILD_MACHINE_OS_TYPE=$(uname | tr A-Z a-z)
@@ -51,7 +48,7 @@ jobs:
 
           run cmake \
             -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
-            -DCMAKE_INSTALL_PREFIX=$PWD/out \
+            -DCMAKE_INSTALL_PREFIX=$PWD/install.d \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_VERBOSE_MAKEFILE=ON \
             -DANDROID_TOOLCHAIN=clang \
@@ -60,11 +57,10 @@ jobs:
             -DANDROID_ARM_NEON=TRUE \
             -S . \
             -B build.d \
-            -DWITH_UNIT_TESTS=OFF
 
           run cmake --build   build.d
 
           run cmake --install build.d
 
-          run tree out
+          run tree install.d
 
