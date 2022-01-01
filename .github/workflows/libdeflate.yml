@@ -14,17 +14,20 @@ jobs:
         os: [ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11]
         target-abi: [armeabi-v7a, arm64-v8a, x86, x86_64]
 
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
 
     steps:
       - run:  brew install tree
 
+      - run:  make --version
+
+      - run:  |
+          env | sed -n '/^ANDROID_/p'
+
       - uses: actions/checkout@v2
 
-      - name: build for ${{ matrix.target-abi }}
+      - name: build for Android/${{ matrix.target-abi }}
         run: |
-          #https://github.com/android/ndk/wiki/
-
           git clone https://github.com/ebiggers/libdeflate
 
           cd libdeflate
@@ -41,8 +44,6 @@ jobs:
             printf '%b\n' "$COLOR_PURPLE==>$COLOR_OFF $COLOR_GREEN$*$COLOR_OFF"
             eval "$*"
           }
-
-          run "env | sed -n '/^ANDROID_/p'"
 
           BUILD_MACHINE_OS_TYPE=$(uname | tr A-Z a-z)
           BUILD_MACHINE_OS_ARCH=$(uname -m)
@@ -77,9 +78,14 @@ jobs:
             esac
           fi
 
-          run make --version
-
           run make -C libdeflate clean install PREFIX=$PWD/install.d CC="$CC" CPPFLAGS="'$CPPFLAGS'" CFLAGS="'$CFLAGS'" AR="$AR" V=1
 
-          run tree install.d
+      - run:  tree install.d
 
+      - run:  |
+          case ${{ matrix.target-abi }} in
+            armeabi-v7a) file install.d/lib/libdeflate.so | grep 'ELF 32-bit LSB shared object, ARM, EABI5'   ;;
+            arm64-v8a)   file install.d/lib/libdeflate.so | grep 'ELF 64-bit LSB shared object, ARM aarch64,' ;;
+            x86)         file install.d/lib/libdeflate.so | grep 'ELF 32-bit LSB shared object, Intel 80386,' ;;
+            x86_64)      file install.d/lib/libdeflate.so | grep 'ELF 64-bit LSB shared object, x86-64,'      ;;
+          esac
