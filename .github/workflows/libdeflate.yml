@@ -1,0 +1,85 @@
+name: cross compile with android-ndk
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  cross-compile:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11]
+        target-abi: [armeabi-v7a, arm64-v8a, x86, x86_64]
+
+    runs-on: ubuntu-20.04
+
+    steps:
+      - run:  brew install tree
+
+      - uses: actions/checkout@v2
+
+      - name: build for ${{ matrix.target-abi }}
+        run: |
+          https://github.com/android/ndk/wiki/
+
+          git clone https://github.com/ebiggers/libdeflate
+
+          cd libdeflate
+
+          patch -p1 < ../libdeflate.patch
+
+          cd ..
+
+          COLOR_GREEN='\033[0;32m'        # Green
+          COLOR_PURPLE='\033[0;35m'       # Purple
+          COLOR_OFF='\033[0m'             # Reset
+
+          run() {
+            printf '%b\n' "$COLOR_PURPLE==>$COLOR_OFF $COLOR_GREEN$*$COLOR_OFF"
+            eval "$*"
+          }
+
+          run "env | sed -n '/^ANDROID_/p'"
+
+          BUILD_MACHINE_OS_TYPE=$(uname | tr A-Z a-z)
+          BUILD_MACHINE_OS_ARCH=$(uname -m)
+
+          ANDROID_NDK_VERS=$(grep "Pkg.Revision" "$ANDROID_NDK_HOME/source.properties" | cut -d " " -f3)
+          ANDROID_NDK_BASE=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/$BUILD_MACHINE_OS_TYPE-$BUILD_MACHINE_OS_ARCH
+          ANDROID_NDK_BIND=$ANDROID_NDK_BASE/bin
+          SYSROOT=$ANDROID_NDK_BASE/sysroot
+
+          printf '%s = %s\n' ANDROID_NDK_BASE "$ANDROID_NDK_BASE"
+          printf '%s = %s\n' ANDROID_NDK_VERS "$ANDROID_NDK_VERS"
+
+          export CPPFLAGS="--sysroot $SYSROOT"
+          export   CFLAGS="--sysroot $SYSROOT -fpic"
+          export  LDFLAGS="--sysroot $SYSROOT"
+
+          case ${{ matrix.target-abi }} in
+            armeabi-v7a) CC="$ANDROID_NDK_BIND/armv7a-linux-androideabi21-clang" ;;
+            arm64-v8a)   CC="$ANDROID_NDK_BIND/aarch64-linux-android21-clang"    ;;
+            x86)         CC="$ANDROID_NDK_BIND/i686-linux-android21-clang"       ;;
+            x86_64)      CC="$ANDROID_NDK_BIND/x86_64-linux-android21-clang"     ;;
+          esac
+
+          if [ -f "$ANDROID_NDK_BIND/llvm-ar" ] ; then
+            AR="$ANDROID_NDK_BIND/llvm-ar"
+          else
+            case ${{ matrix.target-abi }} in
+              armeabi-v7a) AR="$ANDROID_NDK_BIND/arm-linux-androideabi-ar" ;;
+              arm64-v8a)   AR="$ANDROID_NDK_BIND/aarch64-linux-android-ar" ;;
+              x86)         AR="$ANDROID_NDK_BIND/i686-linux-android-ar"    ;;
+              x86_64)      AR="$ANDROID_NDK_BIND/x86_64-linux-android-ar"  ;;
+            esac
+          fi
+
+          run make --version
+
+          run make -C libdeflate clean install PREFIX=$PWD/install.d CC="$CC" CPPFLAGS="'$CPPFLAGS'" CFLAGS="'$CFLAGS'" AR="$AR" V=1
+
+          run tree install.d
+
