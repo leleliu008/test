@@ -85,8 +85,8 @@ jobs:
       - run:  |
           file install.d/lib/libdeflate.so
           case ${{ matrix.target-abi }} in
-            armeabi-v7a) file install.d/lib/libdeflate.so | grep 'ELF 32-bit LSB shared object, ARM, EABI5'   ;;
-            arm64-v8a)   file install.d/lib/libdeflate.so | grep 'ELF 64-bit LSB shared object, ARM aarch64,' ;;
-            x86)         file install.d/lib/libdeflate.so | grep 'ELF 32-bit LSB shared object, Intel 80386,' ;;
-            x86_64)      file install.d/lib/libdeflate.so | grep 'ELF 64-bit LSB shared object, x86-64,'      ;;
+            armeabi-v7a) file install.d/lib/libdeflate.so.0 | grep 'ELF 32-bit LSB shared object, ARM, EABI5'   ;;
+            arm64-v8a)   file install.d/lib/libdeflate.so.0 | grep 'ELF 64-bit LSB shared object, ARM aarch64,' ;;
+            x86)         file install.d/lib/libdeflate.so.0 | grep 'ELF 32-bit LSB shared object, Intel 80386,' ;;
+            x86_64)      file install.d/lib/libdeflate.so.0 | grep 'ELF 64-bit LSB shared object, x86-64,'      ;;
           esac
