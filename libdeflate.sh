@@ -10,5 +10,5 @@ prepare() {
 }
 
 build() {
-    makew -C "$SOURCE_DIR" clean install PREFIX="$ABI_INSTALL_DIR" CC="$CC" CPPFLAGS="'$CPPFLAGS'" CFLAGS="'$CFLAGS'" AR="$AR" V=1
+    makew --debug=a -C "$SOURCE_DIR" clean install PREFIX="$ABI_INSTALL_DIR" CC="$CC" CPPFLAGS="'$CPPFLAGS'" CFLAGS="'$CFLAGS'" AR="$AR" V=1
 }
