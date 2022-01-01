@@ -23,7 +23,7 @@ jobs:
 
       - name: build for ${{ matrix.target-abi }}
         run: |
-          https://github.com/android/ndk/wiki/
+          #https://github.com/android/ndk/wiki/
 
           git clone https://github.com/ebiggers/libdeflate
 
