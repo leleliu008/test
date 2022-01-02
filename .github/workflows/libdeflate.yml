@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  cross-compile:
+  cross-compile-for-android:
     strategy:
       fail-fast: false
       matrix:
@@ -29,12 +29,6 @@ jobs:
       - name: build for Android/${{ matrix.target-abi }}
         run: |
           git clone https://github.com/ebiggers/libdeflate
-
-          cd libdeflate
-
-          patch -p1 < ../libdeflate.patch
-
-          cd ..
 
           COLOR_GREEN='\033[0;32m'        # Green
           COLOR_PURPLE='\033[0;35m'       # Purple
@@ -83,7 +77,6 @@ jobs:
       - run:  tree install.d
 
       - run:  |
-          file install.d/lib/libdeflate.so
           case ${{ matrix.target-abi }} in
             armeabi-v7a) file install.d/lib/libdeflate.so.0 | grep 'ELF 32-bit LSB shared object, ARM, EABI5'   ;;
             arm64-v8a)   file install.d/lib/libdeflate.so.0 | grep 'ELF 64-bit LSB shared object, ARM aarch64,' ;;
