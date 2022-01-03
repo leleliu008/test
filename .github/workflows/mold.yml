@@ -34,7 +34,6 @@ jobs:
       - run:  ndk-pkg --version
 
       - run:  ndk-pkg update
-      - run:  cp tbb.sh ~/.ndk-pkg/repos.d/offical/formula/
       - run:  ndk-pkg install tbb     --tree
       - run:  ndk-pkg install xxhash  --tree
       - run:  ndk-pkg install openssl --tree
