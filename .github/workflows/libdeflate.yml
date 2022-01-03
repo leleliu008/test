@@ -50,19 +50,9 @@ jobs:
           ANDROID_NDK_BIND=$ANDROID_NDK_BASE/bin
           SYSROOT=$ANDROID_NDK_BASE/sysroot
 
-          export PATH="$ANDROID_NDK_BIND:$PATH"
-
-          for item in $(printf '%s\n' "$PATH" | tr ':' ' ')
-          do
-            printf '%s\n' "$item"
-          done
-
-          printf '%s\n'
-
           printf '%s = %s\n' ANDROID_NDK_HOME "$ANDROID_NDK_HOME"
           printf '%s = %s\n' ANDROID_NDK_BIND "$ANDROID_NDK_BIND"
           printf '%s = %s\n' ANDROID_NDK_VERS "$ANDROID_NDK_VERS"
-
           printf '%s\n'
 
           export CPPFLAGS="--sysroot $SYSROOT"
@@ -77,6 +67,12 @@ jobs:
           esac
 
           AR=llvm-ar
+
+          export PATH="$ANDROID_NDK_BIND:$PATH"
+
+          printf '%b\n' "$COLOR_PURPLE==>$COLOR_OFF ${COLOR_GREEN}show PATH$COLOR_OFF"
+          printf '%s\n' "$PATH" | tr ':' '\n'
+          printf '%s\n'
 
           run make -C libdeflate clean install PREFIX=$PWD/install.d CC="$CC" CPPFLAGS="'$CPPFLAGS'" CFLAGS="'$CFLAGS'" AR="$AR" V=1
 
