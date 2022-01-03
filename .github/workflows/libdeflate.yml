@@ -78,8 +78,24 @@ jobs:
 
       - run:  |
           case ${{ matrix.target-abi }} in
-            armeabi-v7a) file install.d/lib/libdeflate.so.0 | grep 'ELF 32-bit LSB shared object, ARM, EABI5'   ;;
-            arm64-v8a)   file install.d/lib/libdeflate.so.0 | grep 'ELF 64-bit LSB shared object, ARM aarch64,' ;;
-            x86)         file install.d/lib/libdeflate.so.0 | grep 'ELF 32-bit LSB shared object, Intel 80386,' ;;
-            x86_64)      file install.d/lib/libdeflate.so.0 | grep 'ELF 64-bit LSB shared object, x86-64,'      ;;
+            armeabi-v7a) file install.d/lib/libdeflate.so     | grep 'ELF 32-bit LSB shared object, ARM, EABI5'   ;;
+            arm64-v8a)   file install.d/lib/libdeflate.so     | grep 'ELF 64-bit LSB shared object, ARM aarch64,' ;;
+            x86)         file install.d/lib/libdeflate.so     | grep 'ELF 32-bit LSB shared object, Intel 80386,' ;;
+            x86_64)      file install.d/lib/libdeflate.so     | grep 'ELF 64-bit LSB shared object, x86-64,'      ;;
+          esac
+
+      - run:  |
+          case ${{ matrix.target-abi }} in
+            armeabi-v7a) file install.d/bin/libdeflate-gunzip | grep 'ELF 32-bit LSB pie executable, ARM, EABI5'   ;;
+            arm64-v8a)   file install.d/bin/libdeflate-gunzip | grep 'ELF 64-bit LSB pie executable, ARM aarch64,' ;;
+            x86)         file install.d/bin/libdeflate-gunzip | grep 'ELF 32-bit LSB pie executable, Intel 80386,' ;;
+            x86_64)      file install.d/bin/libdeflate-gunzip | grep 'ELF 64-bit LSB pie executable, x86-64,'      ;;
+          esac
+
+      - run:  |
+          case ${{ matrix.target-abi }} in
+            armeabi-v7a) file install.d/bin/libdeflate-gzip   | grep 'ELF 32-bit LSB pie executable, ARM, EABI5'   ;;
+            arm64-v8a)   file install.d/bin/libdeflate-gzip   | grep 'ELF 64-bit LSB pie executable, ARM aarch64,' ;;
+            x86)         file install.d/bin/libdeflate-gzip   | grep 'ELF 32-bit LSB pie executable, Intel 80386,' ;;
+            x86_64)      file install.d/bin/libdeflate-gzip   | grep 'ELF 64-bit LSB pie executable, x86-64,'      ;;
           esac
