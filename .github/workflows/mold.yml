@@ -66,8 +66,8 @@ jobs:
           printf '%s\n'
 
           export CPPFLAGS="--sysroot $SYSROOT"
-          export CXXFLAGS="--sysroot $SYSROOT -fPIC"
-          export   CFLAGS="--sysroot $SYSROOT -fPIC"
+          export CXXFLAGS="--sysroot $SYSROOT"
+          export   CFLAGS="--sysroot $SYSROOT"
           export  LDFLAGS="--sysroot $SYSROOT"
 
           for item in $(cat dependencies)
@@ -85,6 +85,7 @@ jobs:
 
           export CXX=${CC}++
           export AR=llvm-ar
+          export STRIP=llvm-strip
 
           export PATH="$ANDROID_NDK_BIND:$PATH"
 
