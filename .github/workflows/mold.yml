@@ -66,6 +66,7 @@ jobs:
           printf '%s\n'
 
           export CPPFLAGS="--sysroot $SYSROOT"
+          export CXXFLAGS="--sysroot $SYSROOT -fPIC"
           export   CFLAGS="--sysroot $SYSROOT -fPIC"
           export  LDFLAGS="--sysroot $SYSROOT"
 
@@ -82,6 +83,7 @@ jobs:
             x86_64)      export CC=x86_64-linux-android21-clang     ;;
           esac
 
+          export CXX=${CC}++
           export AR=llvm-ar
 
           export PATH="$ANDROID_NDK_BIND:$PATH"
