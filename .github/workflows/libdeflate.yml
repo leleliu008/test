@@ -17,12 +17,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - run:  brew install tree
+      - run:  brew install tree file
 
+      - run:  tree --version
+      - run:  file --version
       - run:  make --version
-
-      - run:  |
-          env | sed -n '/^ANDROID_/p'
 
       - uses: actions/checkout@v2
 
@@ -42,7 +41,8 @@ jobs:
           BUILD_MACHINE_OS_TYPE=$(uname | tr A-Z a-z)
           BUILD_MACHINE_OS_ARCH=$(uname -m)
 
-          export ANDROID_NDK_HOME="$ANDROID_NDK_LATEST_HOME"
+          #export ANDROID_NDK_HOME="$ANDROID_NDK_LATEST_HOME"
+          env | sed -n '/^ANDROID_/p'
 
           ANDROID_NDK_VERS=$(grep "Pkg.Revision" "$ANDROID_NDK_HOME/source.properties" | cut -d " " -f3)
           ANDROID_NDK_BASE=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/$BUILD_MACHINE_OS_TYPE-$BUILD_MACHINE_OS_ARCH
