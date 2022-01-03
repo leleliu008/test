@@ -44,19 +44,15 @@ jobs:
           package set git.url "https://github.com/rui314/mold.git"
           package set src.url "dir://$PWD"
           package set license "AGPL-3.0-only"
-          package set dep.pkg "tbb xxhash zlib openssl"
+          package set dep.pkg "tbb xxhash openssl"
           package set bsystem "make"
+          package set binsrcd "yes"
 
           build() {
               printf 'INPUT(-lc)\n' > librt.a
-              export LDFLAGS="$LDFLAGS -L\$PWD"
-              makew -C "\$SOURCE_DIR" clean &&
-              makew -C "\$SOURCE_DIR" install \
-                  PREFIX=$ABI_INSTALL_DIR \
-                  OS=Linux \
-                  LTO=1 \
-                  SYSTEM_TBB=1 \
-                  SYSTEM_XXHASH=1
+              export LDFLAGS="\$LDFLAGS -L\$PWD"
+              makew clean &&
+              makew install PREFIX=\$ABI_INSTALL_DIR OS=Linux LTO=1 SYSTEM_TBB=1 SYSTEM_XXHASH=1
           }
           EOF
 
