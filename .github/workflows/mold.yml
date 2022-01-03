@@ -18,6 +18,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          repository: 'rui314/mold'
 
       - run:  brew install tree file
 
