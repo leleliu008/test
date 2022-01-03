@@ -27,6 +27,13 @@ jobs:
       - run:  file --version
       - run:  make --version
 
+      - run:  echo "ANDROID_NDK_HOME=${ANDROID_NDK_LATEST_HOME}" >> "$GITHUB_ENV"
+
+      - run:  |
+          env | sed -n '/^ANDROID_/p'
+
+      - run:  cat "$ANDROID_NDK_HOME/source.properties"
+
       - name: install runtime dependencies
         run:  |
           for item in tbb-2021.5.0-bin xxhash-0.8.1-bin openssl-1.1.1g-bin
@@ -47,21 +54,14 @@ jobs:
             eval "$*"
           }
 
-          export ANDROID_NDK_HOME="$ANDROID_NDK_LATEST_HOME"
-
-          env | sed -n '/^ANDROID_/p'
-
           BUILD_MACHINE_OS_TYPE=$(uname | tr A-Z a-z)
           BUILD_MACHINE_OS_ARCH=$(uname -m)
 
-          ANDROID_NDK_VERS=$(grep "Pkg.Revision" "$ANDROID_NDK_HOME/source.properties" | cut -d " " -f3)
           ANDROID_NDK_BASE=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/$BUILD_MACHINE_OS_TYPE-$BUILD_MACHINE_OS_ARCH
           ANDROID_NDK_BIND=$ANDROID_NDK_BASE/bin
           SYSROOT=$ANDROID_NDK_BASE/sysroot
 
-          printf '%s=%s\n' ANDROID_NDK_BIND "$ANDROID_NDK_BIND"
-          printf '%s=%s\n' ANDROID_NDK_VERS "$ANDROID_NDK_VERS"
-          printf '%s\n'
+          export PATH="$ANDROID_NDK_BIND:$PATH"
 
           export CPPFLAGS="--sysroot $SYSROOT"
           export CXXFLAGS="--sysroot $SYSROOT"
@@ -84,8 +84,6 @@ jobs:
           export CXX=${CC}++
           export AR=llvm-ar
           export STRIP=llvm-strip
-
-          export PATH="$ANDROID_NDK_BIND:$PATH"
 
           printf '%b\n' "$COLOR_PURPLE==>$COLOR_OFF ${COLOR_GREEN}show PATH$COLOR_OFF"
           printf '%s\n' "$PATH" | tr ':' '\n'
