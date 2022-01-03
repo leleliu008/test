@@ -27,14 +27,14 @@ jobs:
       - run:  file --version
       - run:  make --version
 
-      - name: install dependencies
+      - name: install runtime dependencies
         run:  |
-          rm -f ~/dependencies
+          rm -f ~/runtime-dependencies
           for item in tbb-2021.5.0-bin xxhash-0.8.1-bin openssl-1.1.1g-bin
           do
             curl -LO https://github.com/leleliu008/test/releases/download/20220103-1623/${item}.tar.xz
             tar vxf ${item}.tar.xz
-            printf '%s\n' "$item" >> dependencies
+            printf '%s\n' "$item" >> runtime-dependencies
           done
 
       - name: build for ${{ matrix.target-abi }}
@@ -60,9 +60,8 @@ jobs:
           ANDROID_NDK_BIND=$ANDROID_NDK_BASE/bin
           SYSROOT=$ANDROID_NDK_BASE/sysroot
 
-          printf '%s = %s\n' ANDROID_NDK_HOME "$ANDROID_NDK_HOME"
-          printf '%s = %s\n' ANDROID_NDK_BIND "$ANDROID_NDK_BIND"
-          printf '%s = %s\n' ANDROID_NDK_VERS "$ANDROID_NDK_VERS"
+          printf '%s=%s\n' ANDROID_NDK_BIND "$ANDROID_NDK_BIND"
+          printf '%s=%s\n' ANDROID_NDK_VERS "$ANDROID_NDK_VERS"
           printf '%s\n'
 
           export CPPFLAGS="--sysroot $SYSROOT"
@@ -70,7 +69,7 @@ jobs:
           export   CFLAGS="--sysroot $SYSROOT"
           export  LDFLAGS="--sysroot $SYSROOT"
 
-          for item in $(cat dependencies)
+          for item in $(cat runtime-dependencies)
           do
             export CPPFLAGS="$CPPFLAGS -I$PWD/${item}/${{ matrix.target-abi }}/include"
             export  LDFLAGS="$LDFLAGS  -L$PWD/${item}/${{ matrix.target-abi }}/lib"
@@ -96,7 +95,7 @@ jobs:
           printf 'INPUT(-lc)\n' > librt.a
           export LDFLAGS="$LDFLAGS -L$PWD"
 
-          run make clean &&
+          run make clean
           run make install PREFIX=$PWD/install.d OS=Linux LTO=1 SYSTEM_TBB=1 SYSTEM_XXHASH=1
 
       - run:  tree install.d
@@ -111,13 +110,10 @@ jobs:
           esac
 
       - run:  |
-          for item in mold ld.mold ld64.mold
-          do
-            file install.d/bin/$item
-            case ${{ matrix.target-abi }} in
-              armeabi-v7a) file install.d/bin/$item | grep 'ELF 32-bit LSB pie executable, ARM, EABI5'   ;;
-              arm64-v8a)   file install.d/bin/$item | grep 'ELF 64-bit LSB pie executable, ARM aarch64,' ;;
-              x86)         file install.d/bin/$item | grep 'ELF 32-bit LSB pie executable, Intel 80386,' ;;
-              x86_64)      file install.d/bin/$item | grep 'ELF 64-bit LSB pie executable, x86-64,'      ;;
-            esac
-          done
+          file install.d/bin/mold
+          case ${{ matrix.target-abi }} in
+            armeabi-v7a) file install.d/bin/mold | grep 'ELF 32-bit LSB pie executable, ARM, EABI5'   ;;
+            arm64-v8a)   file install.d/bin/mold | grep 'ELF 64-bit LSB pie executable, ARM aarch64,' ;;
+            x86)         file install.d/bin/mold | grep 'ELF 32-bit LSB pie executable, Intel 80386,' ;;
+            x86_64)      file install.d/bin/mold | grep 'ELF 64-bit LSB pie executable, x86-64,'      ;;
+          esac
