@@ -65,26 +65,14 @@ jobs:
             x86_64)      CC="$ANDROID_NDK_BIND/x86_64-linux-android21-clang"     ;;
           esac
 
-          if [ -f "$ANDROID_NDK_BIND/llvm-ar" ] ; then
-            AR="$ANDROID_NDK_BIND/llvm-ar"
-          else
-            case ${{ matrix.target-abi }} in
-              armeabi-v7a) AR="$ANDROID_NDK_BIND/arm-linux-androideabi-ar" ;;
-              arm64-v8a)   AR="$ANDROID_NDK_BIND/aarch64-linux-android-ar" ;;
-              x86)         AR="$ANDROID_NDK_BIND/i686-linux-android-ar"    ;;
-              x86_64)      AR="$ANDROID_NDK_BIND/x86_64-linux-android-ar"  ;;
-            esac
-          fi
+          AR="$ANDROID_NDK_BIND/llvm-ar"
 
           run make -C libdeflate clean install PREFIX=$PWD/install.d CC="$CC" CPPFLAGS="'$CPPFLAGS'" CFLAGS="'$CFLAGS'" AR="$AR" V=1
 
       - run:  tree install.d
 
-      - run:  file install.d/lib/libdeflate.so
-      - run:  file install.d/bin/libdeflate-gzip
-      - run:  file install.d/bin/libdeflate-gunzip
-
       - run:  |
+          file install.d/lib/libdeflate.so
           case ${{ matrix.target-abi }} in
             armeabi-v7a) file install.d/lib/libdeflate.so     | grep 'ELF 32-bit LSB shared object, ARM, EABI5'   ;;
             arm64-v8a)   file install.d/lib/libdeflate.so     | grep 'ELF 64-bit LSB shared object, ARM aarch64,' ;;
@@ -93,6 +81,7 @@ jobs:
           esac
 
       - run:  |
+          file install.d/bin/libdeflate-gzip
           case ${{ matrix.target-abi }} in
             armeabi-v7a) file install.d/bin/libdeflate-gzip   | grep 'ELF 32-bit LSB pie executable, ARM, EABI5'   ;;
             arm64-v8a)   file install.d/bin/libdeflate-gzip   | grep 'ELF 64-bit LSB pie executable, ARM aarch64,' ;;
@@ -101,6 +90,7 @@ jobs:
           esac
 
       - run:  |
+          file install.d/bin/libdeflate-gunzip
           case ${{ matrix.target-abi }} in
             armeabi-v7a) file install.d/bin/libdeflate-gunzip | grep 'ELF 32-bit LSB pie executable, ARM, EABI5'   ;;
             arm64-v8a)   file install.d/bin/libdeflate-gunzip | grep 'ELF 64-bit LSB pie executable, ARM aarch64,' ;;
