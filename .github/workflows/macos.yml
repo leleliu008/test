@@ -32,16 +32,16 @@ jobs:
       - run: clang --version
       - run: clang -dumpmachine
 
-          #- uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-        #- run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
 
-        #- run: chmod +x ndk-pkg
+      - run: chmod +x ndk-pkg
   
-        #- run: ./ndk-pkg env
+      - run: ./ndk-pkg env
 
-        #- run: ./ndk-pkg update
+      - run: ./ndk-pkg update
 
-        #- run: cp libdeflate.sh ~/.ndk-pkg/repos.d/offical/formula
+      - run: cp tcc.sh ~/.ndk-pkg/repos.d/offical/formula
 
-        #- run: ./ndk-pkg install libdeflate --tree
+      - run: ./ndk-pkg install tcc --tree
