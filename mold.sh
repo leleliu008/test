@@ -13,6 +13,7 @@ build() {
         PREFIX=$ABI_INSTALL_DIR \
         LTO=1 \
         OS=Linux \
+        USE_MIMALLOC=0 \
         SYSTEM_TBB=1 \
         SYSTEM_XXHASH=1
 }
