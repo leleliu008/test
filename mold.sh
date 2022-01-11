@@ -11,7 +11,7 @@ build() {
     makew -C "$SOURCE_DIR" clean &&
     makew -C "$SOURCE_DIR" install \
         PREFIX=$ABI_INSTALL_DIR \
-        LTO=1
+        LTO=1 \
         OS=Linux \
         SYSTEM_TBB=1 \
         SYSTEM_XXHASH=1
