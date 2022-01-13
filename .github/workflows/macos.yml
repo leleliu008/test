@@ -46,5 +46,5 @@ jobs:
 
       - run: |
           export ANDROID_NDK_HOME="$ANDROID_NDK_LATEST_HOME"
-          export CMAKE_TOOLCHAIN_FILE="$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake"
-          ./ndk-pkg install silicon --tree
+          export TARGET_CMAKE_TOOLCHAIN_FILE="$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake"
+          ./ndk-pkg install silicon --tree --jobs=1
