@@ -42,6 +42,9 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp mold.sh ~/.ndk-pkg/repos.d/offical/formula
+        #- run: cp mold.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install mold --tree
+      - run: |
+          export ANDROID_NDK_HOME="$ANDROID_NDK_LATEST_HOME"
+          export CMAKE_TOOLCHAIN_FILE="$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake"
+          ./ndk-pkg install silicon --tree
