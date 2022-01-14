@@ -44,7 +44,4 @@ jobs:
 
         #- run: cp mold.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: |
-          export ANDROID_NDK_HOME="$ANDROID_NDK_LATEST_HOME"
-          export TARGET_CMAKE_TOOLCHAIN_FILE="$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake"
-          ./ndk-pkg install silicon --tree --jobs=1
+      - run: ./ndk-pkg install perl --tree
