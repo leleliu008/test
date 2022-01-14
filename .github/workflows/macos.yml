@@ -17,8 +17,6 @@ jobs:
 
     steps:
       - run: brew update
-      - run: brew install gnu-sed
-      - run: brew --prefix gnu-sed
       - run: brew install bison
       - run: brew --prefix bison
       - run: |
@@ -44,6 +42,6 @@ jobs:
 
       - run: ./ndk-pkg update
 
-        #- run: cp mold.sh ~/.ndk-pkg/repos.d/offical/formula
+      - run: cp perl.sh ~/.ndk-pkg/repos.d/offical/formula
 
       - run: ./ndk-pkg install perl --tree
