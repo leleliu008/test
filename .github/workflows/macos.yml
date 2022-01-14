@@ -17,6 +17,8 @@ jobs:
 
     steps:
       - run: brew update
+      - run: brew install gnu-sed
+      - run: brew --prefix gnu-sed
       - run: brew install bison
       - run: brew --prefix bison
       - run: |
