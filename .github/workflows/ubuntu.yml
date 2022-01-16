@@ -27,6 +27,6 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp mold.sh ~/.ndk-pkg/repos.d/offical/formula
+        #- run: cp mold.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install mold --tree
+      - run: ./ndk-pkg install silicon --tree
