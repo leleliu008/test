@@ -44,4 +44,4 @@ jobs:
 
         #- run: cp perl.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install silicon --tree
+      - run: ./ndk-pkg install libdeflate --tree -d
