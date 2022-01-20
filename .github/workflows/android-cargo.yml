@@ -23,15 +23,29 @@ jobs:
 
       - run:  brew install tree file gpatch
 
-      - run:  tree   --version
-      - run:  file   --version
-      - run:  rustup --version
-      - run:  rustc  --version
-      - run:  cargo  --version
-
       - run:  |
           curl -LO https://raw.githubusercontent.com/leleliu008/test/master/src-types.rs.patch.txt
-          patch -p1 < src-types.rs.patch.txt
+          patch -p1 <- EOF
+          --- a/src/types.rs
+          +++ b/src/types.rs
+          @@ -43,7 +43,7 @@
+           }
+
+           impl PlatformType {
+          -    #[cfg(target_os = "linux")]
+          +    #[cfg(any(target_os = "linux", target_os = "android"))]
+               pub fn current() -> Self {
+                   Self::Linux
+               }
+          @@ -66,6 +66,7 @@
+
+               #[cfg(not(any(
+                   target_os = "linux",
+          +        target_os = "android",
+                   target_os = "macos",
+                   target_os = "freebsd",
+                   target_os = "netbsd",
+          EOF
 
       - name: build for ${{ matrix.target-arch }}
         run: |
@@ -43,7 +57,14 @@ jobs:
             printf '%b\n' "$COLOR_PURPLE==>$COLOR_OFF $COLOR_GREEN$*$COLOR_OFF"
             eval "$*"
           }
+      
+          run tree   --version
+          run file   --version
+          run rustup --version
+          run rustc  --version
+          run cargo  --version
 
+          # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#environment-variables-3
           export ANDROID_NDK_HOME="$ANDROID_NDK_LATEST_HOME"
 
           run "env | sed -n '/^ANDROID_/p'"
