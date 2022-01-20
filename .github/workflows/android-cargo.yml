@@ -21,7 +21,7 @@ jobs:
         with:
           repository: 'leleliu008/tealdeer'
 
-      - run:  brew install tree file patch
+      - run:  brew install tree file gpatch
 
       - run:  tree   --version
       - run:  file   --version
