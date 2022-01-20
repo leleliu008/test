@@ -24,7 +24,6 @@ jobs:
       - run:  brew install tree file gpatch
 
       - run:  |
-          curl -LO https://raw.githubusercontent.com/leleliu008/test/master/src-types.rs.patch.txt
           patch -p1 <<- EOF
           --- a/src/types.rs
           +++ b/src/types.rs
