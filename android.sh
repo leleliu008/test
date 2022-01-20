@@ -19,6 +19,7 @@ die() {
 }
 
 run() {
+    printf $IFS | hexdump -c
     printf '%b\n' "$COLOR_PURPLE==>$COLOR_OFF $COLOR_GREEN$@$COLOR_OFF"
     eval "$*"
 }
