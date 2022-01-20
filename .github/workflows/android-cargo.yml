@@ -67,7 +67,7 @@ jobs:
           # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#environment-variables-3
           export ANDROID_NDK_HOME="$ANDROID_NDK_LATEST_HOME"
 
-          run "env | sed -n '/^ANDROID_/p'"
+          run "env | sed -n '/^ANDROID_NDK/p'"
 
           run cat  "$ANDROID_NDK_HOME/source.properties"
 
