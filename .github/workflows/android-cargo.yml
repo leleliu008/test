@@ -29,7 +29,9 @@ jobs:
       - run:  rustc  --version
       - run:  cargo  --version
 
-      - run:  patch -p1 < src-types.rs.patch.txt
+      - run:  |
+          curl -LO https://raw.githubusercontent.com/leleliu008/test/master/src-types.rs.patch.txt
+          patch -p1 < src-types.rs.patch.txt
 
       - name: build for ${{ matrix.target-arch }}
         run: |
