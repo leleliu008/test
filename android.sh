@@ -102,10 +102,10 @@ build_and_install_the_given_arch() {
 
     export PATH="$ANDROID_NDK_TOOLCHAIN_DIR/bin:$PATH"
 
-    # https://libraries.io/cargo/cc
     run rustup target add $RUST_TARGET
 
-    run cargo install --target $RUST_TARGET --path . --root=./install.d $@
+    # https://doc.rust-lang.org/cargo/commands/cargo-install.html
+    run cargo install --target $RUST_TARGET $@
 }
 
 help() {
@@ -113,13 +113,15 @@ help() {
 
 ${COLOR_GREEN}./android.sh <TARGET-ARCH> [cargo install options]${COLOR_OFF}
 
-${COLOR_GREEN}TARGET-ARCH${COLOR_OFF} : one of armv7a, aarch64, i686, x86_64, all
+${COLOR_GREEN}TARGET-ARCH${COLOR_OFF} : one of ${COLOR_PURPLE}armv7a aarch64 i686 x86_64 all${COLOR_OFF}
 
-${COLOR_GREEN}cargo install options${COLOR_OFF} : --target and --path have been set for you. you do not need to set.
+${COLOR_GREEN}cargo install options${COLOR_OFF} : ${COLOR_PURPLE}--target${COLOR_OFF} have been set for you. do not try to pass it again.
 
 EXAMPLES:
 
 ${COLOR_GREEN}./android.sh aarch64${COLOR_OFF}
+
+${COLOR_GREEN}./android.sh aarch64,x86_64${COLOR_OFF}
 
 ${COLOR_GREEN}./android.sh all${COLOR_OFF}
 
@@ -133,18 +135,48 @@ main() {
         -*)           help ; exit 1 ;;
     esac
 
-    TARGET_ARCHS="$1"
-    if [ "$TARGET_ARCHS" = all ] ; then
-           TARGET_ARCHS="armv7a aarch64 i686 x86_64"
-    else
-        TARGET_ARCHS=$(printf '%s\n' "$TARGET_ARCHS" | tr ',' ' ')
-    fi
+    unset TARGET_ARCHS
 
-    shift
+    if [ "$1" = all ] ; then
+        TARGET_ARCHS="armv7a aarch64 i686 x86_64"
+    else
+        TARGET_ARCHS=$(printf '%s\n' "$1" | tr ',' ' ')
+    fi
 
     for TARGET_ARCH in $TARGET_ARCHS
     do
-        (build_and_install_the_given_arch $TARGET_ARCH $@)
+        case $TARGET_ARCH in
+            armv7a|aarch64|i686|x86_64) ;;
+            *)  die "unrecognized TARGET-ARCH : $TARGET_ARCH\n       supported TARGET_ARCH : armv7a aarch64 i686 x86_64 all"
+        esac
+    done
+
+    shift
+
+    CARGO_INSTALL_ARG_PATH_GIVEN=no
+    CARGO_INSTALL_ARG_ROOT_GIVEN=no
+
+    for arg in $@
+    do
+        case $arg in
+            --path) CARGO_INSTALL_ARG_PATH_GIVEN=yes ;;
+            --root) CARGO_INSTALL_ARG_ROOT_GIVEN=yes ;;
+        esac
+    done
+
+    CARGO_INSTALL_ARGS="$@"
+
+    if [ "$CARGO_INSTALL_ARG_PATH_GIVEN" = no ] ; then
+        CARGO_INSTALL_ARGS="$CARGO_INSTALL_ARGS --path ."
+    fi
+
+    if [ "$CARGO_INSTALL_ARG_ROOT_GIVEN" = no ] ; then
+        CARGO_INSTALL_ARGS="$CARGO_INSTALL_ARGS --root ./install.d"
+    fi
+
+    for TARGET_ARCH in $TARGET_ARCHS
+    do
+        (build_and_install_the_given_arch $TARGET_ARCH $CARGO_INSTALL_ARGS)
     done
 }
 
