@@ -69,8 +69,26 @@ build_and_install() {
                     die "--root <DIR> , DIR must be not empty."
                 fi
                 ;;
-            *)  break
+            --path=*)
+                CARGO_PROJECT_DIR="$(getvalue "$1")"
+                if [ -z "$CARGO_PROJECT_DIR" ] ; then
+                    die "--path=<PATH> , PATH must be not empty."
+                fi
+                if [ ! -d "$CARGO_PROJECT_DIR" ] ; then
+                    die "$CARGO_PROJECT_DIR directory not exists."
+                fi
+                ;;
+            --root=*)
+                CARGO_INSTALL_DIR="$(getvalue "$1")"
+                if [ -z "$CARGO_INSTALL_DIR" ] ; then
+                    die "--root=<DIR> , DIR must be not empty."
+                fi
+                ;;
+            *)  if [ -n "$CARGO_PROJECT_DIR" ] && [ -n "$CARGO_INSTALL_DIR" ] ; then
+                    break
+                fi
         esac
+        shift
     done
 
     if [ -z "$CARGO_PROJECT_DIR" ] ; then
