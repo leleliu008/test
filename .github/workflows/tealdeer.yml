@@ -20,7 +20,7 @@ jobs:
         with:
           repository: 'dbrgn/tealdeer'
 
-      - run:  brew install tree file gpatch
+          #- run:  brew install tree file
 
       - run:  |
           patch -p1 <<- EOF
