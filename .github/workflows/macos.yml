@@ -42,6 +42,6 @@ jobs:
 
       - run: ./ndk-pkg update
 
-        #- run: cp perl.sh ~/.ndk-pkg/repos.d/offical/formula
+      - run: cp bitcoin.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install libdeflate --tree -d
+      - run: ./ndk-pkg install bitcoin --tree

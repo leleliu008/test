@@ -27,6 +27,6 @@ jobs:
 
       - run: ./ndk-pkg update
 
-        #- run: cp mold.sh ~/.ndk-pkg/repos.d/offical/formula
+      - run: cp bitcoin.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install silicon --tree
+      - run: ./ndk-pkg install bitcoin --tree
