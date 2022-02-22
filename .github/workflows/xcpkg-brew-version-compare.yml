@@ -1,0 +1,28 @@
+name: xcpkg-brew-version-compare
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '* 20 * * *'
+
+jobs:
+  schedule:
+
+    runs-on: macos-11
+
+    steps:
+      - run: brew update
+
+      #- uses: actions/checkout@v2
+
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/bin/xcpkg
+
+      - run: chmod +x xcpkg
+
+      - run: ./xcpkg --help
+      - run: ./xcpkg env
+      - run: ./xcpkg update
+      - run: ./xcpkg test

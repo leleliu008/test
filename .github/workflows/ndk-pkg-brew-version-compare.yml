@@ -5,9 +5,11 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  schedule:
+    - cron: '* 20 * * *'
 
 jobs:
-  test:
+  schedule:
 
     runs-on: macos-11
 
