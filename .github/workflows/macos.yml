@@ -47,7 +47,7 @@ jobs:
         #- run: ./ndk-pkg install bitcoin --tree
 
       - run: |
-          for item in $(./ndk-pkg ls-availalbe)
+          for item in $(./ndk-pkg ls-available)
           do
             if brew info "$item" > /dev/null 2>&1 ; then
               echo
