@@ -42,6 +42,17 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp bitcoin.sh ~/.ndk-pkg/repos.d/offical/formula
+        #- run: cp bitcoin.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install bitcoin --tree
+        #- run: ./ndk-pkg install bitcoin --tree
+
+      - run: |
+          for item in $(./ndk-pkg ls-availalbe)
+          do
+            if brew info "$item" > /dev/null 2>&1 ; then
+              echo
+              echo brew info "$item"
+              brew info "$item" 2>/dev/null | head -n 1
+              brew info "$item" 2>/dev/null | head -n 1 | grep ': ' || return 1
+            fi
+          done
