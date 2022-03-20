@@ -43,7 +43,7 @@ jobs:
           $ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf -d install.d/bin/xmake
 
       - name: check if installed xmake is pie executable
-      - run: |
+        run: |
           XMAKE=install.d/bin/xmake
           case ${{ matrix.abi }} in
             armv7a)  file $XMAKE | grep 'ELF 32-bit LSB pie executable, ARM, EABI5'   ;;
