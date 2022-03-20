@@ -32,15 +32,15 @@ jobs:
           cd core
           xmake config --clean -vD --mode=release --plat=android --arch=${{ matrix.abi }} --ndk_sdkver=21 --toolchain=ndk --ndk=$ANDROID_NDK_LATEST_HOME
           xmake
-          xmake install -o ./install.d
+          xmake install -o ~/install.d
 
-      - run: tree install.d
+      - run: tree ~/install.d
 
       - run: |
-          file install.d/bin/xmake
+          file ~/install.d/bin/xmake
           case ${{ matrix.abi }} in
-            armv7a)  file install.d/bin/xmake | grep 'ELF 32-bit LSB pie executable, ARM, EABI5'   ;;
-            aarch64) file install.d/bin/xmake | grep 'ELF 64-bit LSB pie executable, ARM aarch64,' ;;
-            i686)    file install.d/bin/xmake | grep 'ELF 32-bit LSB pie executable, Intel 80386,' ;;
-            x86_64)  file install.d/bin/xmake | grep 'ELF 64-bit LSB pie executable, x86-64,'      ;;
+            armv7a)  file ~/install.d/bin/xmake | grep 'ELF 32-bit LSB pie executable, ARM, EABI5'   ;;
+            aarch64) file ~/install.d/bin/xmake | grep 'ELF 64-bit LSB pie executable, ARM aarch64,' ;;
+            i686)    file ~/install.d/bin/xmake | grep 'ELF 32-bit LSB pie executable, Intel 80386,' ;;
+            x86_64)  file ~/install.d/bin/xmake | grep 'ELF 64-bit LSB pie executable, x86-64,'      ;;
           esac
