@@ -40,7 +40,7 @@ jobs:
           xmake install -o      $INSTALL_DIR
           cp "$BUILD_DIR/xmake" $INSTALL_DIR/bin
 
-      - run: tree ~/install.d
+      - run: tree $INSTALL_DIR
 
       - run: $ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf -d $INSTALL_DIR/bin/xmake
 
