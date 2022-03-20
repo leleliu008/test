@@ -33,6 +33,7 @@ jobs:
           PLAT=$(printf '%s\n' ${{ matrix.target }} | cut -d/ -f1)
           ARCH=$(printf '%s\n' ${{ matrix.target }} | cut -d/ -f2)
           cd core
+          sed_in_place 's|system(cmd)|execl("/bin/sh" "sh" "-c", cmd, (char*)NULL)|' src/lua/lua/loslib.c
           xmake config --clean -vD --mode=release --plat=$PLAT --arch=$ARCH --toolchain=xcode --buildir=./build.d
           xmake
           xmake install -o   ../install.d
