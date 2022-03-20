@@ -40,7 +40,7 @@ jobs:
 
       - run: tree install.d
 
-        run: otool -L install.d/bin/xmake
+      - run: otool -L install.d/bin/xmake
 
       - name: check if installed xmake is Mach-O executable
         run: |
