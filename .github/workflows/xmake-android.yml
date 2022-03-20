@@ -36,6 +36,7 @@ jobs:
       - run: xmake --version
 
       - run: |
+          echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME"
           xmake config --clean -vD --mode=release --plat=android --arch=${{ matrix.abi }} --ndk_sdkver=21 --toolchain=ndk --ndk=$ANDROID_NDK_HOME --buildir=$BUILD_DIR --project=$SOURCE_DIR
           xmake
           xmake install -o      $INSTALL_DIR
