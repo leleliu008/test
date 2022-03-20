@@ -39,8 +39,8 @@ jobs:
       - run: tree install.d
 
       - run: |
-        ls "$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin"
-        $ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf -d install.d/bin/xmake
+          ls "$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          $ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf -d install.d/bin/xmake
 
       - name: check if installed xmake is pie executable
       - run: |
