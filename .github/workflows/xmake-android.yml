@@ -33,8 +33,8 @@ jobs:
           cd core
           xmake config --clean -vD --mode=release --plat=android --arch=${{ matrix.abi }} --ndk_sdkver=21 --toolchain=ndk --ndk=$ANDROID_NDK_LATEST_HOME --buildir=./build.d
           xmake
-          xmake install -o   ./install.d
-          cp ./build.d/xmake ./install.d/bin
+          xmake install -o   ../install.d
+          cp ./build.d/xmake ../install.d/bin
 
       - run: tree install.d
 
