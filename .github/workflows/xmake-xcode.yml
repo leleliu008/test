@@ -48,10 +48,7 @@ jobs:
           XMAKE=install.d/bin/xmake
           file $XMAKE
           case ${{ matrix.target }} in
-            macosx/x86_64)    file $XMAKE | grep 'Mach-O 64bit executable x86_64'   ;;
-            macosx/arm64)     file $XMAKE | grep 'Mach-O 64bit executable arm64'    ;;
-            appletvos/arm64)  file $XMAKE | grep 'Mach-O 64bit executable arm64'    ;;
-            iphoneos/arm64)   file $XMAKE | grep 'Mach-O 64bit executable arm64'    ;;
-            iphoneos/arm64e)  file $XMAKE | grep 'Mach-O 64bit executable arm64'    ;;
-            watchos/arm64_32) file $XMAKE | grep 'Mach-O 64bit executable arm64'    ;;
+            */x86_64)  file $XMAKE | grep 'Mach-O 64-bit executable x86_64'   ;;
+            */arm64)   file $XMAKE | grep 'Mach-O 64-bit executable arm64'    ;;
+            */arm64e)  file $XMAKE | grep 'Mach-O 64-bit executable arm64e'   ;;
           esac
