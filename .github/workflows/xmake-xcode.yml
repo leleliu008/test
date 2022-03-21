@@ -34,7 +34,7 @@ jobs:
           ARCH=$(printf '%s\n' ${{ matrix.target }} | cut -d/ -f2)
           cd core
           sed -i .bak 's|system(cmd)|execl("/bin/sh" "sh" "-c", cmd, (char*)NULL)|' src/lua/lua/loslib.c
-          xmake config --clean -vD --mode=release --plat=$PLAT --arch=$ARCH --toolchain=xcode --buildir=./build.d --curses=no
+          xmake config --clean -vD --mode=release --plat=$PLAT --arch=$ARCH --toolchain=xcode --buildir=./build.d --curses=no --arflags=-crs
           xmake
           xmake install -o   ../install.d
           cp ./build.d/xmake ../install.d/bin
