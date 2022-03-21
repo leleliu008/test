@@ -34,7 +34,7 @@ jobs:
           ARCH=$(printf '%s\n' ${{ matrix.target }} | cut -d/ -f2)
           cd core
           sed -i .bak 's|system(cmd)|execl("/bin/sh" "sh" "-c", cmd, (char*)NULL)|' src/lua/lua/loslib.c
-          xmake config --clean -vD --mode=release --plat=$PLAT --arch=$ARCH --toolchain=xcode --buildir=./build.d
+          xmake config --clean -vD --mode=release --plat=$PLAT --arch=$ARCH --toolchain=xcode --buildir=./build.d --curses=no
           xmake
           xmake install -o   ../install.d
           cp ./build.d/xmake ../install.d/bin
@@ -46,6 +46,7 @@ jobs:
       - name: check if installed xmake is Mach-O executable
         run: |
           XMAKE=install.d/bin/xmake
+          file $XMAKE
           case ${{ matrix.target }} in
             macosx/x86_64)    file $XMAKE | grep 'Mach-O 64bit executable x86_64'   ;;
             macosx/arm64)     file $XMAKE | grep 'Mach-O 64bit executable arm64'    ;;
