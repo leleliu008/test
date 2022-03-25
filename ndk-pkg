@@ -2133,11 +2133,13 @@ __pmw_install_the_given_package() {
                 case $2 in
                     default) run "$sudo" "$1" -y update ;;
                     epel)
-                        if [ epel != "$("$1" repolist | cut -d ' ' -f1 | sed -n '/^epel$/p')" ] ; then
-                            run "$sudo" "$1" --enablerepo=epel -y update  &&
-                            run "$sudo" "$1" --enablerepo=epel -y install epel-release
-                        fi
+                        if [ epel = "$("$1" repolist | cut -d ' ' -f1 | sed -n '/^epel$/p')" ] ; then
                             run "$sudo" "$1" --enablerepo=epel -y update
+                        else
+                            run "$sudo" "$1"                   -y update  &&
+                            run "$sudo" "$1"                   -y install epel-release &&
+                            run "$sudo" "$1" --enablerepo=epel -y update
+                        fi
                         ;;
                 esac
                 ;;
