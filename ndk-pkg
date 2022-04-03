@@ -5122,6 +5122,8 @@ __install_the_given_packages() {
     unset DEPENDENCY_PACKAGE_LIST
     DEPENDENCY_PACKAGE_LIST="$(__get_packages_recursively_depended_by_the_given_package)"
 
+    exit 1
+
     if [ $(list_length $DEPENDENCY_PACKAGE_LIST) -gt 1 ] ; then
         echo "$COLOR_PURPLE==>$COLOR_OFF to install$COLOR_GREEN $DEPENDENCY_PACKAGE_LIST $COLOR_OFF\n"
     fi
