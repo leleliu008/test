@@ -1261,7 +1261,9 @@ version_of_python_module() {
 # retrive the version of a command from it's name or path
 version_of_command() {
     case $(basename "$1") in
+      gclient) "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f2 ;;
        ccache) "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f3 ;;
+         bear) "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f2 ;;
         xmake) "$1" --version 2> /dev/null | head -n 1 | cut -d '+' -f1 | cut -d 'v' -f2 ;;
         cmake) "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f3 ;;
          rake) "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f3 ;;
@@ -1287,6 +1289,7 @@ version_of_command() {
                "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f4 ;;
   intltoolize) "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f4 ;;
       objcopy) "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f5 ;;
+          adb) "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f5 ;;
          flex) "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f2 ;;
         bison) "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f4 ;;
          yacc) "$1" --version 2> /dev/null | head -n 1 | cut -d ' ' -f4 ;;
@@ -1686,7 +1689,7 @@ __pmw_get_available_package_name_by_command_name_emerge() {
     esac
 }
 
-__pmw_get_available_package_name_by_command_name_pacman() {
+__pmw_get_available_package_name_by_command_name_pacman_internal() {
     case $1 in
           cc) echo 'gcc'   ;;
          c++) echo 'g++'   ;;
@@ -1749,9 +1752,9 @@ __pmw_get_available_package_name_by_command_name_pacman() {
         echo make
     fi
     case $NATIVE_OS_SUBS in
-        mingw32) __mingw_w64_i686   $(__pmw_get_available_package_name_by_command_name_pacman "$1") ;;
-        mingw64) __mingw_w64_x86_64 $(__pmw_get_available_package_name_by_command_name_pacman "$1") ;;
-        *) __pmw_get_available_package_name_by_command_name_pacman "$1"
+        mingw32) __mingw_w64_i686   $(__pmw_get_available_package_name_by_command_name_pacman_internal "$1") ;;
+        mingw64) __mingw_w64_x86_64 $(__pmw_get_available_package_name_by_command_name_pacman_internal "$1") ;;
+        *) __pmw_get_available_package_name_by_command_name_pacman_internal "$1"
     esac
 }
 
@@ -1853,7 +1856,18 @@ __pmw_get_available_package_name_by_command_name_zypper() {
         diff) echo 'diffutils';;
      objcopy) echo 'binutils' ;;
     realpath) echo 'coreutils';;
-  7z|7za|7zr) echo 'p7zip'    ;;
+         7zr) echo 'p7zip'    ;;
+      7z|7za)
+            if [ "$NATIVE_OS_TYPE" = 'opensuse-leap' ] ; then
+                if version_match "$NATIVE_OS_VERS" gt 15.1 ; then
+                    echo 'p7zip-full'
+                else
+                    echo 'p7zip'
+                fi
+            else
+                echo 'p7zip'
+            fi
+            ;;
     xsltproc) echo 'libxslt'  ;;
       protoc) echo 'protobuf' ;;
       ps2pdf) echo "ghostscript" ;;
@@ -1903,7 +1917,14 @@ __pmw_get_available_package_name_by_command_name_dnf() {
       ps2pdf) echo "ghostscript" ;;
     hexdump)  echo 'util-linux' ;;
     makeinfo) echo 'texinfo'  ;;
-    ccache)   echo 'epel:ccache' ;;
+    ccache)
+        # EPEL repo is shipped with Fedora
+        if [ "$NATIVE_OS_TYPE" = fedora ] ; then
+            echo 'ccache'
+        else
+            echo 'epel:ccache'
+        fi
+        ;;
     rst2man|rst2html)
                   echo "python3-docutils" ;;
     sphinx-build) echo "python3-sphinx" ;;
@@ -1988,7 +2009,8 @@ __pmw_get_available_package_name_by_command_name_apt() {
         xz)   echo 'xz-utils' ;;
      objcopy) echo 'binutils' ;;
     realpath) echo 'coreutils';;
-  7z|7za|7zr) echo 'p7zip' ;;
+         7zr) echo 'p7zip'    ;;
+      7z|7za) echo 'p7zip-full' ;;
       protoc) echo 'protobuf' ;;
       ps2pdf) echo "ghostscript" ;;
     hexdump)  echo 'bsdmainutils';;
@@ -2291,14 +2313,17 @@ darwin|  -   |  -  |cmake   |3.21.4|f818a10fe625b215e31d0c29c19a6563fb5f51ed7cc7
 linux |x86_64|  -  |ninja   |1.10.2|763464859c7ef2ea3a0a10f4df40d2025d3bb9438fcb1228404640410c0ec22d|https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip
 darwin|x86_64|  -  |ninja   |1.10.2|6fa359f491fac7e5185273c6421a000eea6a2f0febf0ac03ac900bd4d80ed2a5|https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-mac.zip
 
-linux |x86_64|  -  |golang  |1.17.2|f242a9db6a0ad1846de7b6d94d507915d14062660616a61ef7c808a76e4f1676|https://dl.google.com/go/go1.17.2.linux-amd64.tar.gz
-darwin|x86_64|  -  |golang  |1.17.2|7914497a302a132a465d33f5ee044ce05568bacdb390ab805cb75a3435a23f94|https://dl.google.com/go/go1.17.2.darwin-amd64.tar.gz
-darwin|arm64 |  -  |golang  |1.17.2|ce8771bd3edfb5b28104084b56bbb532eeb47fbb7769c3e664c6223712c30904|https://dl.google.com/go/go1.17.2.darwin-arm64.tar.gz
+linux |x86_64|  -  |golang  |1.18|e85278e98f57cdb150fe8409e6e5df5343ecb13cebf03a5d5ff12bd55a80264f|https://dl.google.com/go/go1.18.linux-amd64.tar.gz
+darwin|x86_64|  -  |golang  |1.18|70bb4a066997535e346c8bfa3e0dfe250d61100b17ccc5676274642447834969|https://dl.google.com/go/go1.18.darwin-amd64.tar.gz
+darwin|arm64 |  -  |golang  |1.18|9cab6123af9ffade905525d79fc9ee76651e716c85f1f215872b5f2976782480|https://dl.google.com/go/go1.18.darwin-arm64.tar.gz
 
 linux |arm64 |glibc|jdk     |17.0.1|a5e954a4e89b50277f20345034aea0ccf06f53705d4ec586b268b14ff42468f7|https://download.oracle.com/java/17/archive/jdk-17.0.1_linux-aarch64_bin.tar.gz
 linux |x86_64|glibc|jdk     |17.0.1|6f25bcb94d3e22fb52a4632c74e03b403834e81b68701ab7ecd900fb9cd89f43|https://download.oracle.com/java/17/archive/jdk-17.0.1_linux-x64_bin.tar.gz
 darwin|arm64 |  -  |jdk     |17.0.1|8e5f240705bdf37ed831abc8c52cc05afe71721a6bc26dd977b6efd01b5ebef7|https://download.oracle.com/java/17/archive/jdk-17.0.1_macos-aarch64_bin.tar.gz
 darwin|x86_64|  -  |jdk     |17.0.1|b8905d88a14e60f873064a8b25737e2ec2e3688611adbf21f3a5dd5c8742797d|https://download.oracle.com/java/17/archive/jdk-17.0.1_macos-x64_bin.tar.gz
+
+linux |x86_64|  -  |android-sdk|7583922|124f2d5115eee365df6cf3228ffbca6fc3911d16f8025bebd5b1c6e2fcfa7faf|https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
+darwin|  -   |  -  |android-sdk|7583922|6929a1957f3e71008adfade0cebd08ebea9b9f506aa77f1849c7bdc3418df7cf|https://dl.google.com/android/repository/commandlinetools-mac-7583922_latest.zip
 EOF
 }
 
@@ -2875,33 +2900,62 @@ __install_command_via_pmw() {
 
 __install_command_via_run_install_script() {
     case $1 in
+        java|javac|jar)
+            install_jdk_if_needed
+            ;;
+        adb|aapt|aapt2|sdkmanager|zipalign)
+            install_android_sdk_if_needed
+            ;;
+        gclient)
+            handle_dependency required exe git
+
+            # https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html
+
+            if [ !          -d "$MY_HOME_DIR/native" ] ; then
+                run install -d "$MY_HOME_DIR/native"
+            fi
+
+            if [ -d "$MY_HOME_DIR/native/depot_tools" ] ; then
+                if [ -d "$MY_HOME_DIR/native/depot_tools/.git" ] && git -C "$MY_HOME_DIR/native/depot_tools" rev-parse 2> /dev/null ; then
+                    # do nothing. depot_tools will be automatically updated when you running 'yes | gclient sync' command
+                    :
+                else
+                    run rm -rf "$MY_HOME_DIR/native/depot_tools"
+                    run git -C "$MY_HOME_DIR/native/depot_tools" clone https://gitlab.com/webrtc-mirror/depot_tools.git
+                fi
+            else
+                run git -C "$MY_HOME_DIR/native" clone https://gitlab.com/webrtc-mirror/depot_tools.git
+            fi
+
+            export PATH="$MY_HOME_DIR/native/depot_tools:$PATH"
+            ;;
         xmake)
+            handle_dependency required exe bash
+
             # https://xmake.io/#/guide/installation
             note "${COLOR_GREEN}$1${COLOR_OFF} ${COLOR_YELLOW}command is required, but it is not found on this machine, I will install it via running shell script.${COLOR_OFF}"
 
-            handle_dependency required exe bash
-
-            if [ -f    "$MY_HOME_DIR/get-xmake.sh" ] ; then
-                run rm "$MY_HOME_DIR/get-xmake.sh"
+            if [ -f    "$MY_HOME_DIR/tmp.d/get-xmake.sh" ] ; then
+                run rm "$MY_HOME_DIR/tmp.d/get-xmake.sh"
             fi
 
-            fetch 'https://xmake.io/shget.text' --output-path="$MY_HOME_DIR/get-xmake.sh"
+            fetch 'https://xmake.io/shget.text' --output-path="$MY_HOME_DIR/tmp.d/get-xmake.sh"
 
-            run bash "$MY_HOME_DIR/get-xmake.sh"
+            run bash "$MY_HOME_DIR/tmp.d/get-xmake.sh"
             ;;
         rustup)
+            handle_dependency required exe bash:zsh:dash:ash
+
             # https://www.rust-lang.org/tools/install
             note "${COLOR_GREEN}$1${COLOR_OFF} ${COLOR_YELLOW}command is required, but it is not found on this machine, I will install it via running shell script.${COLOR_OFF}"
 
-            handle_dependency required exe bash:zsh:dash:ash
-
-            if [ -f    "$MY_HOME_DIR/rustup-init.sh" ] ; then
-                run rm "$MY_HOME_DIR/rustup-init.sh"
+            if [ -f    "$MY_HOME_DIR/tmp.d/rustup-init.sh" ] ; then
+                run rm "$MY_HOME_DIR/tmp.d/rustup-init.sh"
             fi
 
-            fetch 'https://sh.rustup.rs' --output-path="$MY_HOME_DIR/rustup-init.sh"
+            fetch 'https://sh.rustup.rs' --output-path="$MY_HOME_DIR/tmp.d/rustup-init.sh"
 
-            run $(command -v bash || command -v zsh || command -v dash || command -v ash || command -v sh) "$MY_HOME_DIR/rustup-init.sh" -y
+            run $(command -v bash || command -v zsh || command -v dash || command -v ash || command -v sh) "$MY_HOME_DIR/tmp.d/rustup-init.sh" -y
 
             export CARGO_HOME=$HOME/.cargo
             export PATH="$CARGO_HOME/bin:$PATH"
@@ -3454,12 +3508,6 @@ __load_formula_of_the_given_package() {
     # dependency packages       List
     unset PACKAGE_DEP_PKG
 
-    # if depends on JDK
-    PACKAGE_DEP_JDK=no
-
-    # if depends on Android SDK
-    PACKAGE_DEP_SDK=no
-
     # if depends on Android NDK
     PACKAGE_DEP_NDK=yes
 
@@ -3584,20 +3632,20 @@ __load_formula_of_the_given_package() {
     for item in $PACKAGE_BUILD_SYSTEM
     do
         case $item in
-            autogen)     PACKAGE_BUILD_SYSTEM_AUTOGENSH=yes ;;
-            autotools)   PACKAGE_BUILD_SYSTEM_AUTOTOOLS=yes ;;
-            configure)   PACKAGE_BUILD_SYSTEM_CONFIGURE=yes ;;
             ndk-build)   PACKAGE_BUILD_SYSTEM_NDK_BUILD=yes ;;
-            cmake-make)  PACKAGE_BUILD_SYSTEM_CMAKE=yes ; PACKAGE_BUILD_SYSTEM_GMAKE=yes ;;
-            cmake-ninja) PACKAGE_BUILD_SYSTEM_CMAKE=yes ; PACKAGE_BUILD_SYSTEM_NINJA=yes ;;
-            cmake)       PACKAGE_BUILD_SYSTEM_CMAKE=yes ; PACKAGE_BUILD_SYSTEM_NINJA=yes ;;
-            xmake)       PACKAGE_BUILD_SYSTEM_XMAKE=yes ;;
-            meson)       PACKAGE_BUILD_SYSTEM_MESON=yes ;;
-            ninja)       PACKAGE_BUILD_SYSTEM_NINJA=yes ;;
-            make)        PACKAGE_BUILD_SYSTEM_GMAKE=yes ;;
-            rake)        PACKAGE_BUILD_SYSTEM_RAKE=yes  ;;
-            cargo)       PACKAGE_BUILD_SYSTEM_CARGO=yes ;;
-            go)          PACKAGE_BUILD_SYSTEM_GO=yes    ;;
+            autogen)     PACKAGE_BUILD_SYSTEM_AUTOGENSH=yes ; PACKAGE_BUILD_SYSTEM_GMAKE=yes ;;
+            autotools)   PACKAGE_BUILD_SYSTEM_AUTOTOOLS=yes ; PACKAGE_BUILD_SYSTEM_GMAKE=yes ;;
+            configure)   PACKAGE_BUILD_SYSTEM_CONFIGURE=yes ; PACKAGE_BUILD_SYSTEM_GMAKE=yes ;;
+            cmake-make)  PACKAGE_BUILD_SYSTEM_CMAKE=yes     ; PACKAGE_BUILD_SYSTEM_GMAKE=yes ;;
+            cmake-ninja) PACKAGE_BUILD_SYSTEM_CMAKE=yes     ; PACKAGE_BUILD_SYSTEM_NINJA=yes ;;
+            cmake)       PACKAGE_BUILD_SYSTEM_CMAKE=yes     ; PACKAGE_BUILD_SYSTEM_NINJA=yes ;;
+            xmake)       PACKAGE_BUILD_SYSTEM_XMAKE=yes     ;;
+            meson)       PACKAGE_BUILD_SYSTEM_MESON=yes     ; PACKAGE_BUILD_SYSTEM_NINJA=yes ;;
+            ninja)       PACKAGE_BUILD_SYSTEM_NINJA=yes     ;;
+            make)        PACKAGE_BUILD_SYSTEM_GMAKE=yes     ;;
+            rake)        PACKAGE_BUILD_SYSTEM_RAKE=yes      ;;
+            cargo)       PACKAGE_BUILD_SYSTEM_CARGO=yes     ;;
+            go)          PACKAGE_BUILD_SYSTEM_GO=yes        ;;
         esac
     done
 
@@ -3617,7 +3665,7 @@ __load_formula_of_the_given_package() {
             make)        package add dep.cmd make  ;;
             rake)        package add dep.cmd ruby gem rake ;;
             cargo)       package add dep.cmd rustup rustc cargo ;;
-            go)          package add dep.cmd 'go>=1.17' ;;
+            go)          package add dep.cmd 'go>=1.18' ;;
         esac
     done
 
@@ -3645,6 +3693,7 @@ __load_formula_of_the_given_package() {
     fi
 
     package add dep.cmd 'find'
+    package add dep.cmd 'file'
     package add dep.cmd 'tree'
     package add dep.cmd 'hexdump'
 
@@ -4146,17 +4195,19 @@ __gen_github_workflows() {
 
     AVAILABLE_PACKAGES=$(__list_available_packages)
 
+    for item in test v8 webrtc
+    do
+        AVAILABLE_PACKAGES=$(printf '%s\n' "$AVAILABLE_PACKAGES" | sed "s|^$item$||")
+    done
+
     for x in $AVAILABLE_PACKAGES
     do
-        if [ "$x" = 'test' ] ; then
-            continue
-        fi
         for y in $AVAILABLE_PACKAGES
         do
-            if [ "$x" = "$y" ] || [ 'test' = "$y" ] ; then
+            if [ "$x" = "$y" ] ; then
                 continue
             else
-                for z in $(get_direct_dependency_package_list_of_the_given_package "$y")
+                for z in $(__get_packages_directly_depended_by_the_given_package "$y")
                 do
                     if [ "$x" = "$z" ] ; then
                         BREAK=yes
@@ -4448,23 +4499,123 @@ __open_homepage_of_the_given_package() {
     fi
 }
 
-__show_depends_of_the_given_package() {
+# __show_packages_depended_by_the_given_package <PKG-NAME> [--format=<list|json|graph>] [--brief] [-r]
+__show_packages_depended_by_the_given_package() {
     die_if_package_is_not_specified "$1"
 
-    __gen_dependency_package_tree_of_the_given_package "$1"
+    PACKAGE_NAME="$1"
 
-    if [ -f "$PACKAGE_DEP_PKG_TREE_FILEPATH_TXT" ] ; then
-        cat "$PACKAGE_DEP_PKG_TREE_FILEPATH_TXT"
-    elif [ -f "$PACKAGE_DEP_PKG_TREE_FILEPATH_PNG" ] ; then
-        for item in open feh eog lsix
-        do
-            if command -v $item > /dev/null && $item "$PACKAGE_DEP_PKG_TREE_FILEPATH_PNG" ; then
-                return 0
-            fi
-        done
-    elif [ -f "$PACKAGE_DEP_PKG_TREE_FILEPATH_DOT" ] ; then
-        cat "$PACKAGE_DEP_PKG_TREE_FILEPATH_DOT"
+    shift
+
+    unset OUTPUT_FORMAT
+    unset OUTPUT_BRIEF
+    unset RECURSIVE
+
+    while [ -n "$1" ]
+    do
+        case $1 in
+            --format=list)
+                OUTPUT_FORMAT=list
+                ;;
+            --format=json)
+                OUTPUT_FORMAT=json
+                ;;
+            --format=graph)
+                OUTPUT_FORMAT=graph
+                ;;
+            --format=*)
+                OUTPUT_FORMAT=$(getvalue $1)
+                die "unsupported format: $OUTPUT_FORMAT"
+                ;;
+            --brief)
+                OUTPUT_BRIEF=yes
+                ;;
+            -r) RECURSIVE=yes ;;
+            -x) set -x ;;
+            *)  die "$_0 depends <PKG-NAME> [--format=<list|json|graph>] [--brief] [-r], unrecognized argumet: $1"
+        esac
+        shift
+    done
+
+    if [ -z "$OUTPUT_FORMAT" ] ; then
+        OUTPUT_FORMAT=list
     fi
+
+    case $OUTPUT_FORMAT in
+        list)
+            unset DEPENDENCY_PACKAGE_LIST
+            DEPENDENCY_PACKAGE_LIST=$(__get_packages_recursively_depended_by_the_given_package "$PACKAGE_NAME")
+
+            if [ "$OUTPUT_BRIEF" = yes ] ; then
+                DEPENDENCY_PACKAGE_LIST="$(printf '%s\n' "$DEPENDENCY_PACKAGE_LIST" | sed 's|[ ]$||')"
+                if [ -n "$DEPENDENCY_PACKAGE_LIST" ] ; then
+                    printf '%s\n' "$DEPENDENCY_PACKAGE_LIST" | sed 's|[ ][ ]*|\n|g'
+                fi
+            else
+                for DEPENDENCY_PACKAGE_NAME in $DEPENDENCY_PACKAGE_LIST
+                do
+                    if is_package_installed "$DEPENDENCY_PACKAGE_NAME" ; then
+                        DEPENDENCY_PACKAGE_IS_INSTALLED='installed:yes'
+                    else
+                        DEPENDENCY_PACKAGE_IS_INSTALLED='installed:no '
+                    fi
+
+                    unset DEPENDENCY_PACKAGE_DIRECT_DEPS
+                    DEPENDENCY_PACKAGE_DIRECT_DEPS=$(__get_packages_directly_depended_by_the_given_package "$DEPENDENCY_PACKAGE_NAME" | tr ' ' ',')
+
+                    printf '%-15s %-15s dependencies:%s\n' "$DEPENDENCY_PACKAGE_NAME" "$DEPENDENCY_PACKAGE_IS_INSTALLED" "$DEPENDENCY_PACKAGE_DIRECT_DEPS"
+                done
+            fi
+            ;;
+        json)
+            unset DEPENDENCY_PACKAGE_LIST
+            DEPENDENCY_PACKAGE_LIST=$(__get_packages_recursively_depended_by_the_given_package "$PACKAGE_NAME")
+
+            JSON_ARRAY='['
+
+            if [ "$OUTPUT_BRIEF" = yes ] ; then
+                for DEPENDENCY_PACKAGE_NAME in $DEPENDENCY_PACKAGE_LIST
+                do
+                    JSON_ARRAY="$JSON_ARRAY\"$DEPENDENCY_PACKAGE_NAME\","
+                done
+            else
+                for DEPENDENCY_PACKAGE_NAME in $DEPENDENCY_PACKAGE_LIST
+                do
+                    if is_package_installed "$DEPENDENCY_PACKAGE_NAME" ; then
+                        DEPENDENCY_PACKAGE_IS_INSTALLED=true
+                    else
+                        DEPENDENCY_PACKAGE_IS_INSTALLED=false
+                    fi
+
+                    unset DEPENDENCY_PACKAGE_DIRECT_DEPS
+                    DEPENDENCY_PACKAGE_DIRECT_DEPS=$(__get_packages_directly_depended_by_the_given_package "$DEPENDENCY_PACKAGE_NAME" | tr ' ' ',')
+
+                    JSON_ARRAY="$JSON_ARRAY{\"name\":\"$DEPENDENCY_PACKAGE_NAME\",\"installed\":$DEPENDENCY_PACKAGE_IS_INSTALLED,\"dependencies\":\"$DEPENDENCY_PACKAGE_DIRECT_DEPS\"},"
+                done
+            fi
+
+            JSON_ARRAY=$(printf '%s\n' "$JSON_ARRAY" | sed 's|,$||')
+
+            JSON_ARRAY="$JSON_ARRAY]"
+
+            printf '%s\n' "$JSON_ARRAY"
+            ;;
+        graph)
+            __gen_dependency_graph_recursively_depended_by_the_given_package "$PACKAGE_NAME"
+
+            if [ -f "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_TXT" ] ; then
+                cat "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_TXT"
+            elif [ -f "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_PNG" ] ; then
+                for item in open feh eog lsix
+                do
+                    if command -v $item > /dev/null && $item "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_PNG" ; then
+                        return 0
+                    fi
+                done
+            elif [ -f "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_DOT" ] ; then
+                cat "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_DOT"
+            fi
+    esac
 }
 
 __logs_the_given_installed_package() {
@@ -4522,75 +4673,39 @@ __logs_the_given_installed_package() {
 }
 
 # examples:
-# __pack_the_given_installed_package autoconf
-# __pack_the_given_installed_package autoconf --type=tar.xz
+# __pack_the_given_installed_package <PKG-NAME> <TYPE>
+# __pack_the_given_installed_package  autoconf  tar.xz
 __pack_the_given_installed_package() {
-    set -e
-
     __load_installed_metadata_of_the_given_package "$1"
 
-    shift
-
-    unset PACKED_FILE_SUFFIX
-
-    for arg in $@
-    do
-        case $arg in
-            --type=*)
-                PACKED_FILE_SUFFIX=$(getvalue $arg)
-                if [ -z "$PACKED_FILE_SUFFIX" ] ; then
-                    die "--type=<VALUE> , VALUE must not be empty."
-                fi
-                ;;
-            *)  die "unrecognized argument: $arg"
-        esac
-    done
-
-    if [ -z "$PACKED_FILE_SUFFIX" ] ; then
-        if command -v 7za > /dev/null ; then
-            PACKED_FILE_SUFFIX=7z
-        elif command -v zip > /dev/null ; then
-            PACKED_FILE_SUFFIX=zip
-        elif command -v tar > /dev/null ; then
-            if command -v xz > /dev/null ; then
-                PACKED_FILE_SUFFIX=tar.xz
-            elif command -v bzip2 > /dev/null ; then
-                PACKED_FILE_SUFFIX=tar.bz2
-            elif command -v gzip > /dev/null ; then
-                PACKED_FILE_SUFFIX=tar.gz
-            else
-                handle_dependency required exe xz
-                PACKED_FILE_SUFFIX=tar.xz
-            fi
-        else
+    case $2 in
+        aar)__create_aar_for_the_given_installed_package "$1"; return $? ;;
+        7z) handle_dependency required exe 7za ;;
+        zip)
             handle_dependency required exe zip
-            PACKED_FILE_SUFFIX=tar.xz
-        fi
-    else
-        case $PACKED_FILE_SUFFIX in
-            7z) handle_dependency required exe 7za ;;
-            zip)handle_dependency required exe zip ;;
-            tar.gz)
-                handle_dependency required exe tar
-                handle_dependency required exe gzip
-                ;;
-            tar.xz)
-                handle_dependency required exe tar
-                handle_dependency required exe xz
-                ;;
-            tar.bz2)
-                handle_dependency required exe tar 
-                handle_dependency required exe bzip2 
-                ;;
-            *) die "unsupported type: $PACKED_FILE_SUFFIX, the supported types are 7z zip tar.gz tar.xz tar.bz2."
-        esac
-    fi
+            handle_dependency required exe unzip
+            ;;
+        tar.gz)
+            handle_dependency required exe tar
+            handle_dependency required exe gzip
+            ;;
+        tar.xz)
+            handle_dependency required exe tar
+            handle_dependency required exe xz
+            ;;
+        tar.bz2)
+            handle_dependency required exe tar
+            handle_dependency required exe bzip2
+            ;;
+        '')die "$_0 pack <PKG-NAME> <TYPE>, TYPE must not be empty." ;;
+        *) die "$_0 pack <PKG-NAME> <TYPE>, unsupported TYPE: $2, the supported types are 7z zip aar tar.gz tar.xz tar.bz2."
+    esac
 
     unset PACKED_DIR_NAME
     unset PACKED_FILE_NAME
 
     PACKED_DIR_NAME="$INSTALLED_PKG_NAME-$INSTALLED_PKG_VERS-bin"
-    PACKED_FILE_NAME="$PACKED_DIR_NAME.$PACKED_FILE_SUFFIX"
+    PACKED_FILE_NAME="$PACKED_DIR_NAME.$2"
 
     step "create working directory"
     echo "$COLOR_PURPLE==>$COLOR_OFF ${COLOR_GREEN}mktemp -d$COLOR_OFF"
@@ -4603,7 +4718,7 @@ __pack_the_given_installed_package() {
     run ln -s "$MY_INSTALL_DIR/$INSTALLED_PKG_NAME" "$PACKED_DIR_NAME"
 
     step "packing"
-    case $PACKED_FILE_SUFFIX in
+    case $2 in
         7z)  run 7za a -t7z -r "$PACKED_FILE_NAME" "$PACKED_DIR_NAME/*" ;;
         zip) run zip -9 -r     "$PACKED_FILE_NAME" "$PACKED_DIR_NAME"   ;;
         tar.gz)  run tar zvcf  "$PACKED_FILE_NAME" "$PACKED_DIR_NAME/*" ;;
@@ -4611,66 +4726,310 @@ __pack_the_given_installed_package() {
         tar.bz2) run tar jvcf  "$PACKED_FILE_NAME" "$PACKED_DIR_NAME/*" ;;
     esac
 
+    step "check integrity of packed file"
+    case $2 in
+        7z)    run 7za t -t7z "$PACKED_FILE_NAME" ;;
+        zip)   run unzip -t   "$PACKED_FILE_NAME" ;;
+        tar.*) run tar   -tf  "$PACKED_FILE_NAME" ;;
+    esac
+
+    step "show size of packed file"
+    run "du -sh $PACKED_FILE_NAME | cut -f1"
+
     if [ ! -d "$MY_BINARY_DIR" ] ; then
         step "create cached binary dir"
         run install -d "$MY_BINARY_DIR"
     fi
 
-    step "copy packed file to cached binary dir"
+    step "copy packed file to cache dir"
     run cp "$PACKED_FILE_NAME" "$MY_BINARY_DIR/"
-
-    step "show disk usage statistics"
-    run "du -sh $PACKED_FILE_NAME | cut -f1"
 
     step "delete working directory"
     run rm -rf $WORKING_DIR
 }
 
-get_direct_dependency_package_list_of_the_given_package() {
-    grep '^\s*package set dep\.pkg\s*".*"' $(__path_of_formula_of_the_given_package $1) | sed 's/.*package set dep\.pkg.*"\(.*\)"/\1/'
+# https://developer.android.com/studio/projects/android-library#aar-contents
+#
+# __create_aar_for_the_given_installed_package <PKG-NAME>
+# __create_aar_for_the_given_installed_package     v8
+__create_aar_for_the_given_installed_package() {
+    set -e
+
+    die_if_package_is_not_installed "$1"
+
+    unset PACKAGE_HAVE_INCLUDE
+    unset PACKAGE_HAVE_LIBRARY
+
+    unset PACKAGE_INSTALLED_DIR
+    unset PACKAGE_INSTALLED_ABIS
+
+    PACKAGE_INSTALLED_DIR="$MY_INSTALL_DIR/$1"
+
+    PACKAGE_INSTALLED_ABIS="$(cat "$PACKAGE_INSTALLED_DIR/installed-abis")"
+
+    for INSTALLED_ABI in $PACKAGE_INSTALLED_ABIS
+    do
+        if [ -d "$PACKAGE_INSTALLED_DIR/$INSTALLED_ABI/include" ] ; then
+            PACKAGE_HAVE_INCLUDE=yes
+        fi
+
+        if [ -d "$PACKAGE_INSTALLED_DIR/$INSTALLED_ABI/lib" ] ; then
+            PACKAGE_HAVE_LIBRARY=yes
+        fi
+
+        if [ "$PACKAGE_HAVE_INCLUDE" != yes ] && [ "$PACKAGE_HAVE_LIBRARY" != yes ] ; then
+            die "$1 do not contains library files."
+        fi
+    done
+
+    step "handle required tools"
+    handle_dependency required exe zip
+    handle_dependency required exe tree
+    handle_dependency required exe unzip
+
+    step "printf required tools"
+    printf_dependency required exe zip
+    printf_dependency required exe tree
+    printf_dependency required exe unzip
+
+    step "create working directory"
+    echo "$COLOR_PURPLE==>$COLOR_OFF ${COLOR_GREEN}mktemp -d$COLOR_OFF"
+    WORKING_DIR=$(mktemp -d)
+
+    step "change to working directory"
+    run cd $WORKING_DIR
+
+    __load_installed_metadata_of_the_given_package "$1"
+
+    unset PACKAGE_NAME_UNDERSCORE
+
+    PACKAGE_NAME_UNDERSCORE="$(printf '%s\n' "$1" | tr '+-.' '_')"
+
+    step "create META-INF entry"
+    run install -d aar/META-INF
+    cat > aar/META-INF/README <<EOF
+This package is created by ndk-pkg $MY_VERSION. For more details, please look at https://github.com/leleliu008/ndk-pkg
+EOF
+
+    step "create AndroidManifest.xml entry"
+    cat > aar/AndroidManifest.xml <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fpliu.android.ndk.pkg.$PACKAGE_NAME_UNDERSCORE"
+    android:versionCode="$INSTALLED_DATETIME"
+    android:versionName="$INSTALLED_PKG_VERS" >
+
+    <uses-sdk
+        android:minSdkVersion="$BUILD_USE_SDK_VERS"
+        android:targetSdkVersion="30" />
+
+</manifest>
+EOF
+
+    if [ no = yes ] ; then
+        step "create jni entry"
+        for INSTALLED_ABI in $PACKAGE_INSTALLED_ABIS
+        do
+            run install -d "aar/jni/$INSTALLED_ABI"
+            run cp "$PACKAGE_INSTALLED_DIR/$INSTALLED_ABI/lib/*.so" "aar/jni/$INSTALLED_ABI"
+        done
+    fi
+
+    step "create prefab entry"
+    run install -d aar/prefab
+
+    cat > aar/prefab/prefab.json <<EOF
+{
+  "schema_version": 2,
+  "name": "$INSTALLED_PKG_NAME",
+  "version": "$INSTALLED_PKG_VERS",
+  "dependencies": []
+}
+EOF
+
+    if [ "$PACKAGE_HAVE_LIBRARY" = yes ] ; then
+        for LIBRARY_FILENAME in $(cd "$PACKAGE_INSTALLED_DIR/$INSTALLED_ABI/lib"; ls lib*.so)
+        do
+            LIBRARY_FILENAME_PREFIX="${LIBRARY_FILENAME%.so}"
+            LIBRARY_NAME="$(printf '%s\n' "$LIBRARY_FILENAME_PREFIX" | cut -c4-)"
+            MODULE_DIR="aar/prefab/modules/$LIBRARY_NAME"
+            run install -d "$MODULE_DIR"
+            cat > "$MODULE_DIR/module.json" <<EOF
+{
+  "export_libraries": [],
+  "android": {
+    "export_libraries": ["-l$LIBRARY_NAME"]
+  }
+}
+EOF
+            if [ "$PACKAGE_HAVE_INCLUDE" = yes ] ; then
+                run cp -r "$PACKAGE_INSTALLED_DIR/armeabi-v7a/include" "$MODULE_DIR"
+            fi
+
+            for INSTALLED_ABI in $PACKAGE_INSTALLED_ABIS
+            do
+                ABI_DIR="aar/prefab/modules/$LIBRARY_NAME/libs/android.$INSTALLED_ABI"
+                run install -d "$ABI_DIR"
+                run cp "$PACKAGE_INSTALLED_DIR/$INSTALLED_ABI/lib/$LIBRARY_FILENAME" "$ABI_DIR"
+                printf '%s\n' "{\"api\": $BUILD_USE_SDK_VERS,\"abi\": \"$INSTALLED_ABI\",\"ndk\": 21,\"stl\": \"c++_shared\"}" > "$ABI_DIR/abi.json"
+            done
+        done
+    else
+        # header only
+        MODULE_DIR="aar/prefab/modules/$1"
+        run install -d "$MODULE_DIR"
+        run cp -r "$PACKAGE_INSTALLED_DIR/armeabi-v7a/include" "$MODULE_DIR"
+    fi
+
+    PACKED_FILE_NAME="$1-$INSTALLED_PKG_VERS.aar"
+
+    if command -v tree > /dev/null ; then
+        step "tree aar"
+        run tree aar --dirsfirst
+    fi
+
+    step "packing"
+    run cd aar
+    run zip -9 -r "../$PACKED_FILE_NAME" .
+    run cd ..
+
+    step "check integrity of packed file"
+    run unzip -t "$PACKED_FILE_NAME"
+
+    step "show size of packed file"
+    run "du -sh $PACKED_FILE_NAME | cut -f1"
+
+    if [ ! -d "$MY_BINARY_DIR" ] ; then
+        step "create cached binary dir"
+        run install -d "$MY_BINARY_DIR"
+    fi
+
+    step "copy packed file to cache dir"
+    run cp "$PACKED_FILE_NAME" "$MY_BINARY_DIR/"
+
+    step "delete working directory"
+    run rm -rf $WORKING_DIR
 }
 
-# $1 packageName, if packageName is not specified, USER_SPECIFIED_PACKAGE_LIST will be used
-# $2=yes invoked by myself
-__gen_dependency_package_list_of_the_given_package() {
-    [ "$2" = yes ] || {
-        unset I
-        unset DEPENDENCY_PACKAGE_LIST
-    }
+# this fuction should be run in subshell
+# __get_packages_directly_depended_by_the_given_package <PKG-NAME>
+__get_packages_directly_depended_by_the_given_package() {
+    unset PACKAGE_FORMULA_FILEPATH
+    PACKAGE_FORMULA_FILEPATH="$(__path_of_formula_of_the_given_package $1)"
+
+    if [ -z "$PACKAGE_FORMULA_FILEPATH" ] ; then
+        die "$1 package's formula is not found."
+    fi
+
+    sed -n '/^\s*package\s\{1,\}set\s\{1,\}dep\.pkg\s\{1,\}".*"\s*/p' "$PACKAGE_FORMULA_FILEPATH" | sed 's/^\s*package\s\{1,\}set\s\{1,\}dep\.pkg\s\{1,\}"\s*\(.*\)\s*"\s*/\1/'
+}
+
+# this fuction should be run in subshell
+#
+# __get_packages_recursively_depended_by_the_given_package
+# __get_packages_recursively_depended_by_the_given_package <PKG-NAME> [yes]
+#
+# if PKG-NAME is not specified, $USER_SPECIFIED_PACKAGE_LIST will be used
+# yes means invoked by myself
+__get_packages_recursively_depended_by_the_given_package() {
+    if [ "$2" != yes ] ; then
+        DEPTH=1
+        RESULT=
+    fi
+
+    DEPTH=$(expr "$DEPTH" + 1)
 
     unset DIRECT_DEPENDENCY_PACKAGE_LIST
     if [ -z "$1" ] ; then
         DIRECT_DEPENDENCY_PACKAGE_LIST="$USER_SPECIFIED_PACKAGE_LIST"
     else
-        DIRECT_DEPENDENCY_PACKAGE_LIST=$(get_direct_dependency_package_list_of_the_given_package "$1")
+        DIRECT_DEPENDENCY_PACKAGE_LIST=$(__get_packages_directly_depended_by_the_given_package "$1")
     fi
 
-    for dependencyPkgName in $DIRECT_DEPENDENCY_PACKAGE_LIST
+    for DIRECT_DEPENDENCY_PACKAGE_NAME in $DIRECT_DEPENDENCY_PACKAGE_LIST
     do
-        die_if_package_is_not_available "$dependencyPkgName"
+        die_if_package_is_not_available "$DIRECT_DEPENDENCY_PACKAGE_NAME"
 
-        DEPENDENCY_PACKAGE_LIST_TEMP=""
+        DIRECT_DEPENDENCY_PACKAGE_NAME_EXISTS=no
 
-        for item in $DEPENDENCY_PACKAGE_LIST
+        for item in $RESULT
         do
-            if [ "$dependencyPkgName" = "$item" ] ; then
-                continue
-            else
-                DEPENDENCY_PACKAGE_LIST_TEMP="$DEPENDENCY_PACKAGE_LIST_TEMP $item"
+            if [ "$DIRECT_DEPENDENCY_PACKAGE_NAME" = "$item" ] ; then
+                DIRECT_DEPENDENCY_PACKAGE_NAME_EXISTS=yes
+                break
             fi
         done
 
-        DEPENDENCY_PACKAGE_LIST="$dependencyPkgName $DEPENDENCY_PACKAGE_LIST_TEMP"
+        if [ "$DIRECT_DEPENDENCY_PACKAGE_NAME_EXISTS" = no ] ; then
+            RESULT="$DIRECT_DEPENDENCY_PACKAGE_NAME $RESULT"
+        fi
 
-        __gen_dependency_package_list_of_the_given_package "$dependencyPkgName" yes
+        __get_packages_recursively_depended_by_the_given_package "$DIRECT_DEPENDENCY_PACKAGE_NAME" yes
     done
+
+    DEPTH=$(expr "$DEPTH" - 1)
+
+    if [ "$DEPTH" -eq 1 ] ; then
+        printf '%s\n' "$RESULT"
+    fi
+}
+
+# this fuction should be run in subshell
+#
+# __get_packages_recursively_depended_by_the_given_package
+# __get_packages_recursively_depended_by_the_given_package <PKG-NAME> [yes]
+#
+# if PKG-NAME is not specified, $USER_SPECIFIED_PACKAGE_LIST will be used
+# yes means invoked by myself
+__get_dependencies_recursively_depended_by_the_given_package() {
+    if [ "$2" != yes ] ; then
+        DEPTH=1
+        RESULT=
+    fi
+
+    DEPTH=$(expr "$DEPTH" + 1)
+
+    unset DIRECT_DEPENDENCY_PACKAGE_LIST
+    if [ -z "$1" ] ; then
+        DIRECT_DEPENDENCY_PACKAGE_LIST="$USER_SPECIFIED_PACKAGE_LIST"
+    else
+        DIRECT_DEPENDENCY_PACKAGE_LIST=$(__get_packages_directly_depended_by_the_given_package "$1")
+    fi
+
+    for DIRECT_DEPENDENCY_PACKAGE_NAME in $DIRECT_DEPENDENCY_PACKAGE_LIST
+    do
+        die_if_package_is_not_available "$DIRECT_DEPENDENCY_PACKAGE_NAME"
+
+        DIRECT_DEPENDENCY_PACKAGE_NAME_EXISTS=no
+
+        for item in $(printf '%s\n' "$RESULT" | cut -d: -f1)
+        do
+            if [ "$DIRECT_DEPENDENCY_PACKAGE_NAME" = "$item" ] ; then
+                DIRECT_DEPENDENCY_PACKAGE_NAME_EXISTS=yes
+                break
+            fi
+        done
+
+        if [ "$DIRECT_DEPENDENCY_PACKAGE_NAME_EXISTS" = no ] ; then
+            RESULT="$DIRECT_DEPENDENCY_PACKAGE_NAME $RESULT"
+        fi
+
+        __get_packages_recursively_depended_by_the_given_package "$DIRECT_DEPENDENCY_PACKAGE_NAME" yes
+    done
+
+    DEPTH=$(expr "$DEPTH" - 1)
+
+    if [ "$DEPTH" -eq 1 ] ; then
+        printf '%s\n' "$RESULT"
+    fi
 }
 
 __get_dot_file_contents() {
     for PKG in $@
     do
         unset DIRECT_DEPENDENCY_PACKAGE_LIST
-        DIRECT_DEPENDENCY_PACKAGE_LIST="$(get_direct_dependency_package_list_of_the_given_package "$PKG")"
+        DIRECT_DEPENDENCY_PACKAGE_LIST="$(__get_packages_directly_depended_by_the_given_package "$PKG")"
         if [ -n "$DIRECT_DEPENDENCY_PACKAGE_LIST" ] ; then
             printf '"%s" -> { "%s" }\n' "$PKG" "$(printf '%s\n' "$DIRECT_DEPENDENCY_PACKAGE_LIST" | sed 's/ /" "/g')"
             __get_dot_file_contents $DIRECT_DEPENDENCY_PACKAGE_LIST
@@ -4678,49 +5037,49 @@ __get_dot_file_contents() {
     done
 }
 
-# __gen_dependency_package_tree_of_the_given_package <PKG> [OUTPUT-DIR]
-__gen_dependency_package_tree_of_the_given_package() {
+# __gen_dependency_graph_recursively_depended_by_the_given_package <PKG> [OUTPUT-DIR]
+__gen_dependency_graph_recursively_depended_by_the_given_package() {
     unset DIRECT_DEPENDENCY_PACKAGE_LIST
-    DIRECT_DEPENDENCY_PACKAGE_LIST="$(get_direct_dependency_package_list_of_the_given_package "$1")"
+    DIRECT_DEPENDENCY_PACKAGE_LIST="$(__get_packages_directly_depended_by_the_given_package "$1")"
 
     if [ -z "$DIRECT_DEPENDENCY_PACKAGE_LIST" ] ; then
         return 0
     fi
 
-    unset PACKAGE_DEP_PKG_TREE_OUTPUT_DIR
+    unset PACKAGE_DEPENDENCY_GRAPH_OUTPUT_DIR
 
     if [ -z "$2" ] ; then
-        PACKAGE_DEP_PKG_TREE_OUTPUT_DIR=$(mktemp -d) || return 1
+        PACKAGE_DEPENDENCY_GRAPH_OUTPUT_DIR=$(mktemp -d) || return 1
     else
-        PACKAGE_DEP_PKG_TREE_OUTPUT_DIR="$2"
+        PACKAGE_DEPENDENCY_GRAPH_OUTPUT_DIR="$2"
         [ -d "$2" ] || install -d "$2"
     fi
 
-    unset PACKAGE_DEP_PKG_TREE_FILEPATH_DOT
-    unset PACKAGE_DEP_PKG_TREE_FILEPATH_PNG
-    unset PACKAGE_DEP_PKG_TREE_FILEPATH_TXT
+    unset PACKAGE_DEPENDENCY_GRAPH_FILEPATH_DOT
+    unset PACKAGE_DEPENDENCY_GRAPH_FILEPATH_PNG
+    unset PACKAGE_DEPENDENCY_GRAPH_FILEPATH_TXT
 
-    PACKAGE_DEP_PKG_TREE_FILEPATH_DOT="$PACKAGE_DEP_PKG_TREE_OUTPUT_DIR/dependencies.gv"
-    PACKAGE_DEP_PKG_TREE_FILEPATH_PNG="$PACKAGE_DEP_PKG_TREE_OUTPUT_DIR/dependencies.png"
-    PACKAGE_DEP_PKG_TREE_FILEPATH_TXT="$PACKAGE_DEP_PKG_TREE_OUTPUT_DIR/dependencies.txt"
+    PACKAGE_DEPENDENCY_GRAPH_FILEPATH_DOT="$PACKAGE_DEPENDENCY_GRAPH_OUTPUT_DIR/dependencies.gv"
+    PACKAGE_DEPENDENCY_GRAPH_FILEPATH_PNG="$PACKAGE_DEPENDENCY_GRAPH_OUTPUT_DIR/dependencies.png"
+    PACKAGE_DEPENDENCY_GRAPH_FILEPATH_TXT="$PACKAGE_DEPENDENCY_GRAPH_OUTPUT_DIR/dependencies.txt"
 
-    printf 'digraph G {\n'       >  "$PACKAGE_DEP_PKG_TREE_FILEPATH_DOT"
-    __get_dot_file_contents "$1" >> "$PACKAGE_DEP_PKG_TREE_FILEPATH_DOT"
-    printf '}\n'                 >> "$PACKAGE_DEP_PKG_TREE_FILEPATH_DOT"
+    printf 'digraph G {\n'       >  "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_DOT"
+    __get_dot_file_contents "$1" >> "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_DOT"
+    printf '}\n'                 >> "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_DOT"
 
     if command -v dot > /dev/null ; then
-        run dot -Tpng -o "$PACKAGE_DEP_PKG_TREE_FILEPATH_PNG" "$PACKAGE_DEP_PKG_TREE_FILEPATH_DOT"
+        run dot -Tpng -o "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_PNG" "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_DOT"
     else
         note "graphviz is not installed. we do not generate png format dependency image."
     fi
 
     # https://github.com/ggerganov/dot-to-ascii
     curl \
-        -o "$PACKAGE_DEP_PKG_TREE_FILEPATH_TXT" \
+        -o "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_TXT" \
         -s \
         -G \
         --data-urlencode "boxart=1" \
-        --data-urlencode "src=$(cat $PACKAGE_DEP_PKG_TREE_FILEPATH_DOT)" \
+        --data-urlencode "src=$(cat $PACKAGE_DEPENDENCY_GRAPH_FILEPATH_DOT)" \
         "https://dot-to-ascii.ggerganov.com/dot-to-ascii.php" || true
 }
 
@@ -4760,7 +5119,8 @@ __install_the_given_packages() {
 
     __config_native_toolchain_environment_variables
 
-    __gen_dependency_package_list_of_the_given_package || return 1
+    unset DEPENDENCY_PACKAGE_LIST
+    DEPENDENCY_PACKAGE_LIST="$(__get_packages_recursively_depended_by_the_given_package)"
 
     if [ $(list_length $DEPENDENCY_PACKAGE_LIST) -gt 1 ] ; then
         echo "$COLOR_PURPLE==>$COLOR_OFF to install$COLOR_GREEN $DEPENDENCY_PACKAGE_LIST $COLOR_OFF\n"
@@ -4827,16 +5187,6 @@ __install_the_given_package() {
     step "load formula"
     __load_formula_of_the_given_package "$1"
 
-    if [ "$PACKAGE_DEP_JDK" = yes ] ; then
-        step "find Java Development Kit"
-        install_jdk_if_needed
-    fi
-
-    if [ "$PACKAGE_DEP_SDK" = yes ] ; then
-        step "find Android SDK"
-        install_android_sdk_if_needed
-    fi
-
     if [ "$PACKAGE_DEP_NDK" = yes ] ; then
         step "find Android NDK"
         setup_build_toolchains_env
@@ -4846,6 +5196,12 @@ __install_the_given_package() {
 
     if [ "$CCACHE_ENABLED" = yes ] ; then
         package add dep.cmd ccache
+    fi
+
+    if [ "$PACKAGE_BUILD_SYSTEM_GMAKE" = yes ] ; then
+        if [ "$EXPORT_COMPILE_COMMANDS_JSON" = yes ] && [ "$BEAR_ENABLED" = yes ] ; then
+            package add dep.cmd bear
+        fi
     fi
 
     step "handle required dependencies"
@@ -4896,7 +5252,7 @@ __install_the_given_package() {
         bppend_to_PATH "$PERL_HOME/bin"
     fi
 
-    PACKAGE_WORKING_DIR="$MY_HOME_DIR/build.d/$1"
+    PACKAGE_WORKING_DIR="$MY_HOME_DIR/installing.d/$1"
     PACKAGE_SRC_DIR="$PACKAGE_WORKING_DIR/src"
 
     step "create working directory"
@@ -4905,15 +5261,15 @@ __install_the_given_package() {
     fi
     run install -d "$PACKAGE_WORKING_DIR"
 
-    step "calculate dependency packages"
+    step "calculate  packages are depended by $1"
     unset DEPENDENCY_PACKAGE_LIST
     if [ -z "$PACKAGE_DEP_PKG" ] ; then
-        note "no dependency packages."
+        note "there's no packages are depended by $1."
     else
-        __gen_dependency_package_list_of_the_given_package "$1"                      || return 1
-        __gen_dependency_package_tree_of_the_given_package "$1" "$MY_INSTALL_DIR/$1" || return 1
-        if [ -f "$PACKAGE_DEP_PKG_TREE_FILEPATH_TXT" ] ; then
-            cat "$PACKAGE_DEP_PKG_TREE_FILEPATH_TXT"
+        DEPENDENCY_PACKAGE_LIST=$(__get_packages_recursively_depended_by_the_given_package "$1")
+        __gen_dependency_graph_recursively_depended_by_the_given_package "$1" "$PACKAGE_WORKING_DIR"
+        if [ -f "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_TXT" ] ; then
+            cat "$PACKAGE_DEPENDENCY_GRAPH_FILEPATH_TXT"
         fi
     fi
 
@@ -4938,8 +5294,11 @@ __install_the_given_package() {
 
     case $PACKAGE_SRC_URL in
         dir://*)
-            if [ -d "$PACKAGE_SRC_PATH" ] ; then
-                if command -v git > /dev/null ; then
+            if [ "$PACKAGE_SRC_PATH" = '/dev/null' ] ; then
+                step "create the directory where source files will be stored in"
+                run install -d "$PACKAGE_SRC_DIR" || return 1
+            elif [ -d "$PACKAGE_SRC_PATH" ] ; then
+                if [ -d "$PACKAGE_SRC_PATH/.git" ] && command -v git > /dev/null ; then
                     PACKAGE_GIT_REV=$(cd "$PACKAGE_SRC_PATH" && git rev-parse HEAD || true)
                 fi
 
@@ -4996,11 +5355,13 @@ __install_the_given_package() {
     step "list files of source top directory"
     run ls -l "$PACKAGE_SRC_DIR"
 
-    step "list files of build script directory"
-    run ls -l "$PACKAGE_BSCRIPT_DIR"
+    if [ -n "$PACKAGE_BSCRIPT" ] ; then
+        step "list files of build script directory"
+        run ls -l "$PACKAGE_BSCRIPT_DIR"
+    fi
 
     step "change to build script directory"
-    run cd "$PACKAGE_SRC_DIR" || return 1
+    run cd "$PACKAGE_BSCRIPT_DIR" || return 1
 
     step "build for native"
     if command -v build0 > /dev/null ; then
@@ -5124,6 +5485,14 @@ EOF
 
     [ "$DRYRUN" = yes ] && exit
 
+    if [ -n "$PACKAGE_DEP_PKG" ] ; then
+        step "record dependencies files."
+        for file in $PACKAGE_DEPENDENCY_GRAPH_FILEPATH_DOT $PACKAGE_DEPENDENCY_GRAPH_FILEPATH_TXT $PACKAGE_DEPENDENCY_GRAPH_FILEPATH_PNG
+        do
+            run cp "$file" "$MY_INSTALL_DIR/$1"
+        done
+    fi
+
     step "record installed abis"
     run cp "$PACKAGE_WORKING_DIR/installed-abis" "$MY_INSTALL_DIR/$1/installed-abis"
 
@@ -5141,27 +5510,23 @@ EOF
         run  ccache -s
     fi
 
-    [ "$KEEP_WORKING_DIR" = yes ] || {
+    if [ "$KEEP_WORKING_DIR" != yes ] ; then
         step "clean working directory."
         run rm -rf "$PACKAGE_WORKING_DIR"
-    }
-
-    echo
-    success "$1 installed successfully."
+    fi
 
     if [ "$NEED_RUN_TREE" = yes ] ; then
-        unset STEP_NUM
-        echo
-        echo "${COLOR_GREEN}$_0 tree $1 $TREE_ARGS${COLOR_OFF}"
+        step "list installed files in a tree-like format"
         __tree_the_given_installed_package "$1" $TREE_ARGS
     fi
 
     if [ "$NEED_RUN_PACK" = yes ] ; then
-        unset STEP_NUM
-        echo
-        echo "${COLOR_GREEN}$_0 pack $1 $PACK_ARGS${COLOR_OFF}"
+        step "packing"
         __pack_the_given_installed_package "$1" $PACK_ARGS
     fi
+
+    echo
+    success "$1 installed successfully."
 }
 
 __install_the_given_package_for_the_given_target() {
@@ -5356,6 +5721,19 @@ EOF
         }
     }
 
+    if [ -d "$TARGET_INSTALL_DIR/lib" ] ; then
+        step2 "show .so files"
+
+        unset PACKAGE_INSTALLED_SHARED_LIBRARIES
+        PACKAGE_INSTALLED_SHARED_LIBRARIES="$(find "$TARGET_INSTALL_DIR/lib" -name "lib*.so*")"
+
+        if [ -z "$PACKAGE_INSTALLED_SHARED_LIBRARIES" ] ; then
+            warn "no .so files installed."
+        else
+            run file $PACKAGE_INSTALLED_SHARED_LIBRARIES
+        fi
+    fi
+
     step2 "justfy ELF files for ${COLOR_GREEN}$@${COLOR_OFF}"
     __justfy_elf_files_for_the_given_target $@ || return 1
 
@@ -5406,11 +5784,11 @@ __justfy_la_files_for_the_given_target() {
     if [ -d "$TARGET_INSTALL_DIR/lib" ] ; then
         for lafile in $(find "$TARGET_INSTALL_DIR/lib" -name "*.la")
         do
-            sed_in_place 's|-lpthread||g'                 "$lafile" || return 1
-            sed_in_place 's|-Wl,--strip-debug||g'         "$lafile" || return 1
-            sed_in_place "s|-L$PACKAGE_WORKING_DIR\S*||g" "$lafile" || return 1
-            sed_in_place "s|-L$SYSTEM_LIBRARY_DIR||g"     "$lafile" || return 1
-            sed_in_place "s|--sysroot $SYSROOT||g"        "$lafile" || return 1
+            sed_in_place 's|-lpthread||g'                    "$lafile" || return 1
+            sed_in_place 's|-Wl,--strip-debug||g'            "$lafile" || return 1
+            sed_in_place "s|-L$PACKAGE_WORKING_DIR[^' ]*||g" "$lafile" || return 1
+            sed_in_place "s|-L$SYSTEM_LIBRARY_DIR||g"        "$lafile" || return 1
+            sed_in_place "s|--sysroot $SYSROOT||g"           "$lafile" || return 1
         done
     fi
 }
@@ -5420,11 +5798,11 @@ __justfy_pc_files_for_the_given_target() {
         for pcfile in $(find "$TARGET_INSTALL_DIR/lib/pkgconfig" -name "*.pc")
         do
             sed_in_place "s|$TARGET_INSTALL_DIR|\${pcfiledir}/../..|g" "$pcfile" || return 1
-            sed_in_place 's|-lpthread||g'                 "$pcfile" || return 1
-            sed_in_place 's|-Wl,--strip-debug||g'         "$pcfile" || return 1
-            sed_in_place "s|-L$PACKAGE_WORKING_DIR\S*||g" "$pcfile" || return 1
-            sed_in_place "s|-L$SYSTEM_LIBRARY_DIR||g"     "$pcfile" || return 1
-            sed_in_place "s|--sysroot $SYSROOT||"         "$pcfile" || return 1
+            sed_in_place 's|-lpthread||g'                    "$pcfile" || return 1
+            sed_in_place 's|-Wl,--strip-debug||g'            "$pcfile" || return 1
+            sed_in_place "s|-L$PACKAGE_WORKING_DIR[^' ]*||g" "$pcfile" || return 1
+            sed_in_place "s|-L$SYSTEM_LIBRARY_DIR||g"        "$pcfile" || return 1
+            sed_in_place "s|--sysroot $SYSROOT||"            "$pcfile" || return 1
             if grep 'Libs.private:' "$pcfile" > /dev/null ; then
                 LIBS_CONTENT=$(awk '/Libs:/{print}' "$pcfile" || return 1)
                 LIBS_PRIVATE_CONTENT=$(awk -F: '/Libs.private:/{print $2}' "$pcfile" || return 1)
@@ -5629,8 +6007,6 @@ PACKAGE_DEP_CMD
 PACKAGE_DEP_PYM
 PACKAGE_DEP_PLM
 PACKAGE_DEP_PKG
-PACKAGE_DEP_JDK
-PACKAGE_DEP_SDK
 PACKAGE_DEP_NDK
 PACKAGE_CDEFINE
 PACKAGE_CCFLAGS
@@ -6047,6 +6423,14 @@ __config_variables_for_the_given_target() {
         else
             export CMAKE_GENERATOR='Unix Makefiles'
         fi
+
+        # https://cmake.org/cmake/help/latest/envvar/CMAKE_EXPORT_COMPILE_COMMANDS.html
+        if [ "$EXPORT_COMPILE_COMMANDS_JSON" = yes ] ; then
+            export CMAKE_EXPORT_COMPILE_COMMANDS=ON
+        else
+            export CMAKE_EXPORT_COMPILE_COMMANDS=OFF
+        fi
+
     fi
 
     if [ "$PACKAGE_BUILD_SYSTEM_CARGO" = yes ] ; then
@@ -6104,6 +6488,8 @@ __config_variables_for_the_given_target() {
         # this variable is not motioned in their document. you must read the source code of cmake-rs crate.
         export TARGET_CMAKE_TOOLCHAIN_FILE="$TARGET_WORKING_DIR/toolchain.cmake"
 
+        install -d "$TARGET_WORKING_DIR"
+
         printf '%s\n' "
         set(ANDROID_ABI "${TARGET_OS_ABI}")
         set(ANDROID_PLATFORM "android-${TARGET_OS_VERS}")
@@ -6132,7 +6518,10 @@ __config_variables_for_the_given_target() {
         export CGO_LDFLAGS="$LDFLAGS"
 
         export GO111MODULE='auto'
-        export GOPROXY='https://goproxy.cn'
+
+        if [ "$COUNTRY" = china ] ; then
+            export GOPROXY='https://goproxy.cn'
+        fi
 
         export GOOS="$TARGET_OS_TYPE"
 
@@ -6234,6 +6623,11 @@ __printf_variables_for_the_given_target() {
             printf '%s\n' "                      $item" | tr '|' ' '
         fi
     done
+
+    if [ "$PACKAGE_BUILD_SYSTEM_CMAKE" = yes ] ; then
+        echo
+        env | sed -n '/^CMAKE_/p'
+    fi
 
     if [ "$PACKAGE_BUILD_SYSTEM_CARGO" = yes ] ; then
         echo
@@ -6652,7 +7046,11 @@ makew() {
         MAKE_OPTIONS="$MAKE_OPTIONS --debug V=1"
     fi
 
-    run "$GMAKE $MAKE_OPTIONS $*"
+    if [ "$EXPORT_COMPILE_COMMANDS_JSON" = yes ] && [ "$BEAR_ENABLED" = yes ] ; then
+        run bear -- $GMAKE $MAKE_OPTIONS $*
+    else
+        run         $GMAKE $MAKE_OPTIONS $*
+    fi
 }
 
 # https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html#cross-compiling
@@ -6666,7 +7064,7 @@ makew() {
 # https://developer.android.com/ndk/guides/cmake
 # run in a subshell
 cmakew() {
-    CMAKE_CONFIG_OPTIONS="-Wno-dev -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTING=OFF"
+    CMAKE_CONFIG_OPTIONS="-Wno-dev -DCMAKE_EXPORT_COMPILE_COMMANDS=$CMAKE_EXPORT_COMPILE_COMMANDS -DBUILD_TESTING=OFF"
 
     # https://cmake.org/cmake/help/latest/variable/CMAKE_FIND_DEBUG_MODE.html
     if [ "$LOG_LEVEL" -ge "$LOG_LEVEL_DEBUG" ] ; then
@@ -6921,6 +7319,7 @@ create_common_include_h() {
     #define ftello(f) ftell(f)
     #define fseeko    fseek
 #endif
+
 EOF
 }
 
@@ -7370,7 +7769,7 @@ ndkmanager() {
 
 setup_build_toolchains_env() {
     debug() {
-        if [ "$LOG_LEVEL" -ge "$LOG_LEVEL_DEBUG" ] ; then
+        if [ -n "$LOG_LEVEL" ] && [ "$LOG_LEVEL" -ge "$LOG_LEVEL_DEBUG" ] ; then
             echo "$*"
         fi
     }
@@ -7549,26 +7948,21 @@ install_android_sdk_if_needed() {
         run "yes | $MY_HOME_DIR/android-sdk/cmdline-tools/latest/bin/sdkmanager 'platform-tools'"
 
         cat > "$MY_HOME_DIR/android-sdk/env" <<EOF
-bppend_to_PATH() {
-    case ":\${PATH}:" in
-        *:"\$@":*) ;;
-        *) export PATH="\$@:\$PATH" ;;
-    esac
-}
+export ANDROID_HOME="$MY_HOME_DIR/android-sdk"
+export ANDROID_SDK_ROOT="\$ANDROID_HOME"
 
-ANDROID_HOME="$MY_HOME_DIR/android-sdk"
-ANDROID_SDK_ROOT="$MY_HOME_DIR/android-sdk"
-
-bppend_to_PATH "$ANDROID_SDK_ROOT/cmdline-tools/tools/bin"
-bppend_to_PATH "$ANDROID_SDK_ROOT/platform-tools"
-bppend_to_PATH "$ANDROID_SDK_ROOT/build-tools/30.0.3"
+export PATH="\$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:\$PATH"
+export PATH="\$ANDROID_SDK_ROOT/platform-tools:\$PATH"
+export PATH="\$ANDROID_SDK_ROOT/build-tools/30.0.3:\$PATH"
 EOF
-    . "$MY_HOME_DIR/android-sdk/env"
+        . "$MY_HOME_DIR/android-sdk/env"
     fi
 
-    echo "ANDROID_SDK_ROOT = $ANDROID_SDK_ROOT"
-    echo "ANDROID_HOME     = $ANDROID_HOME"
-    echo "PATH = $PATH"
+    cat <<EOF
+ANDROID_SDK_ROOT = $ANDROID_SDK_ROOT
+ANDROID_HOME     = $ANDROID_HOME
+PATH             = $PATH
+EOF
 }
 
 is_a_valid_jdk_home_dir() {
@@ -7605,7 +7999,7 @@ install_jdk_if_needed() {
     fi
 
     note "JDK Not Found on your build machine, I will install it for you."
-    handle_dependency required exe java
+    __uppm_install_the_given_package jdk
 
     if [ -f "$HOME/.uppm/install.d/jdk/installed-metadata" ] && [ -f "$HOME/.uppm/install.d/jdk/env" ] ; then
         if is_a_valid_jdk_home_dir "$HOME/.uppm/install.d/jdk" ; then
@@ -7634,6 +8028,7 @@ inspect_install_arguments() {
 
     unset DRYRUN
 
+      BEAR_ENABLED=yes
     CCACHE_ENABLED=yes
 
     LOG_LEVEL_QUIET=0
@@ -7654,6 +8049,9 @@ inspect_install_arguments() {
     INSTALL_MAN=yes
     INSTALL_DOC=yes
     INSTALL_LIB=yes
+
+    # https://clang.llvm.org/docs/JSONCompilationDatabase.html
+    EXPORT_COMPILE_COMMANDS_JSON=no
 
     KEEP_WORKING_DIR=no
 
@@ -7688,6 +8086,9 @@ inspect_install_arguments() {
             --disable-ccache)
                 CCACHE_ENABLED=no
                 ;;
+            --disable-bear)
+                BEAR_ENABLED=no
+                ;;
             --dry-run)
                 DRYRUN=yes
                 ;;
@@ -7721,6 +8122,9 @@ inspect_install_arguments() {
                     *)  die "--build-type=<VALUE>, VALUE must be one of debug release"
                 esac
                 ;;
+            --export-compile-commands-json)
+                EXPORT_COMPILE_COMMANDS_JSON=yes
+                ;;
             --install-doc)
                 INSTALL_DOC=yes
                 ;;
@@ -7750,15 +8154,14 @@ inspect_install_arguments() {
                 BUILD_NJOBS=$(getvalue "$1")
                 is_integer "$BUILD_NJOBS" || die "--jobs=<VALUE>, VALUE must be a integer."
                 ;;
+            @all)
+                USER_SPECIFIED_PACKAGE_LIST="$(__list_available_packages)"
+                ;;
             [a-z]*)
-                if [ "$1" = 'all' ] ; then
-                    USER_SPECIFIED_PACKAGE_LIST="$(__list_available_packages)"
+                if [ -z "$USER_SPECIFIED_PACKAGE_LIST" ] ; then
+                    USER_SPECIFIED_PACKAGE_LIST="$1"
                 else
-                    if [ -z "$USER_SPECIFIED_PACKAGE_LIST" ] ; then
-                        USER_SPECIFIED_PACKAGE_LIST="$1"
-                    else
-                        USER_SPECIFIED_PACKAGE_LIST="$USER_SPECIFIED_PACKAGE_LIST $1"
-                    fi
+                    USER_SPECIFIED_PACKAGE_LIST="$USER_SPECIFIED_PACKAGE_LIST $1"
                 fi
                 ;;
             *)  die "unrecognized argument: $1"
@@ -7960,16 +8363,16 @@ ${COLOR_GREEN}ndk-pkg update${COLOR_OFF}
 ${COLOR_GREEN}ndk-pkg cleanup${COLOR_OFF}
     cleanup the unused cache.
 
-${COLOR_GREEN}ndk-pkg target levels${COLOR_OFF}
-    list the supported target os's api-levels.
+${COLOR_GREEN}ndk-pkg ls-target-levels${COLOR_OFF}
+    list the supported target sdk api-levels.
 
-${COLOR_GREEN}ndk-pkg target triples${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg ls-target-triples${COLOR_OFF}
     list the supported target triples.
 
-${COLOR_GREEN}ndk-pkg target archs${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg ls-target-archs${COLOR_OFF}
     list the supported target archs.
 
-${COLOR_GREEN}ndk-pkg target abis${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg ls-target-abis${COLOR_OFF}
     list the supported target abis.
 
 ${COLOR_GREEN}ndk-pkg ls-available${COLOR_OFF}
@@ -7981,31 +8384,31 @@ ${COLOR_GREEN}ndk-pkg ls-installed${COLOR_OFF}
 ${COLOR_GREEN}ndk-pkg ls-outdated${COLOR_OFF}
     list the outdated  packages.
 
-${COLOR_GREEN}ndk-pkg is-available <PACKAGE> [eq|ne|ge|gt|le|lt VERSION]${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg is-available <PKG-NAME> [eq|ne|ge|gt|le|lt VERSION]${COLOR_OFF}
     is PACKAGE available?
 
-${COLOR_GREEN}ndk-pkg is-installed <PACKAGE>${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg is-installed <PKG-NAME>${COLOR_OFF}
     is PACKAGE installed?
 
-${COLOR_GREEN}ndk-pkg is-outdated  <PACKAGE>${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg is-outdated  <PKG-NAME>${COLOR_OFF}
     is PACKAGE outdated?
 
 ${COLOR_GREEN}ndk-pkg search <KEYWORD>${COLOR_OFF}
     search available packages.
  
-${COLOR_GREEN}ndk-pkg formula create <PACKAGE>${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg formula create <PKG-NAME>${COLOR_OFF}
     create a new formula.
 
-${COLOR_GREEN}ndk-pkg formula delete <PACKAGE>${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg formula delete <PKG-NAME>${COLOR_OFF}
     delete a exist formula.
 
 ${COLOR_GREEN}ndk-pkg formula rename <P1> <P2>${COLOR_OFF}
     rename a exist formula to new name.
 
-${COLOR_GREEN}ndk-pkg formula view <PACKAGE>${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg formula view <PKG-NAME>${COLOR_OFF}
     view the formula of the given package.
 
-${COLOR_GREEN}ndk-pkg formula edit <PACKAGE>${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg formula edit <PKG-NAME>${COLOR_OFF}
     edit the formula of the given package.
 
 ${COLOR_GREEN}ndk-pkg formula list${COLOR_OFF}
@@ -8020,46 +8423,46 @@ ${COLOR_GREEN}ndk-pkg formula-repo add <NAME> <URL>${COLOR_OFF}
 ${COLOR_GREEN}ndk-pkg formula-repo del <NAME>${COLOR_OFF}
     delete a exist formula-repo.
 
-${COLOR_GREEN}ndk-pkg tree <PACKAGE> [--dirsfirst | -L N]${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg tree <PKG-NAME> [--dirsfirst | -L N]${COLOR_OFF}
     list files of the given installed package in a tree-like format.
 
-${COLOR_GREEN}ndk-pkg pack <PACKAGE> [--type=7z|zip|tar.gz|tar.xz|tar.bz2]${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg pack <PKG-NAME> <7z|zip|aar|tar.gz|tar.xz|tar.bz2>${COLOR_OFF}
     pack the given installed package.
 
-${COLOR_GREEN}ndk-pkg logs <PACKAGE> <ABI>${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg logs <PKG-NAME> <armeabi-v7a|arm64-v8a|x86|x86_64>${COLOR_OFF}
     show logs of the given installed package.
 
-${COLOR_GREEN}ndk-pkg info <PACKAGE> [KEY|--json|--shell]${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg info <PKG-NAME> [KEY|--json|--shell]${COLOR_OFF}
     show information of the given package.
 
 ${COLOR_GREEN}ndk-pkg info @all [--json]${COLOR_OFF}
     show information of all the available packages.
 
-${COLOR_GREEN}ndk-pkg fetch <PACKAGE>${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg fetch <PKG-NAME>${COLOR_OFF}
     download formula resources of the given package to the cache.
 
 ${COLOR_GREEN}ndk-pkg fetch @all${COLOR_OFF}
     download formula resources of all available packages to the cache.
 
-${COLOR_GREEN}ndk-pkg depends <PACKAGE>${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg depends <PKG-NAME>${COLOR_OFF}
     show the depends of the given package.
 
-${COLOR_GREEN}ndk-pkg homepage [--open] [PACKAGE]${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg homepage [--open] [PKG-NAME]${COLOR_OFF}
     show or open the homepage of the given package or this project in web browser.
 
-${COLOR_GREEN}ndk-pkg install   <PACKAGE>... [--min-sdk-api-level=21 --jobs=N -q -v -d -x --dry-run --keep-work-dir]${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg install   <PKG-NAME>... [--min-sdk-api-level=21 --jobs=N -q -v -d -x --dry-run --keep-work-dir]${COLOR_OFF}
     install the given packages.
 
-${COLOR_GREEN}ndk-pkg reinstall <PACKAGE>... [--min-sdk-api-level=21 --jobs=N -q -v -d -x --dry-run --keep-work-dir]${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg reinstall <PKG-NAME>... [--min-sdk-api-level=21 --jobs=N -q -v -d -x --dry-run --keep-work-dir]${COLOR_OFF}
     reinstall the given packages.
 
-${COLOR_GREEN}ndk-pkg upgrade   [PACKAGE]... [--min-sdk-api-level=21 --jobs=N -q -v -d -x --dry-run --keep-work-dir]${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg upgrade   [PKG-NAME]... [--min-sdk-api-level=21 --jobs=N -q -v -d -x --dry-run --keep-work-dir]${COLOR_OFF}
     upgrade the given packages or all outdated packages.
 
 ${COLOR_GREEN}ndk-pkg upgrade @self  [-x | --china]${COLOR_OFF}
     upgrade this software.
 
-${COLOR_GREEN}ndk-pkg uninstall <PACKAGE>...${COLOR_OFF}
+${COLOR_GREEN}ndk-pkg uninstall <PKG-NAME>...${COLOR_OFF}
     uninstall the given packages.
     "
 
@@ -8071,6 +8474,8 @@ ${COLOR_GREEN}ndk-pkg uninstall <PACKAGE>...${COLOR_OFF}
 }
 
 main() {
+    set -e
+
     unset XTRACE
     unset COUNTRY
 
@@ -8107,16 +8512,12 @@ main() {
             echo
             setup_build_toolchains_env
             ;;
-        target)
-            shift
-            case $1 in
-                levels)  shift; __list_supported_target_sdk_api_levels ;;
-                triples) shift; __list_supported_target_triples ;;
-                archs)   shift; __list_supported_target_archs ;;
-                abis)    shift; __list_supported_target_abis ;;
-                *) help 1
-            esac
-            ;;
+
+        ls-target-levels)  shift; __list_supported_target_sdk_api_levels ;;
+        ls-target-triples) shift; __list_supported_target_triples ;;
+        ls-target-archs)   shift; __list_supported_target_archs ;;
+        ls-target-abis)    shift; __list_supported_target_abis ;;
+
         ls-available) shift; __list_available_packages ;;
         ls-installed) shift; __list_installed_packages ;;
         ls-outdated)  shift; __list__outdated_packages ;;
@@ -8206,9 +8607,9 @@ main() {
                 *)  die "ndk-pkg integrate $1: not support."
             esac
             ;;
-        homepage) shift; __show_or_open_homepage_of_the_given_package $@ ;;
-        depends)  shift;          __show_depends_of_the_given_package $@ ;;
-        fetch)    shift;       __fetch_resources_of_the_given_package $@ ;;
+        homepage) shift;  __show_or_open_homepage_of_the_given_package $@ ;;
+        depends)  shift; __show_packages_depended_by_the_given_package $@ ;;
+        fetch)    shift;        __fetch_resources_of_the_given_package $@ ;;
 
         logs) shift; __logs_the_given_installed_package $@ ;;
         pack) shift; __pack_the_given_installed_package $@ ;;
