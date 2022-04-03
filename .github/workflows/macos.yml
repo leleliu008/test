@@ -43,10 +43,9 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: sed -n '/^\s*package\s\{1,\}set\s\{1,\}dep\.pkg\s\{1,\}".*"\s*/p' ~/.ndk-pkg/repos.d/offical/formula/pngquant.sh
         #- run: cp bitcoin.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install pngquant --tree -x
+      - run: ./ndk-pkg install pcre --tree
 
       - run: |
           for item in $(./ndk-pkg ls-available)
