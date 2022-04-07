@@ -27,6 +27,19 @@ jobs:
 
       - run: ./ndk-pkg update
 
-      - run: cp bitcoin.sh ~/.ndk-pkg/repos.d/offical/formula
+        #- run: cp bitcoin.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install bitcoin --tree
+        #- run: ./ndk-pkg install bitcoin --tree
+      - run: command -v aclocal
+      - run: aclocal --version
+      - run: aclocal --print-ac-dir
+      - run: ls $(aclocal --print-ac-dir)
+
+      - run: command -v automake
+      - run: automake --version
+
+      - run: command -v autoconf
+      - run: autoconf --version
+
+      - run: command -v libtoolize
+      - run: libtoolize --version
