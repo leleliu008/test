@@ -62,10 +62,10 @@ jobs:
             eval "$*"
           }
 
-          curl -LO https://mediaarea.net/download/source/libzen/0.4.39/libzen_0.4.39.tar.bz2
-          tar vxf libzen_0.4.39.tar.bz2
-          cd ZenLib/Project/GNU/Library
-          ls
-          ./autogen.sh
-          ./configure
-          make
+          run curl -LO https://mediaarea.net/download/source/libzen/0.4.39/libzen_0.4.39.tar.bz2
+          run tar vxf libzen_0.4.39.tar.bz2
+          run cd ZenLib/Project/GNU/Library
+          run ls
+          run ./autogen.sh
+          run ./configure
+          run make
