@@ -45,7 +45,7 @@ jobs:
 
         #- run: cp bitcoin.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install pcre --tree
+        #- run: ./ndk-pkg install pcre --tree
 
       - run: |
           for item in $(./ndk-pkg ls-available)
@@ -57,3 +57,16 @@ jobs:
               brew info "$item" 2>/dev/null | head -n 1 | grep ': ' || return 1
             fi
           done
+      - run: command -v aclocal
+      - run: aclocal --version
+      - run: aclocal --print-ac-dir
+      - run: ls $(aclocal --print-ac-dir)
+
+      - run: command -v automake
+      - run: automake --version
+
+      - run: command -v autoconf
+      - run: autoconf --version
+
+      - run: command -v libtoolize
+      - run: libtoolize --version
