@@ -17,19 +17,20 @@ jobs:
     runs-on: ubuntu-${{ matrix.version }}
 
     steps:
-      - uses: actions/checkout@v2
+      #- uses: actions/checkout@v2
 
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
+        #- run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
 
-      - run: chmod +x ndk-pkg
+        #- run: chmod +x ndk-pkg
 
-      - run: ./ndk-pkg env
+        #- run: ./ndk-pkg env
 
-      - run: ./ndk-pkg update
+        #- run: ./ndk-pkg update
 
         #- run: cp bitcoin.sh ~/.ndk-pkg/repos.d/offical/formula
 
         #- run: ./ndk-pkg install bitcoin --tree
+
       - run: command -v aclocal
       - run: aclocal --version
       - run: aclocal --print-ac-dir
@@ -43,3 +44,18 @@ jobs:
 
       - run: command -v libtoolize
       - run: libtoolize --version
+
+      - run: brew info    libtool
+      - run: brew install libtool
+
+      - run: command -v libtoolize
+      - run: libtoolize --version
+
+      - name: compile libzen
+        run: |
+          curl -LO https://mediaarea.net/download/source/libzen/0.4.39/libzen_0.4.39.tar.bz2
+          tar vxf libzen_0.4.39.tar.bz2
+          cd libzen_0.4.39/Project/GNU/Library
+          ./autogen.sh
+          ./configure
+          make
