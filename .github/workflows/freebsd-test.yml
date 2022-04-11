@@ -31,7 +31,7 @@ jobs:
 
             run pkg install -y autoconf automake pkgconf
 
-            run 'pkg info | sed -n /libiconv/p'
+            run pkg info
 
             run freebsd-version
             
