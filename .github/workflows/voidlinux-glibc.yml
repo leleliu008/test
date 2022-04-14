@@ -1,0 +1,17 @@
+name: VoidLinux-glibc
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    
+    container: voidlinux/voidlinux
+
+    steps:
+      - run: |
+          printf '%s\n' 'a.rst.1 b.rst.1 c.rst.1' | xargs -I{} basename {} .rst.1

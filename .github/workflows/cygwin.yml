@@ -1,0 +1,19 @@
+name: Cygwin
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: cygwin {0}
+
+    steps:
+      - run: |
+          printf '%s\n' 'a.rst.1 b.rst.1 c.rst.1' | xargs -I{} basename {} .rst.1

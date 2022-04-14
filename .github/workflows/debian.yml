@@ -18,12 +18,5 @@ jobs:
     container: debian:${{ matrix.tag }}
 
     steps:
-      - run: apt -y update
-      - run: apt -y install git
-
-      - uses: actions/checkout@v2
-
       - run: |
-          ls -a .
-          cp -r . ..
-          ls -a ..
+          printf '%s\n' 'a.rst.1 b.rst.1 c.rst.1' | xargs -I{} basename {} .rst.1

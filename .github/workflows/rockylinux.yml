@@ -19,10 +19,5 @@ jobs:
     container: rockylinux:${{ matrix.tag }}
 
     steps:
-      - run: dnf -y update
-      - run: dnf -y install git
-
-      - uses: actions/checkout@v2
-
-      - run: ./ndk-pkg update
-      - run: ./ndk-pkg install zlib -x
+      - run: |
+          printf '%s\n' 'a.rst.1 b.rst.1 c.rst.1' | xargs -I{} basename {} .rst.1

@@ -1,0 +1,22 @@
+name: openSUSE Leap
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: [15.1]
+
+    container: opensuse/leap:${{ matrix.tag }}
+
+    steps:
+      - run: |
+          printf '%s\n' 'a.rst.1 b.rst.1 c.rst.1' | xargs -I{} basename {} .rst.1
