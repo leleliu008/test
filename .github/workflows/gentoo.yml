@@ -2,9 +2,9 @@ name: Gentoo
 
 on:
   push:
-    branches: [ * ]
+    branches: [ test-xargs ]
   pull_request:
-    branches: [ * ]
+    branches: [ test-xargs ]
 
 jobs:
   test:

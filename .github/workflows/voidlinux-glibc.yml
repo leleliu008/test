@@ -2,9 +2,9 @@ name: VoidLinux-glibc
 
 on:
   push:
-    branches: [ * ]
+    branches: [ test-xargs ]
   pull_request:
-    branches: [ * ]
+    branches: [ test-xargs ]
 
 jobs:
   test:
