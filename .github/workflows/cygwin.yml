@@ -18,5 +18,8 @@ jobs:
       - run: choco install -y cygwin
         shell: pwsh
 
+      - run: C:\tools\cygwin\bin\bash.exe --login -i -c "sed -i 's/--login -i/--login -i %1/' /cygdrive/c/tools/cygwin/Cygwin.bat"
+        shell: pwsh
+
       - run: |
           printf '%s\n' 'a.rst.1 b.rst.1 c.rst.1' | xargs -I{} basename {} .rst.1
