@@ -15,5 +15,8 @@ jobs:
         shell: cygwin {0}
 
     steps:
+      - run: choco install -y cygwin
+        shell: pwsh
+
       - run: |
           printf '%s\n' 'a.rst.1 b.rst.1 c.rst.1' | xargs -I{} basename {} .rst.1
