@@ -31,6 +31,7 @@ jobs:
 
             run pkg install -y autoconf automake pkgconf
 
+
             run pkg info
 
             run freebsd-version
