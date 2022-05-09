@@ -29,6 +29,7 @@ jobs:
       - name: build
         run: |
           dir  "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7"
+          dir  "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.version }}\Enterprise"
           call "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat"
           dir .
           nmake -f mk_mvc.mak
