@@ -1,0 +1,34 @@
+name: Windows
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [2016, 2019, 2022]
+
+    runs-on: windows-${{ matrix.version }}
+
+    defaults:
+      run:
+        shell: cmd /C {0}
+
+    steps:
+      - run: choco install -y file
+
+      - uses: actions/checkout@v2
+        with:
+          reposotiry: 'universal-ctags/ctags'
+
+      - name: build
+        run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.version }}\BuildTools\Common7\Tools\VsDevCmd.bat"
+          nmake -f mk_mvc.mak
+
+      - run: file ctags.exe
