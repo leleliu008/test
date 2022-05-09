@@ -24,12 +24,13 @@ jobs:
 
       - uses: actions/checkout@v2
         with:
-          reposotiry: 'universal-ctags/ctags'
+          repository: 'universal-ctags/ctags'
 
       - name: build
         run: |
           dir  "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7"
           call "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat"
+          dir .
           nmake -f mk_mvc.mak
 
       - run: file ctags.exe
