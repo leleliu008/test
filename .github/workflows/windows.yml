@@ -28,8 +28,8 @@ jobs:
 
       - name: build
         run: |
-          dir  "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.version }}\Enterprise"
-          call "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\BuildTools\Common7\Tools\VsDevCmd.bat"
+          dir  "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7"
+          call "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat"
           nmake -f mk_mvc.mak
 
       - run: file ctags.exe
