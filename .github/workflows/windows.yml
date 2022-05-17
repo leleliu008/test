@@ -34,7 +34,7 @@ jobs:
         run: |
           echo on
           if "${{ matrix.version }}" == "2019" (
-            set XX=" (x86)"
+            set XX= \(x86\)
           ) else (
             set XX=
           )
