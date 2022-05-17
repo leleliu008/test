@@ -33,13 +33,13 @@ jobs:
       - name: build
         run: |
           if "${{ matrix.version }}" == "2019" (
-            set VS_PREFIX=C:\Program Files (x86)
+            set XX= (x86)
           ) else (
-            set VS_PREFIX=C:\Program Files
+            set XX=
           )
 
           @rem https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170#developer_command_file_locations
-          call "%VS_PREFIX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat" -host_arch=amd64 -arch=${{ matrix.target-arch }}
+          call "C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat" -host_arch=amd64 -arch=${{ matrix.target-arch }}
 
           nmake -f mk_mvc.mak
 
