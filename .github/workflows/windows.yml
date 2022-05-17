@@ -32,6 +32,7 @@ jobs:
 
       - name: build
         run: |
+          echo on
           if "${{ matrix.version }}" == "2019" (
             set XX= (x86)
           ) else (
