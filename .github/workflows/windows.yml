@@ -15,6 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         version: [2019, 2022]
+        target-arch: [x86, amd64]
 
     runs-on: windows-${{ matrix.version }}
 
@@ -32,11 +33,14 @@ jobs:
       - name: build
         run: |
           if "${{ matrix.version }}" == "2019" (
-            call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+            set VS_PREFIX="C:\Program Files (x86)"
           ) else (
-            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+            set VS_PREFIX="C:\Program Files"
           )
-          dir .
+
+          # https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170#developer_command_file_locations
+          call "%VS_PREFIX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat" -host_arch=amd64 -arch=${{ matrix.target-arch }}
+
           nmake -f mk_mvc.mak
 
       - run: file ctags.exe
