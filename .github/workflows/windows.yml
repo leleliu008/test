@@ -26,20 +26,18 @@ jobs:
     steps:
       - run: choco install -y file
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: 'universal-ctags/ctags'
 
       - name: build
         run: |
-          echo on
           if "${{ matrix.version }}" == "2019" (
             set "XX= (x86)"
           ) else (
             set "XX="
           )
 
-          echo %XX%
           @rem https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170#developer_command_file_locations
           call "C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat" -host_arch=amd64 -arch=${{ matrix.target-arch }}
 
