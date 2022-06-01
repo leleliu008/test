@@ -48,4 +48,6 @@ jobs:
 
         #- run: cp bitcoin.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install imagemagick --tree -d
+      - run: ./ndk-pkg install icu4c
+
+      - run: hexdump -n 20 -v -e '1/1 "%02X" "/"' ~/.ndk-pkg/install.d/android/21/icu4c/armeabi-v7a/lib/libicudata.so
