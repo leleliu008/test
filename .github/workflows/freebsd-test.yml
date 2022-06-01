@@ -23,6 +23,8 @@ jobs:
 
     steps:
       - run:  vagrant --version
+      - run:  rm -rf ~/.vagrant.d
+
       - uses: leleliu008/github-actions-vagrant@v1
         with:
           mem: 2048
