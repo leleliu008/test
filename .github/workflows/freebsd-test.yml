@@ -22,6 +22,7 @@ jobs:
       RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
     steps:
+      - run:  vagrant --version
       - uses: leleliu008/github-actions-vagrant@v1
         with:
           mem: 2048
