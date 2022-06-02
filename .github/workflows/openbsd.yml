@@ -12,6 +12,9 @@ on:
 jobs:
   test:
     runs-on: macos-10.15
+
+    env:
+      VAGRANT_LOG: debug
     
     steps:
       - uses: actions/checkout@v2

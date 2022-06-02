@@ -18,6 +18,9 @@ jobs:
       matrix:
         version: [8, 9]
 
+    env:
+      VAGRANT_LOG: debug
+
     steps:
       - uses: actions/checkout@v2
 

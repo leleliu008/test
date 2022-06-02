@@ -20,6 +20,7 @@ jobs:
 
     env:
       RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      VAGRANT_LOG: debug
 
     steps:
       - run:  vagrant --version
