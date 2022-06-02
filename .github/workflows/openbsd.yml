@@ -27,10 +27,4 @@ jobs:
           mem: 2048
           box: generic/openbsd6
           run: |
-            run ls -a .
-            run cp -r . ..
-            run ls -a ..
-            run pkg_info -Q tree
-            run pkg_add tree
-            run pkg_info -Qd tree
-            run tree --help
+            run ls
