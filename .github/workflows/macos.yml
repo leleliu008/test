@@ -36,18 +36,20 @@ jobs:
       - run: clang --version
       - run: clang -dumpmachine
 
-      - uses: actions/checkout@v2
+      - run: curl -LO https://fossies.org/linux/misc/tiff-4.4.0.tar.gz
 
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/dev/bin/ndk-pkg
+        #- uses: actions/checkout@v2
 
-      - run: chmod +x ndk-pkg
+        #- run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/dev/bin/ndk-pkg
+
+        #- run: chmod +x ndk-pkg
   
-      - run: ./ndk-pkg env
+        #- run: ./ndk-pkg env
 
-      - run: ./ndk-pkg update
+        #- run: ./ndk-pkg update
 
         #- run: cp bitcoin.sh ~/.ndk-pkg/repos.d/offical/formula
 
-      - run: ./ndk-pkg install icu4c
+        #- run: ./ndk-pkg install icu4c
 
-      - run: hexdump -n 20 -v -e '1/1 "%02X" "/"' ~/.ndk-pkg/install.d/android/21/icu4c/armeabi-v7a/lib/libicudata.so
+        #- run: hexdump -n 20 -v -e '1/1 "%02X" "/"' ~/.ndk-pkg/install.d/android/21/icu4c/armeabi-v7a/lib/libicudata.so
