@@ -2,9 +2,9 @@ name: Cygwin
 
 on:
   push:
-    branches: [ test-xargs ]
+    branches: [ test-head-instead-of-hexdump ]
   pull_request:
-    branches: [ test-xargs ]
+    branches: [ test-head-instead-of-hexdump ]
 
 jobs:
   test:
