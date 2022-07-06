@@ -18,6 +18,5 @@ jobs:
     container: fedora:${{ matrix.tag }}
 
     steps:
-      - run: dnf install -y findutils
       - run: |
-          printf '%s\n' 'a.rst.1 b.rst.1 c.rst.1' | xargs -I{} basename {} .rst.1
+          [ $(head -c 4 /proc/self/exe) = $(printf '\177ELF') ]

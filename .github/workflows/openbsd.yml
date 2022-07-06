@@ -18,4 +18,4 @@ jobs:
         mem: 2048
         box: generic/openbsd6
         run: |
-          printf '%s\n' 'a.rst.1 b.rst.1 c.rst.1' | xargs -I{} basename {} .rst.1
+            [ $(head -c 4 /proc/self/exe) = $(printf '\177ELF') ]
