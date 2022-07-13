@@ -1,10 +1,10 @@
 name: OpenBSD
 
 on:
-  workflow_run:
-    workflows: ["FreeBSD"]
-    types:
-      - completed
+  push:
+    branches: [ test-head-instead-of-hexdump ]
+  pull_request:
+    branches: [ test-head-instead-of-hexdump ]
 
 jobs:
   test:
