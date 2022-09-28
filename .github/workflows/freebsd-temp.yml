@@ -32,9 +32,9 @@ jobs:
             ${{ runner.os }}-vagrant-
 
       - run: |
-        if [ -d ~/.vagrant.d ] ; then
-          ls ~/.vagrant.d
-        fi
+          if [ -d ~/.vagrant.d ] ; then
+            ls ~/.vagrant.d
+          fi
 
       - uses: leleliu008/github-actions-vagrant@v1
         with:
