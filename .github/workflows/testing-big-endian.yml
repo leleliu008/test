@@ -33,8 +33,8 @@ jobs:
       - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x /sbin/apk update
       - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x /sbin/apk add git gdb procps gcc automake autoconf pkgconf make libxml2-dev jansson-dev yaml pcre2-dev findutils diffutils
 
-      - run: ./autogen.sh
-      - run: ./configure --enable-debugging
-      - run: make -j $(nproc)
-      - run: readelf -h ctags
-      - run: make check
+      - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x ./autogen.sh
+      - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x ./configure --enable-debugging
+      - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x make -j $(nproc)
+      - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x readelf -h ctags
+      - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x make check
