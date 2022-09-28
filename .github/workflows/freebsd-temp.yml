@@ -41,4 +41,5 @@ jobs:
           mem: 2048
           box: generic/freebsd${{ matrix.version }}
           run: |
-            run pkg install -y git
+            #run pkg install -y git
+            echo xx
