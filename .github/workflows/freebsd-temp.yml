@@ -35,6 +35,11 @@ jobs:
           if [ -d ~/.vagrant.d ] ; then
             ls ~/.vagrant.d
           fi
+          if [ -d ~/.vagrant.d/boxes ] ; then
+            ls ~/.vagrant.d/boxes
+          fi
+
+      - run:  vagrant box list
 
       - uses: leleliu008/github-actions-vagrant@v1
         with:
