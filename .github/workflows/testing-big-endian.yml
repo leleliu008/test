@@ -31,7 +31,7 @@ jobs:
       - run: sudo apt-get -y install qemu-user
 
       - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x /sbin/apk update
-      - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x /sbin/apk add git gdb procps gcc libc-dev automake autoconf pkgconf make libxml2-dev jansson-dev yaml pcre2-dev findutils diffutils
+      - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x /sbin/apk add git gdb procps clang libc-dev automake autoconf pkgconf make libxml2-dev jansson-dev yaml pcre2-dev findutils diffutils
 
       - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x ./autogen.sh
       - run: ./proot -S alpine-s390x-rootfs -q qemu-s390x ./configure --enable-debugging || (cat config.log; exit 1)
