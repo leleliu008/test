@@ -18,7 +18,7 @@ jobs:
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install qemu-user debootstrap
 
-      - run: sudo debootstrap --variant=minbase --arch=s390x jammy alpine-s390x-rootfs/ http://ports.ubuntu.com/
+      - run: sudo debootstrap --variant=minbase --arch=s390x jammy alpine-s390x-rootfs/ http://ports.ubuntu.com/ || (cat /home/runner/work/test/test/alpine-s390x-rootfs/debootstrap/debootstrap.log; exit 1)
 
       - name: install proot
         run: |
