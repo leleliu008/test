@@ -23,7 +23,16 @@ jobs:
 
     steps:
       - run:  vagrant --version
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.vagrant.d/boxes
+          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-
+
       - run:  ls ~/.vagrant.d
+
       - uses: leleliu008/github-actions-vagrant@v1
         with:
           mem: 2048
