@@ -12,6 +12,12 @@ jobs:
 
     env:
       QEMU_S390X: ./proot -S alpine-s390x-rootfs -q qemu-s390x
+      CC:       /home/runner/s390x-linux-musl-cross/bin/s390x-linux-musl-cc
+      CPP:      /home/runner/s390x-linux-musl-cross/bin/s390x-linux-musl-cpp
+      AR:       /home/runner/s390x-linux-musl-cross/bin/s390x-linux-musl-ar
+      RANLIB:   /home/runner/s390x-linux-musl-cross/bin/s390x-linux-musl-ranlib
+      CPPFLAGS: -I/home/runner/s390x-linux-musl-cross/s390x-linux-musl/include
+      LDFLAGS:  -L/home/runner/s390x-linux-musl-cross/s390x-linux-musl/lib
 
     steps:
       - uses: actions/checkout@v3
@@ -34,15 +40,6 @@ jobs:
         run: |
           curl -LO https://musl.cc/s390x-linux-musl-cross.tgz
           tar xf s390x-linux-musl-cross.tgz -C ~
-          cat > "$GITHUB_ENV" <<EOF
-                CC=$HOME/s390x-linux-musl-cross/bin/s390x-linux-musl-cc
-               CPP=$HOME/s390x-linux-musl-cross/bin/s390x-linux-musl-cpp
-                AR=$HOME/s390x-linux-musl-cross/bin/s390x-linux-musl-ar
-            RANLIB=$HOME/s390x-linux-musl-cross/bin/s390x-linux-musl-ranlib
-
-          CPPFLAGS=-I$HOME/s390x-linux-musl-cross/s390x-linux-musl/include
-           LDFLAGS=-L$HOME/s390x-linux-musl-cross/s390x-linux-musl/lib
-          EOF
 
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install qemu-user automake autoconf pkg-config make
