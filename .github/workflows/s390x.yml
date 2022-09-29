@@ -17,7 +17,7 @@ jobs:
       AR:       /home/runner/s390x-linux-musl-cross/bin/s390x-linux-musl-ar
       RANLIB:   /home/runner/s390x-linux-musl-cross/bin/s390x-linux-musl-ranlib
       CPPFLAGS: -I/home/runner/s390x-linux-musl-cross/s390x-linux-musl/include
-      LDFLAGS:  -L/home/runner/s390x-linux-musl-cross/s390x-linux-musl/lib
+      LDFLAGS:  -L/home/runner/s390x-linux-musl-cross/s390x-linux-musl/lib -static
 
     steps:
       - uses: actions/checkout@v3
