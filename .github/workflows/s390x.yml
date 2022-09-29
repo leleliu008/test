@@ -39,13 +39,20 @@ jobs:
                CPP=$HOME/s390x-linux-musl-cross/bin/s390x-linux-musl-cpp
                 AR=$HOME/s390x-linux-musl-cross/bin/s390x-linux-musl-ar
             RANLIB=$HOME/s390x-linux-musl-cross/bin/s390x-linux-musl-ranlib
+
+          CPPFLAGS=-I$HOME/s390x-linux-musl-cross/s390x-linux-musl/include
+           LDFLAGS=-L$HOME/s390x-linux-musl-cross/s390x-linux-musl/lib
           EOF
 
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install qemu-user automake autoconf pkg-config make
 
       - run: ./autogen.sh
-      - run: ./configure --enable-debugging CC=$CC || (cat config.log; exit 1)
+      - run: |
+          echo CC=$CC
+          echo CPPFLAGS=$CPPFLAGS
+          echo LDFLAGS=$LDFLAGS
+          ./configure --enable-debugging CC=$CC || (cat config.log; exit 1)
       - run: make -j $(nproc)
       - run: ~/s390x-linux-musl-cross/bin/s390x-linux-musl-readelf -h ctags
 
