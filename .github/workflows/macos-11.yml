@@ -21,3 +21,4 @@ jobs:
 
     steps:
       - run: brew list
+      - run: brew uninstall go@1.17
