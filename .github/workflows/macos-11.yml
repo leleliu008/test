@@ -1,0 +1,23 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: macOS
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [11]
+
+    runs-on: macos-${{ matrix.version }}
+
+    steps:
+      - run: brew list
