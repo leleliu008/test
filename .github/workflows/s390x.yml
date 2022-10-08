@@ -77,6 +77,9 @@ jobs:
           run git config --global --add safe.directory /home/runner/uctags
 
           run misc/units tmain --show-diff-output ./Tmain ./Tmain
+
+          run misc/units run   --show-diff-output --run-shrink --with-timeout=10 ./Units ./Units
+
           EOF
 
           chmod +x run.sh
