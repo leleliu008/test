@@ -1,0 +1,40 @@
+name: run units target on a big endian architecture
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  s390x:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: universal-ctags/ctags
+
+      - run: |
+          mkdir -p $HOME/pkg
+          for item in zlib-1.2.12 pcre2-10.40 libyaml-0.2.5 libxml2-2.10.2 libiconv-1.17 jansson-2.14
+          do
+            curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/2022.10.08/${item}-linux-s390x-glibc.tar.xz
+            tar xf {item}-linux-s390x-glibc.tar.xz -C $HOME/pkg --strip-components=1
+          done
+          ls $HOME/pkg
+
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu
+
+      - run: ./autogen.sh
+      - run: |
+          export CC=/usr/bin/s390x-linux-gnu-gcc
+          export CPPFLAGS="-I$HOME/pkg/include"
+          export LDFLAGS="-L$HOME/pkg/lib"
+          ./configure --enable-debugging || (cat config.log; exit 1)
+      - run: make -j $(nproc)
+      - run: /usr/bin/s390x-linux-gnu-readelf -h ctags
+      - run: /usr/bin/s390x-linux-gnu-readelf -d ctags
+
+      - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - run: docker run -v $PWD:/root -w /root s390x/ubuntu bash -c 'uname -a && apt -y update && apt -y install git gdb procps findutils diffutils && make check'
