@@ -79,7 +79,7 @@ jobs:
           run misc/units tmain --show-diff-output --shell=bash ./Tmain ./Tmain
           EOF
 
-          chomd +x run.sh
+          chmod +x run.sh
 
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       - run: docker run -v/home/runner/pkg:/home/runner/pkg -v $PWD:/home/runner/uctags -w /home/runner/uctags s390x/ubuntu bash run.sh 
