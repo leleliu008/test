@@ -9,6 +9,14 @@ on:
 jobs:
   s390x:
     runs-on: ubuntu-latest
+
+    env:
+      PKGS: zlib-1.2.12 pcre2-10.40 libyaml-0.2.5 libxml2-2.10.2 libiconv-1.17 jansson-2.14
+      CC:   /usr/bin/s390x-linux-gnu-gcc
+      CPPFLAGS: -I/home/runner/pkg/include
+      LDFLAGS:  -L/home/runner/pkg/lib
+      PKG_CONFIG_PATH: /home/runner/pkg/lib/pkgconfig
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -16,7 +24,7 @@ jobs:
 
       - run: |
           mkdir -p $HOME/pkg
-          for item in zlib-1.2.12 pcre2-10.40 libyaml-0.2.5 libxml2-2.10.2 libiconv-1.17 jansson-2.14
+          for item in $PKGS
           do
             curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/2022.10.08/${item}-linux-s390x-glibc.tar.xz
             tar xf ${item}-linux-s390x-glibc.tar.xz -C $HOME/pkg --strip-components=1
@@ -27,12 +35,9 @@ jobs:
       - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu
 
       - run: ./autogen.sh
-      - run: |
-          export CC=/usr/bin/s390x-linux-gnu-gcc
-          export CPPFLAGS="-I$HOME/pkg/include"
-          export LDFLAGS="-L$HOME/pkg/lib"
-          ./configure --host=s390x-ibm-linux-gnu --enable-debugging || (cat config.log; exit 1)
-      - run: make -j $(nproc)
+      - run: ./configure --host=s390x-ibm-linux-gnu --enable-debugging || (cat config.log; exit 1)
+      - run: make -j$(nproc)
+
       - run: /usr/bin/s390x-linux-gnu-readelf -h ctags
       - run: /usr/bin/s390x-linux-gnu-readelf -d ctags
 
