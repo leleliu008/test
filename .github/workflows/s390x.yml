@@ -54,7 +54,7 @@ jobs:
 
       - run: |
           cat > run.sh <<EOF
-          set -ex
+          set -e
 
           COLOR_GREEN='\033[0;32m'        # Green
           COLOR_PURPLE='\033[0;35m'       # Purple
@@ -76,11 +76,10 @@ jobs:
 
           run git config --global --add safe.directory /home/runner/uctags
 
-          run misc/units tmain --show-diff-output --shell=bash ./Tmain ./Tmain
+          run misc/units tmain --show-diff-output ./Tmain ./Tmain
           EOF
 
           chmod +x run.sh
-          cat run.sh
 
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       - run: docker run -v/home/runner/pkg:/home/runner/pkg -v $PWD:/home/runner/uctags -w /home/runner/uctags s390x/ubuntu bash run.sh 
