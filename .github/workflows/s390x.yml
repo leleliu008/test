@@ -29,6 +29,7 @@ jobs:
         id:   restore-cache
         with:
           path: /home/runner/pkg
+          key:          dependent-packages-linux-s390x-glibc
           restore-keys: dependent-packages-linux-s390x-glibc
 
       - if: ${{ steps.restore-cache.outputs.cache-hit != 'true' }}
