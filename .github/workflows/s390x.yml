@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      PKGS: zlib-1.2.12 pcre2-10.40 libyaml-0.2.5 libxml2-2.10.2 libiconv-1.17 jansson-2.14
       CC:   /usr/bin/s390x-linux-gnu-gcc
       CPPFLAGS: -I/home/runner/pkg/include
       LDFLAGS:  -L/home/runner/pkg/lib
@@ -35,14 +34,27 @@ jobs:
 
           mkdir -p /home/runner/pkg
 
-          unset RELEASE_VERSION
+          curl -L -o lastest.json https://api.github.com/repos/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/latest
 
-          RELEASE_VERSION=$(curl -sL https://api.github.com/repos/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/latest | jq -r .tag_name)
+          unset RELEASE_TAG_NAME_
+          unset RELEASE_FILENAMES
 
-          for item in $PKGS
+          RELEASE_TAG_NAME_=$(jq -r '.tag_name'      lastest.json)
+          RELEASE_FILENAMES=$(jq -r '.assets[].name' lastest.json)
+
+          for filename in $RELEASE_FILENAMES
           do
-            curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/${RELEASE_VERSION}/${item}-linux-s390x-glibc.tar.xz
-            tar xf ${item}-linux-s390x-glibc.tar.xz -C /home/runner/pkg --strip-components=1
+              case $filename in
+                   jansson-*-linux-s390x-glibc.tar.xz) ;;
+                  libiconv-*-linux-s390x-glibc.tar.xz) ;;
+                   libxml2-*-linux-s390x-glibc.tar.xz) ;;
+                   libyaml-*-linux-s390x-glibc.tar.xz) ;;
+                     pcre2-*-linux-s390x-glibc.tar.xz) ;;
+                      zlib-*-linux-s390x-glibc.tar.xz) ;;
+                  *) continue ;;
+              esac
+              curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/${RELEASE_TAG_NAME_}/${filename}
+              tar xf ${filename} -C /home/runner/pkg --strip-components=1
           done
 
           rm -rf /home/runner/pkg/share/log
@@ -83,11 +95,6 @@ jobs:
 
           run uname -a
 
-          run apt -y update
-          run apt -y install findutils diffutils
-
-          #run git config --global --add safe.directory /home/runner/uctags
-
           run misc/units tmain --show-diff-output ./Tmain ./Tmain
 
           run misc/units run   --show-diff-output --run-shrink --with-timeout=10 ./Units ./Units
@@ -97,4 +104,4 @@ jobs:
 
       # https://github.com/multiarch/qemu-user-static
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - run: docker run -v/home/runner/pkg:/home/runner/pkg -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }} s390x/ubuntu bash run.sh 
+      - run: docker run -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }} s390x/ubuntu bash run.sh 
