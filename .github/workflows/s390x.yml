@@ -25,13 +25,26 @@ jobs:
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu tree
 
-      - run: |
+      - uses: actions/cache@v3
+        id:   restore-cache
+        with:
+          path: /home/runner/pkg
+          restore-keys: dependent-packages-linux-s390x-glibc
+
+      - if: ${{ steps.restore-cache.outputs.cache-hit != 'true' }}
+        run: |
+          set -x
+
           mkdir -p /home/runner/pkg
+
+          unset RELEASE_VERSION
+
+          RELEASE_VERSION=$(curl -sL https://api.github.com/repos/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/latest | jq -r .tag_name)
 
           for item in $PKGS
           do
-            curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/2022.10.08/${item}-linux-s390x-glibc.tar.xz
-            tar xf ${item}-linux-s390x-glibc.tar.xz -C $HOME/pkg --strip-components=1
+            curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/${RELEASE_VERSION}/${item}-linux-s390x-glibc.tar.xz
+            tar xf ${item}-linux-s390x-glibc.tar.xz -C /home/runner/pkg --strip-components=1
           done
 
           rm -rf /home/runner/pkg/share/log
@@ -79,10 +92,10 @@ jobs:
           run misc/units tmain --show-diff-output ./Tmain ./Tmain
 
           run misc/units run   --show-diff-output --run-shrink --with-timeout=10 ./Units ./Units
-
           EOF
 
           chmod +x run.sh
 
+      # https://github.com/multiarch/qemu-user-static
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       - run: docker run -v/home/runner/pkg:/home/runner/pkg -v $PWD:/home/runner/uctags -w /home/runner/uctags s390x/ubuntu bash run.sh 
