@@ -31,7 +31,7 @@ jobs:
           export CC=/usr/bin/s390x-linux-gnu-gcc
           export CPPFLAGS="-I$HOME/pkg/include"
           export LDFLAGS="-L$HOME/pkg/lib"
-          ./configure --enable-debugging || (cat config.log; exit 1)
+          ./configure --host=s390x-ibm-linux-gnu --enable-debugging || (cat config.log; exit 1)
       - run: make -j $(nproc)
       - run: /usr/bin/s390x-linux-gnu-readelf -h ctags
       - run: /usr/bin/s390x-linux-gnu-readelf -d ctags
