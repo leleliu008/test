@@ -22,6 +22,9 @@ jobs:
         with:
           repository: universal-ctags/ctags
 
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu tree
+
       - run: |
           mkdir -p $HOME/pkg
           for item in $PKGS
@@ -29,10 +32,11 @@ jobs:
             curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/2022.10.08/${item}-linux-s390x-glibc.tar.xz
             tar xf ${item}-linux-s390x-glibc.tar.xz -C $HOME/pkg --strip-components=1
           done
-          ls $HOME/pkg
-
-      - run: sudo apt-get -y update
-      - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu
+          tree /home/runner/pkg
+          #rm -rf /home/runner/pkg/share/man
+          #rm -rf /home/runner/pkg/share/doc
+          #rm -rf /home/runner/pkg/installed-files
+          #rm -rf /home/runner/pkg/installed-metadata-ppkg
 
       - run: ./autogen.sh
       - run: ./configure --host=s390x-ibm-linux-gnu --enable-debugging || (cat config.log; exit 1)
@@ -42,4 +46,4 @@ jobs:
       - run: /usr/bin/s390x-linux-gnu-readelf -d ctags
 
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - run: docker run -v $PWD:/root -w /root s390x/ubuntu bash -c 'uname -a && apt -y update && apt -y install git gdb procps findutils diffutils && make check'
+      - run: docker run -v $PWD:/root -w /root s390x/ubuntu bash -c 'uname -a && apt -y update && apt -y install make git gdb procps findutils diffutils && make check'
