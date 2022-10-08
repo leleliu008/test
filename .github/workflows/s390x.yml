@@ -10,12 +10,6 @@ jobs:
   s390x:
     runs-on: ubuntu-latest
 
-    env:
-      CC:   /usr/bin/s390x-linux-gnu-gcc
-      CPPFLAGS: -I/home/runner/pkg/include
-      LDFLAGS:  -L/home/runner/pkg/lib
-      PKG_CONFIG_PATH: /home/runner/pkg/lib/pkgconfig
-
     steps:
       - uses: actions/checkout@v3
         with:
@@ -67,10 +61,15 @@ jobs:
           rm -rf /home/runner/pkg/installed-metadata-ppkg
 
       - run: sudo apt-get -y update
-      - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu tree
+      - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu
 
       - run: ./autogen.sh
-      - run: ./configure --host=s390x-ibm-linux-gnu --enable-debugging || (cat config.log; exit 1)
+      - run: |
+            export CC=/usr/bin/s390x-linux-gnu-gcc
+            export CPPFLAGS=-I/home/runner/pkg/include
+            export LDFLAGS=-L/home/runner/pkg/lib
+            export PKG_CONFIG_PATH=/home/runner/pkg/lib/pkgconfig
+            ./configure --host=s390x-ibm-linux-gnu --enable-debugging || (cat config.log; exit 1)
       - run: make -j$(nproc)
 
       - run: /usr/bin/s390x-linux-gnu-readelf -h ctags
@@ -104,4 +103,4 @@ jobs:
 
       # https://github.com/multiarch/qemu-user-static
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - run: docker run -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }} s390x/ubuntu bash run.sh 
+      - run: docker run -v $PWD:$PWD -w $PWD s390x/ubuntu bash run.sh 
