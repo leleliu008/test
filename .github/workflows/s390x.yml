@@ -19,7 +19,7 @@ jobs:
           for item in zlib-1.2.12 pcre2-10.40 libyaml-0.2.5 libxml2-2.10.2 libiconv-1.17 jansson-2.14
           do
             curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/2022.10.08/${item}-linux-s390x-glibc.tar.xz
-            tar xf {item}-linux-s390x-glibc.tar.xz -C $HOME/pkg --strip-components=1
+            tar xf ${item}-linux-s390x-glibc.tar.xz -C $HOME/pkg --strip-components=1
           done
           ls $HOME/pkg
 
