@@ -22,9 +22,6 @@ jobs:
         with:
           repository: universal-ctags/ctags
 
-      - run: sudo apt-get -y update
-      - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu tree
-
       - uses: actions/cache@v3
         id:   restore-cache
         with:
@@ -57,7 +54,8 @@ jobs:
           rm -rf /home/runner/pkg/installed-files
           rm -rf /home/runner/pkg/installed-metadata-ppkg
 
-          tree /home/runner/pkg
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu tree
 
       - run: ./autogen.sh
       - run: ./configure --host=s390x-ibm-linux-gnu --enable-debugging || (cat config.log; exit 1)
@@ -86,9 +84,9 @@ jobs:
           run uname -a
 
           run apt -y update
-          run apt -y install make git python3 procps findutils diffutils
+          run apt -y install findutils diffutils
 
-          run git config --global --add safe.directory /home/runner/uctags
+          #run git config --global --add safe.directory /home/runner/uctags
 
           run misc/units tmain --show-diff-output ./Tmain ./Tmain
 
@@ -99,4 +97,4 @@ jobs:
 
       # https://github.com/multiarch/qemu-user-static
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - run: docker run -v/home/runner/pkg:/home/runner/pkg -v $PWD:/home/runner/uctags -w /home/runner/uctags s390x/ubuntu bash run.sh 
+      - run: docker run -v/home/runner/pkg:/home/runner/pkg -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }} s390x/ubuntu bash run.sh 
