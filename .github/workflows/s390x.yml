@@ -18,7 +18,7 @@ jobs:
       - uses: actions/cache@v3
         id:   restore-cache
         with:
-          path: /home/runner/pkg
+          path: /home/runner/linux-s390x-glibc
           key:          dependent-packages-linux-s390x-glibc
           restore-keys: dependent-packages-linux-s390x-glibc
 
@@ -26,7 +26,7 @@ jobs:
         run: |
           set -x
 
-          mkdir -p /home/runner/pkg
+          mkdir -p /home/runner/linux-s390x-glibc
 
           curl -L -o lastest.json https://api.github.com/repos/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/latest
 
@@ -48,17 +48,17 @@ jobs:
                   *) continue ;;
               esac
               curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/${RELEASE_TAG_NAME_}/${filename}
-              tar xf ${filename} -C /home/runner/pkg --strip-components=1
+              tar xf ${filename} -C /home/runner/linux-s390x-glibc --strip-components=1
           done
 
-          rm -rf /home/runner/pkg/share/log
-          rm -rf /home/runner/pkg/share/man
-          rm -rf /home/runner/pkg/share/doc
-          rm -rf /home/runner/pkg/share/gtk-doc
-          rm -rf /home/runner/pkg/lib/libz.so*
-          rm -rf /home/runner/pkg/lib/lib*.la
-          rm -rf /home/runner/pkg/installed-files
-          rm -rf /home/runner/pkg/installed-metadata-ppkg
+          rm -rf /home/runner/linux-s390x-glibc/share/log
+          rm -rf /home/runner/linux-s390x-glibc/share/man
+          rm -rf /home/runner/linux-s390x-glibc/share/doc
+          rm -rf /home/runner/linux-s390x-glibc/share/gtk-doc
+          rm -rf /home/runner/linux-s390x-glibc/lib/libz.so*
+          rm -rf /home/runner/linux-s390x-glibc/lib/lib*.la
+          rm -rf /home/runner/linux-s390x-glibc/installed-files
+          rm -rf /home/runner/linux-s390x-glibc/installed-metadata-ppkg
 
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu
@@ -66,9 +66,9 @@ jobs:
       - run: ./autogen.sh
       - run: |
             export CC=/usr/bin/s390x-linux-gnu-gcc
-            export CPPFLAGS=-I/home/runner/pkg/include
-            export LDFLAGS=-L/home/runner/pkg/lib
-            export PKG_CONFIG_PATH=/home/runner/pkg/lib/pkgconfig
+            export CPPFLAGS=-I/home/runner/linux-s390x-glibc/include
+            export LDFLAGS=-L/home/runner/linux-s390x-glibc/lib
+            export PKG_CONFIG_PATH=/home/runner/linux-s390x-glibc/lib/pkgconfig
             ./configure --host=s390x-ibm-linux-gnu --enable-debugging || (cat config.log; exit 1)
       - run: make -j$(nproc)
 
@@ -103,4 +103,4 @@ jobs:
 
       # https://github.com/multiarch/qemu-user-static
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - run: docker run -v $PWD:$PWD -w $PWD s390x/ubuntu bash run.sh 
+      - run: docker run -v $PWD:$PWD -w $PWD s390x/ubuntu bash run.sh
