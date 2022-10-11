@@ -92,11 +92,8 @@ jobs:
               eval "\$*"
           }
 
-          run uname -a
-
-          run misc/units tmain --show-diff-output ./Tmain ./Tmain
-
-          run misc/units run   --show-diff-output --run-shrink --with-timeout=10 ./Units ./Units
+          run make tamin V=1 CTAGS_TEST= READTAGS_TEST= OPTSCRIPT_TEST=
+          run make units V=1 CTAGS_TEST= READTAGS_TEST= OPTSCRIPT_TEST=
           EOF
 
           chmod +x run.sh
