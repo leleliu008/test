@@ -99,10 +99,10 @@ jobs:
           }
 
           run apt-get -y update
-          run apt-get -y install make
+          run apt-get -y install make python3
 
-          run make tmain V=1 CI=1 SHELL=/usr/bin/bash PYTHON= CTAGS_TEST= READTAGS_TEST= OPTSCRIPT_TEST=
-          run make units V=1 CI=1 SHELL=/usr/bin/bash PYTHON= CTAGS_TEST= READTAGS_TEST= OPTSCRIPT_TEST=
+          run make tmain V=1 CI=1 CTAGS_TEST= READTAGS_TEST= OPTSCRIPT_TEST=
+          run make units V=1 CI=1 CTAGS_TEST= READTAGS_TEST= OPTSCRIPT_TEST=
           EOF
 
           chmod +x run.sh
