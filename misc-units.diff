@@ -1,0 +1,31 @@
+diff --git a/misc/units b/misc/units
+index 0c952857..d062cd2a 100755
+--- a/misc/units
++++ b/misc/units
+@@ -1118,6 +1118,8 @@ action_run ()
+ 	ERROR 1 "No such directory(build_dir): ${build_dir}"
+     fi
+ 
++    [ -z "$CTAGS" ] && CTAGS=./ctags
++
+     if ! [ -f "${CTAGS}" ]; then
+ 	ERROR 1 "no such file: ${CTAGS}"
+     elif ! [ -e "${CTAGS}" ]; then
+@@ -1668,6 +1670,8 @@ action_fuzz_common ()
+ 	ERROR 0 "No such directory: ${units_dir}"
+     fi
+ 
++    [ -z "$CTAGS" ] && CTAGS=./ctags
++
+     if ! [ -f "${CTAGS}" ]; then
+ 	ERROR 1 "no such file: ${CTAGS}"
+     elif ! [ -e "${CTAGS}" ]; then
+@@ -2244,6 +2248,8 @@ action_tmain ()
+ 	ERROR 1 "No such directory(build_dir): ${build_dir}"
+     fi
+ 
++    [ -z "$CTAGS" ] && CTAGS=./ctags
++
+     if ! [ -f "${CTAGS}" ]; then
+ 	ERROR 1 "no such file: ${CTAGS}"
+     elif ! [ -e "${CTAGS}" ]; then

@@ -15,6 +15,11 @@ jobs:
         with:
           repository: universal-ctags/ctags
 
+      - uses: actions/checkout@v3
+        with:
+          repository: leleliu008/test
+          path: me
+
       - uses: actions/cache@v3
         id:   restore-cache
         with:
@@ -61,8 +66,9 @@ jobs:
           rm -rf /home/runner/linux-s390x-glibc/installed-metadata-ppkg
 
       - run: sudo apt-get -y update
-      - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu
+      - run: sudo apt-get -y install automake autoconf pkg-config make gcc-s390x-linux-gnu patch
 
+      - run: patch -p1 < me/misc-units.diff
       - run: ./autogen.sh
       - run: |
             export CC=/usr/bin/s390x-linux-gnu-gcc
