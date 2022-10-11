@@ -92,6 +92,9 @@ jobs:
               eval "\$*"
           }
 
+          run apt-get -y update
+          run apt-get -y install make
+
           run make tamin V=1 CTAGS_TEST= READTAGS_TEST= OPTSCRIPT_TEST=
           run make units V=1 CTAGS_TEST= READTAGS_TEST= OPTSCRIPT_TEST=
           EOF
