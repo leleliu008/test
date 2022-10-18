@@ -1,0 +1,24 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: test-git-push
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: git config --global user.name  leleliu008
+      - run: git config --global user.email leleliu008@gmail.com
+      - run: touch "$(date +%s)"
+      - run: git add .
+      - run: git commit -m test
+      - run: git push origin master
