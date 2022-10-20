@@ -22,7 +22,9 @@ jobs:
 
       - run: git config --global user.name  leleliu008
       - run: git config --global user.email leleliu008@gmail.com
+
       - run: touch "$(date +%s)"
+
       - run: git add .
       - run: git commit -m test
       - run: git push origin master
