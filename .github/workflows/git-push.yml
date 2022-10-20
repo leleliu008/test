@@ -14,11 +14,18 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
     steps:
       - uses: actions/checkout@v3
+
       - run: git config --global user.name  leleliu008
       - run: git config --global user.email leleliu008@gmail.com
       - run: touch "$(date +%s)"
       - run: git add .
       - run: git commit -m test
       - run: git push origin master
+
+      - run: printf '%s\n' "$RELEASE_TOKEN" | gh auth login --with-token
+      - run: gh release create $(date +%Y%m%d) README.md --notes 'new release'
