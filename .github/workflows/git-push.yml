@@ -29,6 +29,5 @@ jobs:
       - run: git commit -m test
       - run: git push origin master
 
-
       - run: printf '%s\n' "$RELEASE_TOKEN" | gh auth login --with-token
       - run: gh release create $(date +%Y%m%d) README.md --notes 'new release'
