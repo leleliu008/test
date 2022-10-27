@@ -1,0 +1,21 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: Cygwin
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - run: git config --global core.autocrlf input
+
+      - uses: actions/checkout@v3
+
+      - run: C:\tools\cygwin\bin\bash.exe --login -i -c "cd '${{ github.workspace }}' && pwd && ls"
