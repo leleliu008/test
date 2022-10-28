@@ -36,6 +36,6 @@ jobs:
 
       - run: go mod vendor
 
-      - run: go build -v -ldflags '-s -w' -o out/
+      - run: go build -v -mod=mod -ldflags '-s -w' -o out/
 
       - run: ls out/
