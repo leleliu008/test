@@ -24,6 +24,8 @@ jobs:
         with:
           repository: adnanh/webhook
 
+      - run: go env
+
       - run: cat go.mod
 
       - run: install -d out/
