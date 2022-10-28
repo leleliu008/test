@@ -27,8 +27,8 @@ jobs:
       - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
 
-      - run: ./ppkg install giflib
+        #- run: ./ppkg install giflib
 
-      - run: go get -u golang.org/x/sys
+      - run: go install golang.org/x/sys@latest
 
       - run: ./ppkg install webhook
