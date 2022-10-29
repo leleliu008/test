@@ -28,3 +28,4 @@ jobs:
       - run: ./ppkg update
 
       - run: ./ppkg install lsof
+      - run: ./ppkg install libical
