@@ -1,0 +1,24 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: Cygwin
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - run: Invoke-WebRequest -OutFile setup-x86_64.exe "http://cygwin.com/setup-x86_64.exe"
+      - run: setup-x86_64.exe --quiet-mode --no-desktop --no-startmenu --only-site --site http://mirrors.kernel.org/sourceware/cygwin/ --root C:\tools\cygwin --local-package-dir \packages --packages gcc-g++,make,automake,autoconf,pkg-config,dos2unix,libiconv-devel,libjansson-devel,libxml2-devel,libyaml-devel
+
+      - run: git config --global core.autocrlf input
+
+      - uses: actions/checkout@v3
+
+      - run: C:\tools\cygwin\bin\bash.exe --login -i -c "cd '${{ github.workspace }}' && ./test.sh"
