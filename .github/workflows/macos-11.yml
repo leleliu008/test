@@ -27,4 +27,4 @@ jobs:
       - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
 
-      - run: ./ppkg install flatbuffers
+      - run: ./ppkg install flex
