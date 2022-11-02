@@ -19,6 +19,9 @@ jobs:
 
     runs-on: macos-${{ matrix.version }}
 
+    env:
+      ACLOCAL_PATH: /usr/local/share/aclocal
+
     steps:
       - run: brew uninstall go@1.17
 
