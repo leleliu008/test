@@ -30,5 +30,4 @@ jobs:
       - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
 
-      - run: ./ppkg install cpio
-      - run: ./ppkg install ag
+      - run: ./ppkg install libwebm
