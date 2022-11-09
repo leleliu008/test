@@ -22,4 +22,4 @@ jobs:
     steps:
       - run: brew update
       - run: brew list
-      - run: brew install gdb
+      - run: brew install --overwrite gdb
