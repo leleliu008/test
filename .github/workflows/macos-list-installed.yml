@@ -22,4 +22,5 @@ jobs:
     steps:
       - run: brew update
       - run: brew list
+      - run: brew uninstall python@3.10
       - run: brew install --overwrite gdb
