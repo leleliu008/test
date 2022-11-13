@@ -21,9 +21,10 @@ jobs:
 
     steps:
       - run: curl -LO https://github.com/leleliu008/uppm-package-repository-macos-x86_64/releases/download/2022.11.10/uppm-2022.11.08-macos-x86_64.tar.xz
-      - run: ./uppm update
-      - run: ./uppm install cmake
-      - run: ./uppm install git
+      - run: tar vxf uppm-2022.11.08-macos-x86_64.tar.xz --strip-components=1
+      - run: bin/uppm update
+      - run: bin/uppm install cmake
+      - run: bin/uppm install git
       #- run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
       #- run: chmod a+x ppkg
       #- run: ./ppkg setup
