@@ -15,12 +15,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [10.15, 11]
+        version: [10.15, 11, 12]
 
     runs-on: macos-${{ matrix.version }}
 
     steps:
-      - run: brew update
-      - run: brew list
-      - run: brew install --overwrite python@3.11
-      - run: brew install gdb
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+      - run: chmod a+x ppkg
+      - run: ./ppkg setup
