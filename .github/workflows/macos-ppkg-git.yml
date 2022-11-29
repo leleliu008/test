@@ -1,0 +1,42 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: macOS
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [12]
+
+    runs-on: macos-${{ matrix.version }}
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+      - run: chmod a+x ppkg
+      - run: ./ppkg setup --use-system-package-manager
+      - run: ./ppkg update
+      - run: ./ppkg install git --link-type=static-prefered --install-lib=static
+      - run: ./ppkg pack    git
+      - run: cp /opt/ppkg/cache.d/bin/*.tar.xz ~/.uppm/downloads/
+      - run: |
+          unset V
+          V=$(/opt/ppkg/core/bin/uppm info git version)
+          cat > ~/.uppm/repos.d/offical/formula/git.yml <<EOF
+          summary: Distributed revision control system
+          webpage: https://git-scm.com/
+          version: $V
+          bin-url: https://github.com/leleliu008/uppm-package-repository-linux-x86_64/releases/download/2022.11.10/git-$V-linux-x86_64.tar.xz
+          bin-sha: $(sha256sum /opt/ppkg/cache.d/bin/*.tar.xz | cut -d ' ' -f1)
+          EOF
+
+      - run: /opt/ppkg/core/bin/uppm uninstall git
+      - run: /opt/ppkg/core/bin/uppm   install git
