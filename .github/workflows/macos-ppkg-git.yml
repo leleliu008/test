@@ -30,19 +30,20 @@ jobs:
       - run: ./ppkg pack    git
 
       - run: |
-          install -d ~/.uppm/downloads/
-          cp /opt/ppkg/cache.d/bin/*.tar.xz ~/.uppm/downloads/
+          unset FILENAME
+          FILENAME=$(ls /opt/ppkg/cache.d/bin/git-*.tar.xz)
 
-          unset V
-          V=$(/opt/ppkg/core/bin/uppm info git version)
+          install -d ~/.uppm/downloads/
+          cp -v "$FILENAME" ~/.uppm/downloads/
 
           install -d ~/.uppm/repos.d/offical/formula
+
           cat > ~/.uppm/repos.d/offical/formula/git.yml <<EOF
           summary: Distributed revision control system
           webpage: https://git-scm.com/
-          version: $V
-          bin-url: https://github.com/leleliu008/uppm-package-repository-linux-x86_64/releases/download/2022.11.10/git-$V-linux-x86_64.tar.xz
-          bin-sha: $(sha256sum /opt/ppkg/cache.d/bin/*.tar.xz | cut -d ' ' -f1)
+          version: $(/opt/ppkg/core/bin/uppm info git version)
+          bin-url: https://github.com/leleliu008/uppm-package-repository-macos-x86_64/releases/download/2022.11.10/$FILENAME
+          bin-sha: $(sha256sum "$FILENAME" | cut -d ' ' -f1)
           EOF
 
       - run: curl -LO https://github.com/leleliu008/uppm-package-repository-macos-x86_64/releases/download/2022.11.10/uppm-2022.11.08-macos-x86_64.tar.xz
