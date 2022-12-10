@@ -38,7 +38,7 @@ jobs:
 
           install -d ~/.uppm/repos.d/92f11e6857bece89cf52ce032cbf368757c538720f913dac9337e7db6f6967f3/formula
 
-          cat > ~/.uppm/repos.d/offical/92f11e6857bece89cf52ce032cbf368757c538720f913dac9337e7db6f6967f3/git.yml <<EOF
+          cat > ~/.uppm/repos.d/92f11e6857bece89cf52ce032cbf368757c538720f913dac9337e7db6f6967f3/git.yml <<EOF
           summary: Distributed revision control system
           webpage: https://git-scm.com/
           version: $(/opt/ppkg/core/bin/uppm info git version)
