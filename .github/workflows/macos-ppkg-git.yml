@@ -48,4 +48,4 @@ jobs:
 
       - run: curl -LO https://github.com/leleliu008/uppm/releases/download/1.0.0/uppm-1.0.0-macos-x86_64.tar.xz
       - run: tar vxf uppm-1.0.0-macos-x86_64.tar.xz --strip-components=1
-      - run: sudo dtruss bin/uppm install git -v
+      - run: sudo bin/uppm install git -v
