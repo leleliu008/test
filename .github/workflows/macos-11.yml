@@ -22,3 +22,6 @@ jobs:
     steps:
       - run: brew update
       - run: brew install --overwrite python@3.10 python@3.11
+      - run: brew install libarchive tree
+      - run: brew --prefix libarchive
+      - run: tree $(brew --prefix libarchive)
