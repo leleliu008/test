@@ -23,26 +23,42 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          repository: 'leleliu008/uppm'
 
-      - run:  vagrant --version
-      - run:  rm -rf ~/.vagrant.d
 
       - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
           box: generic/netbsd${{ matrix.version }}
           run: |
-            run id
-            #run pkgin -y install mozilla-rootcerts
-            #run mozilla-rootcerts install
-            #run ls -a /usr/pkg/share/mozilla-rootcerts
-            run ls -a .
-            run cp -r . ..
-            run ls -a ..
-            run pkgin search tar
-            run pkgin -y install gtar
-            run gtar --version
+            run sudo sed -i 's/#ETCCERTSDIR=/ETCCERTSDIR=/' /usr/pkg/etc/ca-certificates-dir.conf
+            run sudo update-ca-certificates
 
-            export SSL_CERT_FILE=/usr/pkg/etc/openssl/certs/ca-certificates.crt
-            #export SSL_CERT_FILE=/etc/openssl/certs/ca-certificates.crt
+            unset ETCCERTSDIR
+
+            ETCCERTSDIR=$(sed -n '/^ETCCERTSDIR=/p' /usr/pkg/etc/ca-certificates-dir.conf | sed 's|ETCCERTSDIR=\(.*\)|\1|')
+
+            if [ -n "$ETCCERTSDIR" ] ; then
+                export SSL_CERT_FILE="$ETCCERTSDIR/ca-certificates.crt"
+            fi
+
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+            run chmod a+x ppkg
+            run ./ppkg setup --use-system-package-manager
+            run ./ppkg update
+
+
+            V=$(sed -n '/SET(PROJECT_VERSION /p' CMakeLists.txt | sed 's|SET(PROJECT_VERSION[[:space:]]*\(.*\))|\1|')
+
+            printf '%s\n' "git-sha: ${{ github.sha }}" >> /opt/ppkg/repos.d/offical-core/formula/uppm.yml
+            printf '%s\n' "src-url: dir://$PWD"        >> /opt/ppkg/repos.d/offical-core/formula/uppm.yml
+            printf '%s\n' "version: $V"                >> /opt/ppkg/repos.d/offical-core/formula/uppm.yml
+
+            run cat /opt/ppkg/repos.d/offical-core/formula/uppm.yml
+
+            run ./ppkg install uppm --link-type=static-only --install-lib=static
+
+            run cat /opt/ppkg/installed/uppm/.ppkg/receipt.yml
+
+            run ./ppkg pack    uppm
