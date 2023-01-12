@@ -28,7 +28,7 @@ jobs:
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
             run chmod a+x ppkg
-            run ./ppkg setup --use-system-package-manager
+            run ./ppkg setup
             run ./ppkg update
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
@@ -58,7 +58,7 @@ jobs:
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
             run chmod a+x ppkg
-            run ./ppkg setup --use-system-package-manager
+            run ./ppkg setup
             run ./ppkg update
             run sudo ln -sf /usr/local/bin/pkgconf /usr/bin/pkg-config
             run ./ppkg install uctags --link-type=static-only --install-lib=static
@@ -87,7 +87,7 @@ jobs:
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
             run chmod a+x ppkg
-            run ./ppkg setup --use-system-package-manager
+            run ./ppkg setup
             run ./ppkg update
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
@@ -118,7 +118,7 @@ jobs:
 
       - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
       - run: chmod a+x ppkg
-      - run: ./ppkg setup --use-system-package-manager
+      - run: ./ppkg setup
       - run: ./ppkg update
       - run: ./ppkg install uctags --link-type=static-prefered --install-lib=static
       - run: ./ppkg pack    uctags
@@ -146,7 +146,7 @@ jobs:
 
       - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
       - run: chmod a+x ppkg
-      - run: ./ppkg setup --use-system-package-manager
+      - run: ./ppkg setup
       - run: ./ppkg update
       - run: ./ppkg install uctags gh --link-type=static-only --install-lib=static
       - run: ./ppkg pack    uctags
