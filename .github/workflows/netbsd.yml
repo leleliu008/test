@@ -32,6 +32,11 @@ jobs:
           mem: 2048
           box: generic/netbsd${{ matrix.version }}
           run: |
+            pwd
+            echo HOME=$HOME
+            export -p
+            exit
+
             run sudo sed -i 's/#ETCCERTSDIR=/ETCCERTSDIR=/' /usr/pkg/etc/ca-certificates-dir.conf
             run sudo update-ca-certificates
 
