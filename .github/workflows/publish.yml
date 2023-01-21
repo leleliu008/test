@@ -156,21 +156,6 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: uppm-netbsd-tar-xz
-          path: ~/.ppkg/packed/
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: uppm-openbsd-tar-xz
-          path: ~/.ppkg/packed/
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: uppm-freebsd-tar-xz
-          path: ~/.ppkg/packed/
-
-      - uses: actions/download-artifact@v2
-        with:
           name: uppm-macos-tar-xz
           path: ~/.ppkg/packed/
 
@@ -179,6 +164,6 @@ jobs:
 
       - run: printf '%s\n' "$RELEASE_TOKEN" | ~/.ppkg/installed/gh/bin/gh auth login --with-token
 
-      - run: git config --global --add safe.directory /__w/uppm/uppm
+      - run: git config --global --add safe.directory /__w/test/test
 
       - run: ~/.ppkg/installed/gh/bin/gh release create $(./ppkg info uppm version) ~/.ppkg/packed/*
