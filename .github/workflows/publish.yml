@@ -90,6 +90,7 @@ jobs:
           path: ${{ github.workspace }}/uppm-*.tar.xz
 
   freebsd:
+    if: false
     #needs: openbsd
     runs-on: macos-12
 
@@ -125,7 +126,7 @@ jobs:
 
 
   macos:
-    needs: freebsd
+    #needs: freebsd
     runs-on: macos-latest
 
     env:
