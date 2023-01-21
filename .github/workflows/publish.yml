@@ -31,14 +31,6 @@ jobs:
             run chmod a+x ppkg
             run ./ppkg setup --use-system-package-manager
             run ./ppkg update
-
-
-            V=$(sed -n '/set(PROJECT_VERSION /p' CMakeLists.txt | sed 's|set(PROJECT_VERSION[[:space:]]*\(.*\))|\1|')
-
-            printf '%s\n' "git-sha: ${{ github.sha }}" >> ~/.ppkg/repos.d/offical-core/formula/uppm.yml
-            printf '%s\n' "src-url: dir://$PWD"        >> ~/.ppkg/repos.d/offical-core/formula/uppm.yml
-            printf '%s\n' "version: $V"                >> ~/.ppkg/repos.d/offical-core/formula/uppm.yml
-
             run ./ppkg install uppm --link-type=static-only --install-lib=static
             run ./ppkg pack    uppm
 
@@ -73,12 +65,6 @@ jobs:
 
             run sudo ln -sf /usr/local/bin/pkgconf /usr/bin/pkg-config
 
-            V=$(sed -n '/set(PROJECT_VERSION /p' CMakeLists.txt | sed 's|set(PROJECT_VERSION[[:space:]]*\(.*\))|\1|')
-
-            printf '%s\n' "git-sha: ${{ github.sha }}" >> ~/.ppkg/repos.d/offical-core/formula/uppm.yml
-            printf '%s\n' "src-url: dir://$PWD"        >> ~/.ppkg/repos.d/offical-core/formula/uppm.yml
-            printf '%s\n' "version: $V"                >> ~/.ppkg/repos.d/offical-core/formula/uppm.yml
-
             run ./ppkg install uppm --link-type=static-only --install-lib=static
             run ./ppkg pack    uppm
 
@@ -106,14 +92,6 @@ jobs:
             run chmod a+x ppkg
             run ./ppkg setup
             run ./ppkg update
-
-
-            V=$(sed -n '/set(PROJECT_VERSION /p' CMakeLists.txt | sed 's|set(PROJECT_VERSION[[:space:]]*\(.*\))|\1|')
-
-            printf '%s\n' "git-sha: ${{ github.sha }}" >> ~/.ppkg/repos.d/offical-core/formula/uppm.yml
-            printf '%s\n' "src-url: dir://$PWD"        >> ~/.ppkg/repos.d/offical-core/formula/uppm.yml
-            printf '%s\n' "version: $V"                >> ~/.ppkg/repos.d/offical-core/formula/uppm.yml
-
             run ./ppkg install uppm --link-type=static-only --install-lib=static
             run ./ppkg pack    uppm
 
@@ -145,15 +123,6 @@ jobs:
       - run: chmod a+x ppkg
       - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
-
-      - run: |
-          V=$(sed -n '/set(PROJECT_VERSION /p' CMakeLists.txt | sed 's|set(PROJECT_VERSION[[:space:]]*\(.*\))|\1|')
-          cat >> ~/.ppkg/repos.d/offical-core/formula/uppm.yml <<EOF
-          git-sha: ${{ github.sha }}
-          src-url: dir://$PWD
-          version: $V
-          EOF
-
       - run: ./ppkg install uppm --link-type=static-prefered --install-lib=static
       - run: ./ppkg pack    uppm
 
@@ -182,15 +151,6 @@ jobs:
       - run: chmod a+x ppkg
       - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
-
-      - run: |
-          V=$(sed -n '/set(PROJECT_VERSION /p' CMakeLists.txt | sed 's|set(PROJECT_VERSION[[:space:]]*\(.*\))|\1|')
-          cat >> ~/.ppkg/repos.d/offical-core/formula/uppm.yml <<EOF
-          git-sha: ${{ github.sha }}
-          src-url: dir://$PWD
-          version: $V
-          EOF
-
       - run: ./ppkg install uppm gh --link-type=static-only --install-lib=static
       - run: ./ppkg pack    uppm
 
