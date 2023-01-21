@@ -101,8 +101,6 @@ jobs:
           mem: 2048
           box: generic/freebsd13
           run: |
-            run pkg install -y curl
-
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
             run chmod a+x ppkg
             run ./ppkg setup --use-system-package-manager
