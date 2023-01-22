@@ -28,23 +28,25 @@ jobs:
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
             run chmod a+x ppkg
-            run ./ppkg setup
+            run ./ppkg setup --use-system-package-manager
             run ./ppkg update
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
 
-      - run:  scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:~/.ppkg/packed/uctags-1.0.0-netbsd-amd64.tar.xz .
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/root/.ppkg/packed/uctags-*-netbsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v2
         with:
-          name: uctags-netbsd-tar-xz
-          path: ${{ github.workspace }}/uctags-*.tar.xz
+          name: uctags-netbsd-amd64-tar-xz
+          path: ${{ github.workspace }}/uctags-*-netbsd-amd64.tar.xz
 
   openbsd:
     needs: netbsd
     runs-on: macos-12
 
     steps:
+      - run: brew install openssh
+
       - uses: actions/checkout@v3
 
       - uses: leleliu008/github-actions-vagrant@main
@@ -56,20 +58,21 @@ jobs:
 
             export LD_LIBRARY_PATH=/usr/local/lib
 
+            run sudo ln -sf /usr/local/bin/pkgconf /usr/bin/pkg-config
+
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
             run chmod a+x ppkg
-            run ./ppkg setup
+            run ./ppkg setup --use-system-package-manager
             run ./ppkg update
-            run sudo ln -sf /usr/local/bin/pkgconf /usr/bin/pkg-config
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
 
-      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:~/.ppkg/packed/uctags-1.0.0-openbsd-amd64.tar.xz .
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/root/.ppkg/packed/uctags-*-openbsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v2
         with:
-          name: uctags-openbsd-tar-xz
-          path: ${{ github.workspace }}/uctags-*.tar.xz
+          name: uctags-openbsd-amd64-tar-xz
+          path: ${{ github.workspace }}/uctags-*-openbsd-amd64.tar.xz
 
   freebsd:
     needs: openbsd
@@ -83,22 +86,21 @@ jobs:
           mem: 2048
           box: generic/freebsd13
           run: |
-            run pkg install -y curl
+            run pkg install -y curl libnghttp2
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
             run chmod a+x ppkg
-            run ./ppkg setup
+            run ./ppkg setup --use-system-package-manager
             run ./ppkg update
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
 
-      - run:  scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:~/.ppkg/packed/uctags-1.0.0-freebsd-amd64.tar.xz .
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/root/.ppkg/packed/uctags-*-freebsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v2
         with:
-          name: uctags-freebsd-tar-xz
-          path: ${{ github.workspace }}/uctags-*.tar.xz
-
+          name: uctags-freebsd-amd64-tar-xz
+          path: ${{ github.workspace }}/uctags-*-freebsd-amd64.tar.xz
 
   macos:
     needs: freebsd
@@ -116,17 +118,17 @@ jobs:
       - run: brew update
       - run: brew install --overwrite python@3.10 python@3.11
 
-      - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
       - run: chmod a+x ppkg
-      - run: ./ppkg setup
+      - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
       - run: ./ppkg install uctags --link-type=static-prefered --install-lib=static
       - run: ./ppkg pack    uctags
 
       - uses: actions/upload-artifact@v2
         with:
-          name: uctags-macos-tar-xz
-          path: ~/.ppkg/packed/*.tar.xz
+          name: uctags-macos-x86_64-tar-xz
+          path: ~/.ppkg/packed/uctags-*-macos-x86_64.tar.xz
 
   linux:
     needs: macos
@@ -146,29 +148,29 @@ jobs:
 
       - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
       - run: chmod a+x ppkg
-      - run: ./ppkg setup
+      - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
       - run: ./ppkg install uctags gh --link-type=static-only --install-lib=static
       - run: ./ppkg pack    uctags
 
       - uses: actions/download-artifact@v2
         with:
-          name: uctags-netbsd-tar-xz
+          name: uctags-netbsd-amd64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v2
         with:
-          name: uctags-openbsd-tar-xz
+          name: uctags-openbsd-amd64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v2
         with:
-          name: uctags-freebsd-tar-xz
+          name: uctags-freebsd-amd64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v2
         with:
-          name: uctags-macos-tar-xz
+          name: uctags-macos-x86_64-tar-xz
           path: ~/.ppkg/packed/
 
       - run: ls -a
@@ -176,6 +178,11 @@ jobs:
 
       - run: printf '%s\n' "$RELEASE_TOKEN" | ~/.ppkg/installed/gh/bin/gh auth login --with-token
 
-      - run: git config --global --add safe.directory /__w/test/test
+      - run: git config --global --add safe.directory /__w/uctags/uctags
 
-      - run: ~/.ppkg/installed/gh/bin/gh release create $(./ppkg info uctags version) ~/.ppkg/packed/*
+      - run: |
+          printf '```\n%s```\n' "$(sha256sum uctags-*.tar.xz)" > notes.txt
+
+          V=$(ls uctags-*-linux-x86_64.tar.xz | cut -d- -f2)
+
+          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/* --notes-file notes.txt
