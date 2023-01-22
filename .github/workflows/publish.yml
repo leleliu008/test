@@ -56,6 +56,8 @@ jobs:
           mem: 2048
           box: generic/openbsd7
           run: |
+            export HOME=/home/vagrant
+
             run sudo pkg_add curl
 
             export LD_LIBRARY_PATH=/usr/local/lib
@@ -69,7 +71,7 @@ jobs:
             run ./ppkg install zlib --link-type=static-only --install-lib=static
             run ./ppkg pack    zlib
 
-      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/root/.ppkg/packed/zlib-*-openbsd-amd64.tar.xz .
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/zlib-*-openbsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v2
         with:
