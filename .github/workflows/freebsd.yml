@@ -18,23 +18,14 @@ jobs:
       matrix:
         version: [13]
 
-    env:
-      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-      VAGRANT_LOG: debug
-
     steps:
       - run:  vagrant --version
 
-      - uses: actions/cache@v2
-        with:
-          path: ~/.vagrant.d/boxes
-          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
-          restore-keys: |
-            ${{ runner.os }}-vagrant-
-
-      - uses: leleliu008/github-actions-vagrant@v1
+      - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
           box: generic/freebsd${{ matrix.version }}
           run: |
-            run pkg install -y git
+            run pkg update
+            run pkg install -y curl
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
