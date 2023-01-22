@@ -56,6 +56,7 @@ jobs:
           run: |
             run sudo pkg_add curl
 
+            export HOME=/home/vagrant
             export LD_LIBRARY_PATH=/usr/local/lib
 
             run sudo ln -sf /usr/local/bin/pkgconf /usr/bin/pkg-config
@@ -67,7 +68,7 @@ jobs:
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
 
-      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/root/.ppkg/packed/uctags-*-openbsd-amd64.tar.xz .
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/uctags-*-openbsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v2
         with:
