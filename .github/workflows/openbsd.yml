@@ -28,3 +28,6 @@ jobs:
           box: generic/openbsd6
           run: |
             run ls
+
+      - run: brew install openssh
+      - run: command -v scp
