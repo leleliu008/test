@@ -4,12 +4,10 @@ on:
   workflow_dispatch
 
 jobs:
-  netbsd:
+  netbsd-amd64:
     runs-on: macos-12
 
     steps:
-      - uses: actions/checkout@v3
-
       - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
@@ -39,27 +37,24 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: uppm-netbsd-tar-xz
-          path: ${{ github.workspace }}/uppm-*.tar.xz
+          name: uppm-netbsd-amd64-tar-xz
+          path: ${{ github.workspace }}/uppm-*-netbsd-amd64.tar.xz
 
-  openbsd:
-    needs: netbsd
+  openbsd-amd64:
+    needs: netbsd-amd64
     runs-on: macos-12
 
     steps:
       - run: brew install openssh
-
-      - uses: actions/checkout@v3
 
       - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
           box: generic/openbsd7
           run: |
-            export HOME=/home/vagrant
-
             run sudo pkg_add curl
 
+            export HOME=/home/vagrant
             export LD_LIBRARY_PATH=/usr/local/lib
 
             run sudo ln -sf /usr/local/bin/pkgconf /usr/bin/pkg-config
@@ -68,33 +63,33 @@ jobs:
             run chmod a+x ppkg
             run ./ppkg setup --use-system-package-manager
             run ./ppkg update
-            run ./ppkg install zlib --link-type=static-only --install-lib=static
-            run ./ppkg pack    zlib
+            run ./ppkg install uppm --link-type=static-only --install-lib=static
+            run ./ppkg pack    uppm
 
-      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/zlib-*-openbsd-amd64.tar.xz .
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/uppm-*-openbsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v2
         with:
-          name: uppm-openbsd-tar-xz
-          path: ${{ github.workspace }}/uppm-*.tar.xz
+          name: uppm-openbsd-amd64-tar-xz
+          path: ${{ github.workspace }}/uppm-*-openbsd-amd64.tar.xz
 
-  freebsd:
-    needs: openbsd
+  freebsd-amd64:
+    needs: openbsd-amd64
     runs-on: macos-12
 
     steps:
-      - uses: actions/checkout@v3
-
       - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
-          box: generic/freebsd12
+          box: generic/freebsd13
           run: |
             export HOME=/home/vagrant
 
+            run pkg install -y curl libnghttp2
+
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
             run chmod a+x ppkg
-            run ./ppkg setup
+            run ./ppkg setup --use-system-package-manager
             run ./ppkg update
             run ./ppkg install uppm --link-type=static-only --install-lib=static
             run ./ppkg pack    uppm
@@ -103,12 +98,11 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: uppm-freebsd-tar-xz
-          path: ${{ github.workspace }}/uppm-*.tar.xz
+          name: uppm-freebsd-amd64-tar-xz
+          path: ${{ github.workspace }}/uppm-*-freebsd-amd64.tar.xz
 
-
-  macos:
-    needs: freebsd
+  macos-x86_64:
+    needs: freebsd-amd64
     runs-on: macos-latest
 
     env:
@@ -116,14 +110,11 @@ jobs:
       MACOSX_DEPLOYMENT_TARGET: 10.15
 
     steps:
-      - uses: actions/checkout@main
-
       - run: brew uninstall go@1.17
-
       - run: brew update
       - run: brew install --overwrite python@3.10 python@3.11
 
-      - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
       - run: chmod a+x ppkg
       - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
@@ -132,11 +123,11 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: uppm-macos-tar-xz
-          path: ~/.ppkg/packed/*.tar.xz
+          name: uppm-macos-x86_64-tar-xz
+          path: ~/.ppkg/packed/uppm-*-macos-x86_64.tar.xz
 
-  linux:
-    needs: macos
+  linux-x86_64:
+    needs: macos-x86_64
     runs-on: ubuntu-latest
 
     container: alpine:3.16
@@ -149,8 +140,6 @@ jobs:
       - run: apk update
       - run: apk add git
 
-      - uses: actions/checkout@main
-
       - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
       - run: chmod a+x ppkg
       - run: ./ppkg setup --use-system-package-manager
@@ -160,7 +149,22 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: uppm-macos-tar-xz
+          name: uppm-netbsd-amd64-tar-xz
+          path: ~/.ppkg/packed/
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: uppm-openbsd-amd64-tar-xz
+          path: ~/.ppkg/packed/
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: uppm-freebsd-amd64-tar-xz
+          path: ~/.ppkg/packed/
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: uppm-macos-x86_64-tar-xz
           path: ~/.ppkg/packed/
 
       - run: ls -a
@@ -170,4 +174,9 @@ jobs:
 
       - run: git config --global --add safe.directory /__w/test/test
 
-      - run: ~/.ppkg/installed/gh/bin/gh release create $(./ppkg info uppm version) ~/.ppkg/packed/*
+      - run: |
+          printf '```\n%s```\n' "$(sha256sum ~/.ppkg/packed/uppm-*.tar.xz)" > notes.txt
+
+          V=$(ls ~/.ppkg/packed/uppm-*-linux-x86_64.tar.xz | cut -d- -f2)
+
+          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/* --notes-file notes.txt

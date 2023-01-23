@@ -1,15 +1,13 @@
-name: publish
+name: publish uctags
 
 on:
   workflow_dispatch
 
 jobs:
-  netbsd:
+  netbsd-amd64:
     runs-on: macos-12
 
     steps:
-      - uses: actions/checkout@v3
-
       - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
@@ -42,14 +40,12 @@ jobs:
           name: uctags-netbsd-amd64-tar-xz
           path: ${{ github.workspace }}/uctags-*-netbsd-amd64.tar.xz
 
-  openbsd:
-    needs: netbsd
+  openbsd-amd64:
+    needs: netbsd-amd64
     runs-on: macos-12
 
     steps:
       - run: brew install openssh
-
-      - uses: actions/checkout@v3
 
       - uses: leleliu008/github-actions-vagrant@main
         with:
@@ -77,13 +73,11 @@ jobs:
           name: uctags-openbsd-amd64-tar-xz
           path: ${{ github.workspace }}/uctags-*-openbsd-amd64.tar.xz
 
-  freebsd:
-    needs: openbsd
+  freebsd-amd64:
+    needs: openbsd-amd64
     runs-on: macos-12
 
     steps:
-      - uses: actions/checkout@v3
-
       - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
@@ -107,8 +101,8 @@ jobs:
           name: uctags-freebsd-amd64-tar-xz
           path: ${{ github.workspace }}/uctags-*-freebsd-amd64.tar.xz
 
-  macos:
-    needs: freebsd
+  macos-x86_64:
+    needs: freebsd-amd64
     runs-on: macos-latest
 
     env:
@@ -116,10 +110,7 @@ jobs:
       MACOSX_DEPLOYMENT_TARGET: 10.15
 
     steps:
-      - uses: actions/checkout@main
-
       - run: brew uninstall go@1.17
-
       - run: brew update
       - run: brew install --overwrite python@3.10 python@3.11
 
@@ -135,8 +126,8 @@ jobs:
           name: uctags-macos-x86_64-tar-xz
           path: ~/.ppkg/packed/uctags-*-macos-x86_64.tar.xz
 
-  linux:
-    needs: macos
+  linux-x86_64:
+    needs: macos-x86_64
     runs-on: ubuntu-latest
 
     container: alpine:3.16
@@ -148,8 +139,6 @@ jobs:
     steps:
       - run: apk update
       - run: apk add git
-
-      - uses: actions/checkout@main
 
       - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
       - run: chmod a+x ppkg
@@ -183,11 +172,11 @@ jobs:
 
       - run: printf '%s\n' "$RELEASE_TOKEN" | ~/.ppkg/installed/gh/bin/gh auth login --with-token
 
-      - run: git config --global --add safe.directory /__w/uctags/uctags
+      - run: git config --global --add safe.directory /__w/test/test
 
       - run: |
-          printf '```\n%s```\n' "$(sha256sum uctags-*.tar.xz)" > notes.txt
+          printf '```\n%s```\n' "$(sha256sum ~/.ppkg/packed/uctags-*.tar.xz)" > notes.txt
 
-          V=$(ls uctags-*-linux-x86_64.tar.xz | cut -d- -f2)
+          V=$(ls ~/.ppkg/packed/uctags-*-linux-x86_64.tar.xz | cut -d- -f2)
 
           ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/* --notes-file notes.txt
