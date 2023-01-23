@@ -27,7 +27,7 @@ jobs:
           mem: 2048
           box: generic/openbsd6
           run: |
-            run ls
+            pkg_add bash coreutils findutils gawk gsed ggrep unzip-- gtar-- xz bzip2 lzip gpatch pkgconf go git curl cmake ninja gmake libtool automake-1.16.3 gcc%11 patchelf flex bison m4 jq
 
       - run: brew install openssh
       - run: command -v scp
