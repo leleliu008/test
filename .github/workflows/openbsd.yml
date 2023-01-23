@@ -11,23 +11,22 @@ on:
 
 jobs:
   test:
-    runs-on: macos-10.15
+    runs-on: macos-12
 
-    env:
-      VAGRANT_LOG: debug
-    
     steps:
       - uses: actions/checkout@v2
 
       - run:  vagrant --version
       - run:  rm -rf ~/.vagrant.d
 
-      - uses: leleliu008/github-actions-vagrant@v1
+      - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
-          box: generic/openbsd6
+          box: generic/openbsd7
           run: |
-            pkg_add bash coreutils findutils gawk gsed ggrep unzip-- gtar-- xz bzip2 lzip gpatch pkgconf go git curl cmake ninja gmake libtool automake-1.16.3 gcc%11 patchelf flex bison m4 jq
+            curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+            chmod a+x ppkg
+            ./ppkg setup --use-system-package-manager
 
       - run: brew install openssh
       - run: command -v scp
