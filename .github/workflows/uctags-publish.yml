@@ -15,6 +15,8 @@ jobs:
           mem: 2048
           box: generic/netbsd9
           run: |
+            export HOME=/home/vagrant
+
             run sudo sed -i 's/#ETCCERTSDIR=/ETCCERTSDIR=/' /usr/pkg/etc/ca-certificates-dir.conf
             run sudo update-ca-certificates
 
@@ -33,7 +35,7 @@ jobs:
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
 
-      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/root/.ppkg/packed/uctags-*-netbsd-amd64.tar.xz .
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/uctags-*-netbsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v2
         with:
@@ -87,6 +89,8 @@ jobs:
           mem: 2048
           box: generic/freebsd13
           run: |
+            export HOME=/home/vagrant
+
             run pkg install -y curl libnghttp2
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
@@ -96,7 +100,7 @@ jobs:
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
 
-      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/root/.ppkg/packed/uctags-*-freebsd-amd64.tar.xz .
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/uctags-*-freebsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v2
         with:
