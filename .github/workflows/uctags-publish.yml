@@ -179,8 +179,9 @@ jobs:
       - run: git config --global --add safe.directory /__w/test/test
 
       - run: |
-          printf '```\n%s```\n' "$(sha256sum ~/.ppkg/packed/uctags-*.tar.xz)" > notes.txt
+          cd ~/.ppkg/packed
+          printf '```\n%s\n```\n' "$(sha256sum uctags-*.tar.xz)" > notes.txt
 
+      - run: |
           V=$(ls ~/.ppkg/packed/uctags-*-linux-x86_64.tar.xz | cut -d- -f2)
-
-          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/* --notes-file notes.txt
+          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/uctags-*.tar.xz --notes-file ~/.ppkg/packed/notes.txt

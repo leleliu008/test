@@ -68,6 +68,7 @@ jobs:
             run ./ppkg install uppm --link-type=static-only --install-lib=static
             run ./ppkg pack    uppm
 
+      - run: vagrant ssh -c ls
       - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/uppm-*-openbsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v2
@@ -179,8 +180,9 @@ jobs:
       - run: git config --global --add safe.directory /__w/test/test
 
       - run: |
-          printf '```\n%s```\n' "$(sha256sum ~/.ppkg/packed/uppm-*.tar.xz)" > notes.txt
+          cd ~/.ppkg/packed
+          printf '```\n%s\n```\n' "$(sha256sum uppm-*.tar.xz)" > notes.txt
 
+      - run: |
           V=$(ls ~/.ppkg/packed/uppm-*-linux-x86_64.tar.xz | cut -d- -f2)
-
-          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/* --notes-file notes.txt
+          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/uppm-*.tar.xz --notes-file ~/.ppkg/packed/notes.txt
