@@ -108,7 +108,6 @@ jobs:
     runs-on: macos-latest
 
     env:
-      ACLOCAL_PATH: /usr/local/share/aclocal
       MACOSX_DEPLOYMENT_TARGET: 10.15
 
     steps:
@@ -128,6 +127,53 @@ jobs:
           name: uctags-macos-x86_64-tar-xz
           path: ~/.ppkg/packed/uctags-*-macos-x86_64.tar.xz
 
+  linux-aarch64:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          cat > run.sh <<EOF
+          set -e
+
+          COLOR_GREEN='\033[0;32m'        # Green
+          COLOR_PURPLE='\033[0;35m'       # Purple
+          COLOR_OFF='\033[0m'             # Reset
+
+          echo() {
+              printf '%b\n' "\$*"
+          }
+
+          run() {
+              echo "\${COLOR_PURPLE}==>\${COLOR_OFF} \${COLOR_GREEN}\$@\${COLOR_OFF}"
+              eval "\$*"
+          }
+
+          run uname -a
+
+          run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+          run chmod a+x ppkg
+          run ./ppkg setup --use-system-package-manager
+          run ./ppkg update
+          run ./ppkg install uctags gh --link-type=static-only --install-lib=static
+          run ./ppkg pack    uctags
+          
+          ls ~/.ppkg/packed/uctags-*.tar.xz > filepath.txt
+          EOF
+
+          chmod +x run.sh
+
+      # https://github.com/multiarch/qemu-user-static
+      - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - run: docker run -v $PWD:$PWD -w $PWD --name alpine arm64v8/alpine sh run.sh
+      - run: docker cp alpine:$(cat filepath.txt) .
+
+      - run: ls
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: uctags-linux-aarch64-tar-xz
+          path: uctags-*-linux-aarch64.tar.xz
+
   linux-x86_64:
     needs: macos-x86_64
     runs-on: ubuntu-latest
@@ -135,7 +181,6 @@ jobs:
     container: alpine:3.16
 
     env:
-      ACLOCAL_PATH: /usr/share/aclocal
       RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
     steps:
@@ -169,6 +214,11 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: uctags-macos-x86_64-tar-xz
+          path: ~/.ppkg/packed/
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: uctags-linux-aarch64-tar-xz
           path: ~/.ppkg/packed/
 
       - run: ls -a
