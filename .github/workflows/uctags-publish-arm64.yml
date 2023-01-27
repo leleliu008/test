@@ -1,4 +1,4 @@
-name: linux-arm64
+name: linux-aarch64
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  linux-arm64:
+  linux-aarch64:
     runs-on: ubuntu-latest
 
     steps:
@@ -45,6 +45,6 @@ jobs:
       # https://github.com/multiarch/qemu-user-static
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       - run: docker run -v $PWD:$PWD -w $PWD --name alpine arm64v8/alpine sh run.sh
-      - run: docker cp alpine:$(filepath.txt) .
+      - run: docker cp alpine:$(cat filepath.txt) .
 
       - run: ls
