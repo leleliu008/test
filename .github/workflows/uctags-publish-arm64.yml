@@ -36,17 +36,15 @@ jobs:
           run ./ppkg update
           run ./ppkg install uctags gh --link-type=static-only --install-lib=static
           run ./ppkg pack    uctags
+          
+          ls ~/.ppkg/packed/uctags-*.tar.xz > filepath.txt
           EOF
 
           chmod +x run.sh
 
       # https://github.com/multiarch/qemu-user-static
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - run: docker run -v $PWD:$PWD --name alpine arm64v8/alpine sh run.sh
-
-      - run: docker cp alpine:/root/.ppkg/installed/uctags/.ppkg/receipt.yml .
-      - run: |
-          V=$(sed -n '/^version:/p' receipt.yml)
-          docker cp alpine:/root/.ppkg/packed/uctags-$V-linux-arm64.tar.xz .
+      - run: docker run -v $PWD:$PWD -w $PWD --name alpine arm64v8/alpine sh run.sh
+      - run: docker cp alpine:$(filepath.txt) .
 
       - run: ls
