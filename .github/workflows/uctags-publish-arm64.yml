@@ -1,0 +1,52 @@
+name: linux-arm64
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  linux-arm64:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          cat > run.sh <<EOF
+          set -e
+
+          COLOR_GREEN='\033[0;32m'        # Green
+          COLOR_PURPLE='\033[0;35m'       # Purple
+          COLOR_OFF='\033[0m'             # Reset
+
+          echo() {
+              printf '%b\n' "\$*"
+          }
+
+          run() {
+              echo "\${COLOR_PURPLE}==>\${COLOR_OFF} \${COLOR_GREEN}\$@\${COLOR_OFF}"
+              eval "\$*"
+          }
+
+          run uname -a
+
+          run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+          run chmod a+x ppkg
+          run ./ppkg setup --use-system-package-manager
+          run ./ppkg update
+          run ./ppkg install uctags gh --link-type=static-only --install-lib=static
+          run ./ppkg pack    uctags
+          EOF
+
+          chmod +x run.sh
+
+      # https://github.com/multiarch/qemu-user-static
+      - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - run: docker run -v $PWD:$PWD --name alpine s390x/alpine sh run.sh
+
+      - run: docker cp alpine:/root/.ppkg/installed/uctags/.ppkg/receipt.yml .
+      - run: |
+          V=$(sed -n '/^version:/p' receipt.yml)
+          docker cp alpine:/root/.ppkg/packed/uctags-$V-linux-arm64.tar.xz .
+
+      - run: ls
