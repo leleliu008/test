@@ -42,7 +42,7 @@ jobs:
 
       # https://github.com/multiarch/qemu-user-static
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - run: docker run -v $PWD:$PWD --name alpine s390x/alpine sh run.sh
+      - run: docker run -v $PWD:$PWD --name alpine arm64v8/alpine sh run.sh
 
       - run: docker cp alpine:/root/.ppkg/installed/uctags/.ppkg/receipt.yml .
       - run: |
