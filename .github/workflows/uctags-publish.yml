@@ -128,6 +128,7 @@ jobs:
           path: ~/.ppkg/packed/uctags-*-macos-x86_64.tar.xz
 
   linux-aarch64:
+    needs: macos-x86_64
     runs-on: ubuntu-latest
 
     steps:
@@ -175,7 +176,7 @@ jobs:
           path: uctags-*-linux-aarch64.tar.xz
 
   linux-x86_64:
-    needs: macos-x86_64
+    needs: linux-aarch64
     runs-on: ubuntu-latest
 
     container: alpine:3.16
