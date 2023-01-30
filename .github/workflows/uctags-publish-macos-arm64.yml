@@ -22,7 +22,7 @@ jobs:
       - run: brew update
       - run: brew install --overwrite python@3.10 python@3.11
 
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/bin/xcpkg
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/dev/bin/xcpkg
       - run: chmod a+x xcpkg
       - run: ./xcpkg setup --use-brew
       - run: ./xcpkg update
