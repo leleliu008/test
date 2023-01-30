@@ -12,10 +12,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [11,12]
-        arch: [x86_64, arm64]
+        target: [MacOSX/10.15/x86_64, MacOSX/10.15/arm64, MacOSX/11.0/x86_64, MacOSX/11.0/arm64, MacOSX/12.0/x86_64, MacOSX/12.0/arm64]
 
-    runs-on: macos-${{ matrix.version }}
+    runs-on: macos-12
 
     steps:
       - run: brew uninstall go@1.17
@@ -26,11 +25,11 @@ jobs:
       - run: chmod a+x xcpkg
       - run: ./xcpkg setup --use-brew
       - run: ./xcpkg update
-      - run: ./xcpkg install MacOSX/${{ matrix.version }}/${{ matrix.arch }}/uctags --link-type=static-prefered --install-lib=static
-      - run: ./xcpkg pack    MacOSX/${{ matrix.version }}/${{ matrix.arch }}/uctags -o .
+      - run: ./xcpkg install MacOSX/${{ matrix.target }}/uctags --link-type=static-prefered --install-lib=static
+      - run: ./xcpkg pack    MacOSX/${{ matrix.target }}/uctags -o .
 
       - uses: actions/upload-artifact@v3
         with:
-          name: uctags-macos${{ matrix.version }}-${{ matrix.arch }}-tar-xz
-          path: ~/.xcpkg/packed/uctags-*-macos${{ matrix.version }}-${{ matrix.arch }}.tar.xz
+          name: uctags-${{ matrix.target }}-tar-xz
+          path: ${{ github.workspace }}/uctags-*.tar.xz
 
