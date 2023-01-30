@@ -26,8 +26,8 @@ jobs:
       - run: chmod a+x xcpkg
       - run: ./xcpkg setup --use-brew
       - run: ./xcpkg update
-      - run: ./xcpkg install uctags --link-type=static-prefered --install-lib=static
-      - run: ./xcpkg pack    uctags -o .
+      - run: ./xcpkg install MacOSX/${{ matrix.version }}/${{ matrix.arch }}/uctags --link-type=static-prefered --install-lib=static
+      - run: ./xcpkg pack    MacOSX/${{ matrix.version }}/${{ matrix.arch }}/uctags -o .
 
       - uses: actions/upload-artifact@v3
         with:
