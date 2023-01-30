@@ -31,6 +31,6 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: uctags-${{ matrix.target }}-tar-xz
+          name: uctags-macos${{ matrix.target-version }}-${{ matrix.target-arch }}-tar-xz
           path: ${{ github.workspace }}/uctags-*.tar.xz
 
