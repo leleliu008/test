@@ -12,7 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [MacOSX/10.15/x86_64, MacOSX/10.15/arm64, MacOSX/11.0/x86_64, MacOSX/11.0/arm64, MacOSX/12.0/x86_64, MacOSX/12.0/arm64]
+        target-version: [10.15, 11.0, 12.0]
+        target-arch: [x86_64, arm64]
 
     runs-on: macos-12
 
@@ -25,8 +26,8 @@ jobs:
       - run: chmod a+x xcpkg
       - run: ./xcpkg setup --use-brew
       - run: ./xcpkg update
-      - run: ./xcpkg install MacOSX/${{ matrix.target }}/uctags --link-type=static-prefered --install-lib=static
-      - run: ./xcpkg pack    MacOSX/${{ matrix.target }}/uctags -o .
+      - run: ./xcpkg install MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/uctags --link-type=static-prefered --install-lib=static
+      - run: ./xcpkg pack    MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/uctags -o .
 
       - uses: actions/upload-artifact@v3
         with:
