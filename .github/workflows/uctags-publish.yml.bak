@@ -3,7 +3,7 @@ name: publish uctags
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 4 * * *'
 
 jobs:
   netbsd-amd64:
@@ -37,7 +37,7 @@ jobs:
 
       - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/uctags-*-netbsd-amd64.tar.xz .
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: uctags-netbsd-amd64-tar-xz
           path: ${{ github.workspace }}/uctags-*-netbsd-amd64.tar.xz
@@ -70,7 +70,7 @@ jobs:
 
       - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/uctags-*-openbsd-amd64.tar.xz .
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: uctags-openbsd-amd64-tar-xz
           path: ${{ github.workspace }}/uctags-*-openbsd-amd64.tar.xz
@@ -98,7 +98,7 @@ jobs:
 
       - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/uctags-*-freebsd-amd64.tar.xz .
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: uctags-freebsd-amd64-tar-xz
           path: ${{ github.workspace }}/uctags-*-freebsd-amd64.tar.xz
@@ -122,7 +122,7 @@ jobs:
       - run: ./ppkg install uctags --link-type=static-prefered --install-lib=static
       - run: ./ppkg pack    uctags
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: uctags-macos-x86_64-tar-xz
           path: ~/.ppkg/packed/uctags-*-macos-x86_64.tar.xz
@@ -157,7 +157,7 @@ jobs:
           run ./ppkg update
           run ./ppkg install uctags gh --link-type=static-only --install-lib=static
           run ./ppkg pack    uctags
-          
+
           ls ~/.ppkg/packed/uctags-*.tar.xz > filepath.txt
           EOF
 
@@ -170,7 +170,7 @@ jobs:
 
       - run: ls
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: uctags-linux-aarch64-tar-xz
           path: uctags-*-linux-aarch64.tar.xz
@@ -197,27 +197,27 @@ jobs:
       - run: ./ppkg install uctags gh --link-type=static-only --install-lib=static
       - run: ./ppkg pack    uctags
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: uctags-netbsd-amd64-tar-xz
           path: ~/.ppkg/packed/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: uctags-openbsd-amd64-tar-xz
           path: ~/.ppkg/packed/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: uctags-freebsd-amd64-tar-xz
           path: ~/.ppkg/packed/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: uctags-macos-x86_64-tar-xz
           path: ~/.ppkg/packed/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: uctags-linux-aarch64-tar-xz
           path: ~/.ppkg/packed/
@@ -231,8 +231,9 @@ jobs:
 
       - run: |
           cd ~/.ppkg/packed
-          printf '```\n%s\n```\n' "$(sha256sum uctags-*.tar.xz)" > notes.txt
+          sed -n '/^git-sha:/p' ~/.ppkg/installed/uctags/.ppkg/receipt.yml      > notes.md
+          printf '\nsha256sum:\n```\n%s\n```\n' "$(sha256sum uctags-*.tar.xz)" >> notes.md
 
       - run: |
           V=$(ls ~/.ppkg/packed/uctags-*-linux-x86_64.tar.xz | cut -d- -f2)
-          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/uctags-*.tar.xz --notes-file ~/.ppkg/packed/notes.txt
+          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/uctags-*.tar.xz --notes-file ~/.ppkg/packed/notes.md

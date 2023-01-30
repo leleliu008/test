@@ -1,0 +1,37 @@
+name: macos
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  macos:
+    runs-on: macos-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [11,12]
+        arch: [x86_64, arm64]
+
+    runs-on: macos-${{ matrix.version }}
+
+
+    steps:
+      - run: brew uninstall go@1.17
+      - run: brew update
+      - run: brew install --overwrite python@3.10 python@3.11
+
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/bin/xcpkg
+      - run: chmod a+x xcpkg
+      - run: ./xcpkg setup --use-brew
+      - run: ./xcpkg update
+      - run: ./xcpkg install uctags --link-type=static-prefered --install-lib=static
+      - run: ./xcpkg pack    uctags -o .
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: uctags-macos${{ matrix.version }}-${{ matrix.arch }}-tar-xz
+          path: ~/.xcpkg/packed/uctags-*-macos${{ matrix.version }}-${{ matrix.arch }}.tar.xz
+
