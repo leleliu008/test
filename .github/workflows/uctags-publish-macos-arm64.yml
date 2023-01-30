@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [ master ]
 
+jobs:
   macos:
-    runs-on: macos-latest
 
     strategy:
       fail-fast: false
@@ -16,7 +16,6 @@ on:
         arch: [x86_64, arm64]
 
     runs-on: macos-${{ matrix.version }}
-
 
     steps:
       - run: brew uninstall go@1.17
