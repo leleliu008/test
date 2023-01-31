@@ -104,6 +104,7 @@ jobs:
           path: ${{ github.workspace }}/uctags-*-freebsd-amd64.tar.xz
 
   macos-x86_64:
+    if: false
     needs: freebsd-amd64
     runs-on: macos-latest
 
@@ -127,8 +128,36 @@ jobs:
           name: uctags-macos-x86_64-tar-xz
           path: ~/.ppkg/packed/uctags-*-macos-x86_64.tar.xz
 
+  macos:
+    needs: freebsd-amd64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-version: ['11.0', '12.0', '13.0']
+        target-arch: [x86_64, arm64]
+
+    runs-on: macos-12
+
+    steps:
+      - run: brew uninstall go@1.17
+      - run: brew update
+      - run: brew install --overwrite python@3.10 python@3.11
+
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/dev/bin/xcpkg
+      - run: chmod a+x xcpkg
+      - run: ./xcpkg setup --use-brew
+      - run: ./xcpkg update
+      - run: ./xcpkg install MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/uctags --link-type=static-prefered --install-lib=static
+      - run: ./xcpkg pack    MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/uctags -o .
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: uctags-macos${{ matrix.target-version }}-${{ matrix.target-arch }}-tar-xz
+          path: ${{ github.workspace }}/uctags-*.tar.xz
+
   linux-aarch64:
-    needs: macos-x86_64
+    needs: macos
     runs-on: ubuntu-latest
 
     steps:
@@ -214,7 +243,32 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: uctags-macos-x86_64-tar-xz
+          name: uctags-macos11.0-x86_64-tar-xz
+          path: ~/.ppkg/packed/
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags-macos12.0-x86_64-tar-xz
+          path: ~/.ppkg/packed/
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags-macos13.0-x86_64-tar-xz
+          path: ~/.ppkg/packed/
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags-macos11.0-amd64-tar-xz
+          path: ~/.ppkg/packed/
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags-macos12.0-amd64-tar-xz
+          path: ~/.ppkg/packed/
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags-macos13.0-amd64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
@@ -227,7 +281,7 @@ jobs:
 
       - run: printf '%s\n' "$RELEASE_TOKEN" | ~/.ppkg/installed/gh/bin/gh auth login --with-token
 
-      - run: git config --global --add safe.directory /__w/test/test
+      - run: git config --global --add safe.directory /__w/uctags-nightly-build/uctags-nightly-build
 
       - run: |
           cd ~/.ppkg/packed
