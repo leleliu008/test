@@ -105,7 +105,7 @@ jobs:
 
   macos-x86_64:
     if: false
-    needs: freebsd-amd64
+      #needs: freebsd-amd64
     runs-on: macos-latest
 
     env:
@@ -258,17 +258,17 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: uctags-macos11.0-amd64-tar-xz
+          name: uctags-macos11.0-arm64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: uctags-macos12.0-amd64-tar-xz
+          name: uctags-macos12.0-arm64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: uctags-macos13.0-amd64-tar-xz
+          name: uctags-macos13.0-arm64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
