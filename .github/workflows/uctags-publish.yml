@@ -281,7 +281,7 @@ jobs:
 
       - run: printf '%s\n' "$RELEASE_TOKEN" | ~/.ppkg/installed/gh/bin/gh auth login --with-token
 
-      - run: git config --global --add safe.directory /__w/uctags-nightly-build/uctags-nightly-build
+      - run: git config --global --add safe.directory /__w/test/test
 
       - run: |
           cd ~/.ppkg/packed
