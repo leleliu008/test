@@ -1,0 +1,42 @@
+name: publish uctags manpages
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  macos-x86_64:
+    runs-on: macos-latest
+
+    steps:
+      - run: brew uninstall go@1.17
+      - run: brew update
+      - run: brew install --overwrite python@3.10 python@3.11
+      - run: pip3 install -U docutils
+
+      - uses: actions/checkout@v3
+        with:
+          repository: universal-ctags/ctags
+
+      - run: cd man && make
+      - run: |
+          V=$(date +%Y.%m.%d)
+
+          DIR="uctags-$V-manpages"
+
+          install -d "$DIR/man/man1/"
+          install -d "$DIR/man/man5/"
+          install -d "$DIR/man/man7/"
+
+          cp man/*.1 "$DIR/man/man1/"
+          cp man/*.5 "$DIR/man/man5/"
+          cp man/*.7 "$DIR/man/man7/"
+
+          tar cvJf "$DIR.tar.xz" "$DIR"
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: uctags---manpages-tar-xz
+          path: uctags-*-manpages.tar.xz
