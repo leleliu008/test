@@ -20,7 +20,9 @@ jobs:
         with:
           repository: universal-ctags/ctags
 
-      - run: cd man && make
+      - run: ./autogen.sh
+      - run: ./configure
+      - run: cd man && make V=1
       - run: |
           V=$(date +%Y.%m.%d)
 
