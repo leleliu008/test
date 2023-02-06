@@ -141,31 +141,6 @@ jobs:
           name: uctags-freebsd-amd64-tar-xz
           path: ${{ github.workspace }}/uctags-*-freebsd-amd64.tar.xz
 
-  macos-x86_64:
-    if: false
-      #needs: freebsd-amd64
-    runs-on: macos-latest
-
-    env:
-      MACOSX_DEPLOYMENT_TARGET: 10.15
-
-    steps:
-      - run: brew uninstall go@1.17
-      - run: brew update
-      - run: brew install --overwrite python@3.10 python@3.11
-
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
-      - run: chmod a+x ppkg
-      - run: ./ppkg setup --use-system-package-manager
-      - run: ./ppkg update
-      - run: ./ppkg install uctags --link-type=static-prefered --install-lib=static
-      - run: ./ppkg pack    uctags
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: uctags-macos-x86_64-tar-xz
-          path: ~/.ppkg/packed/uctags-*-macos-x86_64.tar.xz
-
   macos:
     needs: freebsd-amd64
 

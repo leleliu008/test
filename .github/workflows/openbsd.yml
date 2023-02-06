@@ -24,6 +24,8 @@ jobs:
           mem: 2048
           box: generic/openbsd7
           run: |
+            pkg_add automake%1.16
+
             curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
             chmod a+x ppkg
             ./ppkg setup --use-system-package-manager
