@@ -34,4 +34,6 @@ jobs:
 
         #- run: ./ndk-pkg install bitcoin --tree
 
-      - run: curl -LO https://fossies.org/linux/misc/tiff-4.4.0.tar.gz
+      #- run: curl -LO https://fossies.org/linux/misc/tiff-4.4.0.tar.gz
+      - run: sudo apt-get update
+      - run: sudo apt-get install valgrind pkg-config automake bash libjansson-dev libyaml-dev libseccomp-dev libxml2-dev libpcre2-dev gdb
