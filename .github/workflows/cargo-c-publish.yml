@@ -43,6 +43,7 @@ jobs:
           path: ${{ github.workspace }}/cargo-c-*-netbsd-amd64.tar.xz
 
   openbsd-amd64:
+    if: false
     needs: netbsd-amd64
     runs-on: macos-12
 
@@ -76,7 +77,7 @@ jobs:
           path: ${{ github.workspace }}/cargo-c-*-openbsd-amd64.tar.xz
 
   freebsd-amd64:
-    needs: openbsd-amd64
+    needs: netbsd-amd64
     runs-on: macos-12
 
     steps:
