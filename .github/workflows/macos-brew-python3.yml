@@ -15,7 +15,9 @@ jobs:
     runs-on: macos-12
 
     steps:
+      - run: brew --env
       - run: brew update
+      - run: brew --env
       - run: brew info python@3.10
       - run: brew info python@3.11
       - run: brew info python3
@@ -32,16 +34,23 @@ jobs:
     runs-on: macos-12
 
     steps:
+      - run: brew --env
+      - run: brew doctor
       - run: brew update
+      - run: brew --env
+      - run: brew doctor
       - run: brew info python@3.10
       - run: brew info python@3.11
       - run: brew info python3
+      - run: brew gist-logs python3
       - run: brew install --overwrite python@3.10 python@3.11
 
       - run: brew update
+      - run: brew --env
       - run: brew info python@3.10
       - run: brew info python@3.11
       - run: brew info python3
+      - run: brew gist-logs python3
       - run: brew install python3
 
   fixed:
@@ -49,13 +58,16 @@ jobs:
     runs-on: macos-12
 
     steps:
+      - run: brew --env
       - run: brew update
+      - run: brew --env
       - run: brew info python@3.10
       - run: brew info python@3.11
       - run: brew info python3
       - run: brew install --overwrite python@3.10 python@3.11 python3
 
       - run: brew update
+      - run: brew --env
       - run: brew info python@3.10
       - run: brew info python@3.11
       - run: brew info python3
