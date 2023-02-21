@@ -16,7 +16,14 @@ jobs:
 
     steps:
       - run: brew update
+      - run: brew info python@3.10
+      - run: brew info python@3.11
+      - run: brew info python3
       - run: brew install --overwrite python@3.10 python@3.11
+
+      - run: brew info python@3.10
+      - run: brew info python@3.11
+      - run: brew info python3
 
       - run: brew install python3
 
@@ -26,9 +33,15 @@ jobs:
 
     steps:
       - run: brew update
+      - run: brew info python@3.10
+      - run: brew info python@3.11
+      - run: brew info python3
       - run: brew install --overwrite python@3.10 python@3.11
 
       - run: brew update
+      - run: brew info python@3.10
+      - run: brew info python@3.11
+      - run: brew info python3
       - run: brew install python3
 
   fixed:
@@ -37,7 +50,13 @@ jobs:
 
     steps:
       - run: brew update
+      - run: brew info python@3.10
+      - run: brew info python@3.11
+      - run: brew info python3
       - run: brew install --overwrite python@3.10 python@3.11 python3
 
       - run: brew update
+      - run: brew info python@3.10
+      - run: brew info python@3.11
+      - run: brew info python3
       - run: brew install python3
