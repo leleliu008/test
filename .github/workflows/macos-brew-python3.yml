@@ -33,6 +33,9 @@ jobs:
 
     runs-on: macos-12
 
+    env:
+      HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
     steps:
       - run: brew --env
       - run: brew uninstall go@1.17
@@ -53,24 +56,4 @@ jobs:
       - run: brew info python@3.11
       - run: brew info python3
       - run: brew gist-logs python3
-      - run: brew install python3
-
-  fixed:
-
-    runs-on: macos-12
-
-    steps:
-      - run: brew --env
-      - run: brew update
-      - run: brew --env
-      - run: brew info python@3.10
-      - run: brew info python@3.11
-      - run: brew info python3
-      - run: brew install --overwrite python@3.10 python@3.11 python3
-
-      - run: brew update
-      - run: brew --env
-      - run: brew info python@3.10
-      - run: brew info python@3.11
-      - run: brew info python3
       - run: brew install python3
