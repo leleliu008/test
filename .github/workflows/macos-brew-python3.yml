@@ -37,12 +37,12 @@ jobs:
       HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
     steps:
-      - run: brew --env
+      - run: brew config
       - run: brew uninstall go@1.17
       - run: brew cleanup
       - run: brew doctor
       - run: brew update
-      - run: brew --env
+      - run: brew config
       - run: brew doctor
       - run: brew info python@3.10
       - run: brew info python@3.11
@@ -51,7 +51,7 @@ jobs:
       - run: brew install --overwrite python@3.10 python@3.11
 
       - run: brew update
-      - run: brew --env
+      - run: brew config
       - run: brew info python@3.10
       - run: brew info python@3.11
       - run: brew info python3
