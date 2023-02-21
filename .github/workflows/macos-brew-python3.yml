@@ -30,3 +30,14 @@ jobs:
 
       - run: brew update
       - run: brew install python3
+
+  fixed:
+
+    runs-on: macos-12
+
+    steps:
+      - run: brew update
+      - run: brew install --overwrite python@3.10 python@3.11 python3
+
+      - run: brew update
+      - run: brew install python3
