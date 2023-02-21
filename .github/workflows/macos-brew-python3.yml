@@ -56,4 +56,9 @@ jobs:
       - run: brew info python@3.11
       - run: brew info python3
       - run: brew gist-logs python3
-      - run: brew install python3 || (brew gist-logs python3; exit 1)
+      - run: |
+          brew install python3 || {
+            brew gist-logs python3
+            brew doctor
+            exit 1
+          }
