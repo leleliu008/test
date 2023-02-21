@@ -2,11 +2,12 @@ name: publish cargo-c
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 4 * * *'
+    #schedule:
+    #- cron: '0 4 * * *'
 
 jobs:
   netbsd-amd64:
+    if: false
     runs-on: macos-12
 
     steps:
@@ -77,6 +78,7 @@ jobs:
           path: ${{ github.workspace }}/cargo-c-*-openbsd-amd64.tar.xz
 
   freebsd-amd64:
+    if: false
     needs: netbsd-amd64
     runs-on: macos-12
 
