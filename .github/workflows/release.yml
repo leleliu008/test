@@ -17,7 +17,7 @@ jobs:
 
       - uses: actions/checkout@v3
 
-      - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+      - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
       - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
