@@ -1,0 +1,24 @@
+name: archlinux
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  archlinux:
+
+    runs-on: ubuntu-latest
+
+    container: archlinux
+
+    steps:
+      - run: pacman -Syyuu --noconfirm
+      - run: pacman -S     --noconfirm git gcc automake autoconf make pkg-config libyaml jansson
+
+      - uses: actions/checkout@main
+
+      - run: git clone https://github.com/universal-ctags/ctags.git
+      - run: cd ctags && ./autogen.sh
+      - run: cd ctags && ./configure
