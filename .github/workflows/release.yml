@@ -1,0 +1,38 @@
+name: release
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    container: alpine:3.16
+
+    steps:
+      - run: apk update
+      - run: apk add git
+
+      - uses: actions/checkout@v3
+
+      - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+      - run: chmod a+x ppkg
+      - run: ./ppkg setup --use-system-package-manager
+      - run: ./ppkg update
+      - run: ./ppkg install gh --link-type=static-only --install-lib=static
+      - run: ./ppkg pack    gh
+
+      - run: printf '%s\n' ${{ github.token }} | ~/.ppkg/installed/gh/bin/gh auth login --with-token
+
+      - run: git config --global --add safe.directory /__w/test/test
+
+      - run: |
+          cd ~/.ppkg/packed
+          sed -n '/^git-sha:/p' ~/.ppkg/installed/gh/.ppkg/receipt.yml      > notes.md
+          printf '\nsha256sum:\n```\n%s\n```\n' "$(sha256sum gh-*.tar.xz)" >> notes.md
+
+      - run: |
+          V=$(ls ~/.ppkg/packed/*.tar.xz | cut -d- -f2)
+          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/gh-*.tar.xz --notes-file ~/.ppkg/packed/notes.md
