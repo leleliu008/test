@@ -204,7 +204,8 @@ jobs:
       - run: ./xcpkg setup --use-brew
       - run: ./xcpkg update
 
-      - run: gsed -i "/git-url/a git-sha: $(cat uctags-src-git-sha)" ~/.xcpkg/repos.d/offical-core/formula/uctags.yml
+      - run: |
+          gsed -i "/git-url/a git-sha: $(cat uctags-src-git-sha)" ~/.xcpkg/repos.d/offical-core/formula/uctags.yml
 
       - run: ./xcpkg install MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/uctags --link-type=static-prefered --install-lib=static
       - run: ./xcpkg pack    MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/uctags -o .
@@ -293,7 +294,8 @@ jobs:
       - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
 
-      - run: sed -i "/git-url/a git-sha: $(cat uctags-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
+      - run: |
+          sed -i "/git-url/a git-sha: $(cat uctags-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
 
       - run: ./ppkg install uctags gh --link-type=static-only --install-lib=static
       - run: ./ppkg pack    uctags
