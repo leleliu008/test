@@ -6,6 +6,7 @@ on:
     - cron: '0 4 * * *'
 
 jobs:
+
   manpages:
     runs-on: macos-latest
 
@@ -43,11 +44,25 @@ jobs:
           name: uctags---manpages-tar-xz
           path: uctags-*-manpages.tar.xz
 
+      - run: |
+          printf '%s\n' ${{github.sha}} > uctags-src-git-sha
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: uctags-src-git-sha
+          path: uctags-src-git-sha
+
   netbsd-amd64:
     needs: manpages
     runs-on: macos-12
 
     steps:
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags-src-git-sha
+          path: uctags-src-git-sha
+
       - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
@@ -66,10 +81,13 @@ jobs:
                 export SSL_CERT_FILE="$ETCCERTSDIR/ca-certificates.crt"
             fi
 
-            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
             run chmod a+x ppkg
             run ./ppkg setup --use-system-package-manager
             run ./ppkg update
+
+            gsed -i "/git-url/a git-sha: $(cat uctags-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
+
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
 
@@ -85,6 +103,12 @@ jobs:
     runs-on: macos-12
 
     steps:
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags-src-git-sha
+          path: uctags-src-git-sha
+
       - run: brew install openssh
 
       - uses: leleliu008/github-actions-vagrant@main
@@ -99,10 +123,13 @@ jobs:
 
             run sudo ln -sf /usr/local/bin/pkgconf /usr/bin/pkg-config
 
-            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
             run chmod a+x ppkg
             run ./ppkg setup --use-system-package-manager
             run ./ppkg update
+
+            gsed -i "/git-url/a git-sha: $(cat uctags-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
+
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
 
@@ -118,6 +145,12 @@ jobs:
     runs-on: macos-12
 
     steps:
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags-src-git-sha
+          path: uctags-src-git-sha
+
       - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
@@ -127,10 +160,13 @@ jobs:
 
             run pkg install -y curl libnghttp2
 
-            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
             run chmod a+x ppkg
             run ./ppkg setup --use-system-package-manager
             run ./ppkg update
+
+            gsed -i "/git-url/a git-sha: $(cat uctags-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
+
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
 
@@ -153,14 +189,23 @@ jobs:
     runs-on: macos-12
 
     steps:
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags-src-git-sha
+          path: uctags-src-git-sha
+
       - run: brew uninstall go@1.17
       - run: brew update
       - run: brew install --overwrite python@3.10 python@3.11
 
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/dev/bin/xcpkg
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
       - run: chmod a+x xcpkg
       - run: ./xcpkg setup --use-brew
       - run: ./xcpkg update
+
+      - run: gsed -i "/git-url/a git-sha: $(cat uctags-src-git-sha)" ~/.xcpkg/repos.d/offical-core/formula/uctags.yml
+
       - run: ./xcpkg install MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/uctags --link-type=static-prefered --install-lib=static
       - run: ./xcpkg pack    MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/uctags -o .
 
@@ -174,6 +219,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags-src-git-sha
+          path: uctags-src-git-sha
+
       - run: |
           cat > run.sh <<EOF
           set -e
@@ -193,10 +244,13 @@ jobs:
 
           run uname -a
 
-          run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+          run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           run chmod a+x ppkg
           run ./ppkg setup --use-system-package-manager
           run ./ppkg update
+
+          sed -i "/git-url/a git-sha: $(cat uctags-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
+
           run ./ppkg install uctags gh --link-type=static-only --install-lib=static
           run ./ppkg pack    uctags
 
@@ -223,19 +277,24 @@ jobs:
 
     container: alpine:3.16
 
-    env:
-      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-
     steps:
       - run: apk update
       - run: apk add git
 
       - uses: actions/checkout@v3
 
-      - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags-src-git-sha
+          path: uctags-src-git-sha
+
+      - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
       - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
+
+      - run: sed -i "/git-url/a git-sha: $(cat uctags-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
+
       - run: ./ppkg install uctags gh --link-type=static-only --install-lib=static
       - run: ./ppkg pack    uctags
 
@@ -297,7 +356,7 @@ jobs:
       - run: ls -a
       - run: ls ~/.ppkg/packed
 
-      - run: printf '%s\n' "$RELEASE_TOKEN" | ~/.ppkg/installed/gh/bin/gh auth login --with-token
+      - run: printf '%s\n' ${{ github.token }} | ~/.ppkg/installed/gh/bin/gh auth login --with-token
 
       - run: git config --global --add safe.directory /__w/test/test
 

@@ -29,4 +29,4 @@ jobs:
             run pkg update
             #run pkg delete -y curl
             run pkg install -y curl libnghttp2
-            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
