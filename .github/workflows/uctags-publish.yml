@@ -61,7 +61,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: uctags-src-git-sha
-          path: uctags-src-git-sha
+          path: .
       - run: cat uctags-src-git-sha
 
       - uses: leleliu008/github-actions-vagrant@main
@@ -110,7 +110,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: uctags-src-git-sha
-          path: uctags-src-git-sha
+          path: .
 
       - run: brew install openssh
 
@@ -152,7 +152,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: uctags-src-git-sha
-          path: uctags-src-git-sha
+          path: .
 
       - uses: leleliu008/github-actions-vagrant@main
         with:
@@ -196,7 +196,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: uctags-src-git-sha
-          path: uctags-src-git-sha
+          path: .
 
       - run: brew uninstall go@1.17
       - run: brew update
@@ -227,7 +227,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: uctags-src-git-sha
-          path: uctags-src-git-sha
+          path: .
 
       - run: |
           cat > run.sh <<EOF
@@ -290,7 +290,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: uctags-src-git-sha
-          path: uctags-src-git-sha
+          path: .
 
       - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
