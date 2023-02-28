@@ -45,7 +45,7 @@ jobs:
           path: uctags-*-manpages.tar.xz
 
       - run: |
-          printf '%s\n' ${{github.sha}} > uctags-src-git-sha
+          git rev-parse HEAD > uctags-src-git-sha
 
       - uses: actions/upload-artifact@v3
         with:
