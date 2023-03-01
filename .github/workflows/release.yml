@@ -29,8 +29,11 @@ jobs:
       - run: git config --global --add safe.directory /__w/test/test
 
       - run: |
+          GIT_SHA=7c84355f5d211273fce3c2dbc3bd041a3319f509
+
           cd ~/.ppkg/packed
-          sed -n '/^git-sha:/p' ~/.ppkg/installed/gh/.ppkg/receipt.yml      > notes.md
+
+          printf 'buildfrom: https://github.com/universal-ctags/ctags/tree/$GIT_SHA\n\n' > notes.md
           printf '\nsha256sum:\n```\n%s\n```\n' "$(sha256sum gh-*.tar.xz)" >> notes.md
 
       - run: |
