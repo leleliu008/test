@@ -62,7 +62,6 @@ jobs:
         with:
           name: uctags-src-git-sha
           path: .
-      - run: cat uctags-src-git-sha
 
       - uses: leleliu008/github-actions-vagrant@main
         with:
@@ -88,8 +87,6 @@ jobs:
             run ./ppkg update
 
             gsed -i "/git-url/a git-sha: $(cat uctags-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
-
-            run cat ~/.ppkg/repos.d/offical-core/formula/uctags.yml
 
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
