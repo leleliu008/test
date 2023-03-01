@@ -35,4 +35,4 @@ jobs:
 
       - run: |
           V=$(ls ~/.ppkg/packed/*.tar.xz | cut -d- -f2)
-          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/gh-*.tar.xz --notes-file ~/.ppkg/packed/notes.md
+          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/gh-*.tar.xz --title $V --notes-file ~/.ppkg/packed/notes.md
