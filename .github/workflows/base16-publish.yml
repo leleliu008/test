@@ -329,7 +329,7 @@ jobs:
       - run: git config --global --add safe.directory /__w/test/test
 
       - run: |
-          GIT_SHA="(cat base16-src-git-sha)"
+          GIT_SHA="$(cat base16-src-git-sha)"
 
           cd ~/.ppkg/packed
 

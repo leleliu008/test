@@ -1,0 +1,32 @@
+name: publish uppm
+
+on:
+  workflow_dispatch:
+    #schedule:
+    #- cron: '0 4 * * *'
+
+jobs:
+  openbsd-amd64:
+    runs-on: macos-12
+
+    steps:
+      - uses: leleliu008/github-actions-vagrant@main
+        with:
+          mem: 2048
+          box: generic/openbsd7
+          run: |
+            run sudo pkg_add curl
+
+            export HOME=/home/vagrant
+            export LD_LIBRARY_PATH=/usr/local/lib
+
+            run sudo ln -sf /usr/local/bin/pkgconf /usr/bin/pkg-config
+
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+            run chmod a+x ppkg
+            run ./ppkg setup
+            run ./ppkg update
+            run ./ppkg install uppm --link-type=static-only --install-lib=static
+            run ./ppkg pack    uppm
+
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/uppm-*-openbsd-amd64.tar.xz .
