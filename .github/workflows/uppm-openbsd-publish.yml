@@ -10,6 +10,8 @@ jobs:
     runs-on: macos-12
 
     steps:
+      - run: brew install openssh
+
       - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
