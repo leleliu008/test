@@ -326,7 +326,7 @@ jobs:
 
       - run: printf '%s\n' ${{ github.token }} | ~/.ppkg/installed/gh/bin/gh auth login --with-token
 
-      - run: git config --global --add safe.directory /__w/ctags-nightly-build/ctags-nightly-build
+      - run: git config --global --add safe.directory /__w/test/test
 
       - run: |
           GIT_SHA="(cat base16-src-git-sha)"
