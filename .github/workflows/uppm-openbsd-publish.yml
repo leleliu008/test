@@ -24,7 +24,7 @@ jobs:
 
             run sudo ln -sf /usr/local/bin/pkgconf /usr/bin/pkg-config
 
-            run /opt/vagrant/embedded/bin/curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
             run chmod a+x ppkg
             run ./ppkg setup
             run ./ppkg update
