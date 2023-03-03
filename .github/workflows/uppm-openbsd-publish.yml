@@ -14,7 +14,7 @@ jobs:
 
       - uses: leleliu008/github-actions-vagrant@main
         with:
-          mem: 2048
+          mem: 1024
           box: generic/openbsd7
           run: |
             #run sudo pkg_add curl
