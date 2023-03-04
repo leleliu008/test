@@ -21,5 +21,6 @@ jobs:
               }
           }
           EOF
-
-          gh api graphql -f "query=$(cat QUERY)" --jq .data.repository.latestRelease.name
+          cat QUERY
+          gh api graphql -f "query=$(cat QUERY)"
+          #--jq .data.repository.latestRelease.name
