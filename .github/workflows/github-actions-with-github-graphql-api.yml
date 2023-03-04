@@ -1,0 +1,22 @@
+name: graphql
+
+on:
+  workflow_dispatch:
+
+jobs:
+  graphql:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: |
+          cat > QUERY <EOF
+          repository(owner: "leleliu008", name: "uppm") {
+              latestRelease {
+                name
+              }
+          }
+          EOF
+
+          gh api graphql -f "query=$(cat QUERY)" --jq .data.repository.latestRelease.name
