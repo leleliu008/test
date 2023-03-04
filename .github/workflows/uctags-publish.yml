@@ -2,8 +2,8 @@ name: publish uctags
 
 on:
   workflow_dispatch:
-    schedule:
-      - cron: '0 1 * * *'
+  schedule:
+    - cron: '0 1 * * *'
 
 jobs:
 
@@ -386,7 +386,7 @@ jobs:
       - run: ls -a
 
       - run: |
-          printf 'build-from: https://github.com/leleliu008/uctags/tree/%s\n\n' ${{ needs.check.outputs.git-sha }} > notes.md
+          printf 'build-from: https://github.com/universal-ctags/ctags/tree/%s\n\n' ${{ needs.check.outputs.git-sha }} > notes.md
           printf 'sha256sum:\n```\n%s\n```\n' "$(sha256sum uctags-*.tar.xz)" >> notes.md
 
           VERSION="$(ls uctags-*-linux-x86_64.tar.xz | cut -d- -f2)"
