@@ -7,6 +7,9 @@ jobs:
   graphql:
     runs-on: ubuntu-latest
 
+    env:
+      GH_TOKEN: ${{ github.token }}
+
     steps:
       - uses: actions/checkout@v3
 
