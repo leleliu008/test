@@ -2,8 +2,8 @@ name: publish uctags
 
 on:
   workflow_dispatch:
-    #schedule:
-    #- cron: '0 1 * * *'
+    schedule:
+      - cron: '0 1 * * *'
 
 jobs:
 
@@ -14,6 +14,10 @@ jobs:
       GH_TOKEN: ${{ github.token }}
 
     steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: universal-ctags/ctags
+
       - id:  check-if-has-new-commit
         run: |
           cat > QUERY <<EOF
@@ -30,20 +34,62 @@ jobs:
 
           printf 'LATEST_RELEASE_GIT_SHA=%s\n' "$LATEST_RELEASE_GIT_SHA"
 
-          if [ "$LATEST_RELEASE_GIT_SHA" = ${{ github.sha }} ] ; then
+          CURRENT_SOURCE_GIT_SHA="$(git rev-parse HEAD)"
+
+          printf 'CURRENT_SOURCE_GIT_SHA=%s\n' "$CURRENT_SOURCE_GIT_SHA"
+
+
+          if [ "$LATEST_RELEASE_GIT_SHA" = "$CURRENT_SOURCE_GIT_SHA" ] ; then
               printf 'HAS_NEW_COMMIT=no\n'        >> "$GITHUB_OUTPUT"
           else
               printf 'HAS_NEW_COMMIT=yes\n'       >> "$GITHUB_OUTPUT"
           fi
 
-          printf 'GIT_SHA=%s\n' ${{ github.sha }} >> "$GITHUB_OUTPUT"
+          printf 'GIT_SHA=%s\n' "$CURRENT_SOURCE_GIT_SHA" >> "$GITHUB_OUTPUT"
 
     outputs:
       if-has-new-commit: ${{ steps.check-if-has-new-commit.outputs.HAS_NEW_COMMIT }}
       git-sha:           ${{ steps.check-if-has-new-commit.outputs.GIT_SHA }}
 
-  netbsd-amd64:
+  manpages:
     needs: check
+    if: needs.check.outputs.if-has-new-commit == 'yes'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: pip3 install -U docutils
+
+      - uses: actions/checkout@v3
+        with:
+          repository: universal-ctags/ctags
+          ref: ${{ needs.check.outputs.git-sha }}
+
+      - run: ./autogen.sh
+      - run: ./configure
+      - run: cd man && make V=1
+      - run: |
+          V=$(date +%Y.%m.%d)
+
+          DIR="uctags-$V-manpages"
+
+          install -d "$DIR/man/man1/"
+          install -d "$DIR/man/man5/"
+          install -d "$DIR/man/man7/"
+
+          cp man/*.1 "$DIR/man/man1/"
+          cp man/*.5 "$DIR/man/man5/"
+          cp man/*.7 "$DIR/man/man7/"
+
+          tar cvJf "$DIR.tar.xz" "$DIR"
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: uctags---manpages-tar-xz
+          path: uctags-*-manpages.tar.xz
+
+  netbsd-amd64:
+    needs: [check, manpages]
     if: needs.check.outputs.if-has-new-commit == 'yes'
 
     runs-on: macos-12
@@ -85,7 +131,7 @@ jobs:
           path: uctags-*-netbsd-amd64.tar.xz
 
   openbsd-amd64:
-    needs: netbsd-amd64
+    needs: [check, netbsd-amd64]
     if: needs.check.outputs.if-has-new-commit == 'yes'
 
     runs-on: macos-12
@@ -123,7 +169,7 @@ jobs:
           path: uctags-*-openbsd-amd64.tar.xz
 
   freebsd-amd64:
-    needs: [check, netbsd-amd64]
+    needs: [check, openbsd-amd64]
     if: needs.check.outputs.if-has-new-commit == 'yes'
 
     runs-on: macos-12
@@ -335,6 +381,11 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: uctags-linux-x86_64-tar-xz
+          path: .
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: uctags---manpages-tar-xz
           path: .
 
       - run: ls -a
