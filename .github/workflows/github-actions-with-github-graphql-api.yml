@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - run: |
-          cat > QUERY <EOF
+          cat > QUERY <<EOF
           repository(owner: "leleliu008", name: "uppm") {
               latestRelease {
                 name
