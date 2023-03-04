@@ -15,10 +15,12 @@ jobs:
 
       - run: |
           cat > QUERY <<EOF
-          repository(owner: "leleliu008", name: "uppm") {
-              latestRelease {
-                name
-              }
+          {
+            repository(owner: "leleliu008", name: "uppm") {
+                latestRelease {
+                  name
+                }
+            }
           }
           EOF
           cat QUERY
