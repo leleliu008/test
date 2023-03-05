@@ -40,7 +40,5 @@ jobs:
           # to avaid: failed to run git: fatal: not a git repository (or any of the parent directories): .git
           git -c init.defaultBranch=master init
           git remote add origin ${{ github.repositoryUrl }}
-          git add .
-          git commit -m 'publish'
 
           ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/gh-*.tar.xz --title $V --notes-file ~/.ppkg/packed/notes.md
