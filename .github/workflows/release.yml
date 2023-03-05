@@ -15,8 +15,6 @@ jobs:
       - run: apk update
       - run: apk add git
 
-      - uses: actions/checkout@v3
-
       - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
       - run: ./ppkg setup --use-system-package-manager
@@ -38,4 +36,7 @@ jobs:
 
       - run: |
           V=$(ls ~/.ppkg/packed/*.tar.xz | cut -d- -f2)
+
+          git -c init.defaultBranch=master init
+
           ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/gh-*.tar.xz --title $V --notes-file ~/.ppkg/packed/notes.md
