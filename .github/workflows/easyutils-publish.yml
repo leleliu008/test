@@ -163,8 +163,8 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: easyutils-macos${{ matrix.target-version }}-${{ matrix.target-arch }}-tar-xz
-          path: easyutils-macos*.tar.xz
+          name: easyutils---macos${{ matrix.target-version }}-${{ matrix.target-arch }}-tar-xz
+          path: easyutils-*-macos*.tar.xz
 
 
   linux-aarch64:
