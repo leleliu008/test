@@ -135,7 +135,7 @@ jobs:
 
 
   macos:
-    needs: {source, freebsd-amd64]
+    needs: [source, freebsd-amd64]
 
     strategy:
       fail-fast: false
