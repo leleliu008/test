@@ -304,7 +304,7 @@ jobs:
 
 
   linux-x86_64:
-    needs: linux-aarch64
+    needs: linux-s390x
     runs-on: ubuntu-latest
 
     container: alpine:3.16
