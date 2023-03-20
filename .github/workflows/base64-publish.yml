@@ -1,4 +1,4 @@
-name: publish base16
+name: publish base64
 
 on:
   workflow_dispatch:
@@ -16,12 +16,12 @@ jobs:
           repository: leleliu008/C-examples
 
       - run: |
-          git rev-parse HEAD > base16-src-git-sha
+          git rev-parse HEAD > base64-src-git-sha
 
       - uses: actions/upload-artifact@v3
         with:
-          name: base16-src-git-sha
-          path: base16-src-git-sha
+          name: base64-src-git-sha
+          path: base64-src-git-sha
 
   netbsd-amd64:
     needs: source
@@ -31,7 +31,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-src-git-sha
+          name: base64-src-git-sha
           path: .
 
       - uses: leleliu008/github-actions-vagrant@main
@@ -57,17 +57,17 @@ jobs:
             run ./ppkg setup --use-system-package-manager
             run ./ppkg update
 
-            gsed -i "/git-url/a git-sha: $(cat base16-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base16.yml
+            gsed -i "/git-url/a git-sha: $(cat base64-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base64.yml
 
-            run ./ppkg install base16 --link-type=static-only --install-lib=static
-            run ./ppkg pack    base16
+            run ./ppkg install base64 --link-type=static-only --install-lib=static
+            run ./ppkg pack    base64
 
-      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/base16-*-netbsd-amd64.tar.xz .
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/base64-*-netbsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v3
         with:
-          name: base16-netbsd-amd64-tar-xz
-          path: ${{ github.workspace }}/base16-*-netbsd-amd64.tar.xz
+          name: base64-netbsd-amd64-tar-xz
+          path: ${{ github.workspace }}/base64-*-netbsd-amd64.tar.xz
 
   openbsd-amd64:
     needs: netbsd-amd64
@@ -77,7 +77,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-src-git-sha
+          name: base64-src-git-sha
           path: .
 
       - run: brew install openssh
@@ -99,17 +99,17 @@ jobs:
             run ./ppkg setup --use-system-package-manager
             run ./ppkg update
 
-            gsed -i "/git-url/a git-sha: $(cat base16-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base16.yml
+            gsed -i "/git-url/a git-sha: $(cat base64-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base64.yml
 
-            run ./ppkg install base16 --link-type=static-only --install-lib=static
-            run ./ppkg pack    base16
+            run ./ppkg install base64 --link-type=static-only --install-lib=static
+            run ./ppkg pack    base64
 
-      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/base16-*-openbsd-amd64.tar.xz .
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/base64-*-openbsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v3
         with:
-          name: base16-openbsd-amd64-tar-xz
-          path: ${{ github.workspace }}/base16-*-openbsd-amd64.tar.xz
+          name: base64-openbsd-amd64-tar-xz
+          path: ${{ github.workspace }}/base64-*-openbsd-amd64.tar.xz
 
   freebsd-amd64:
     needs: openbsd-amd64
@@ -119,7 +119,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-src-git-sha
+          name: base64-src-git-sha
           path: .
 
       - uses: leleliu008/github-actions-vagrant@main
@@ -136,17 +136,17 @@ jobs:
             run ./ppkg setup --use-system-package-manager
             run ./ppkg update
 
-            gsed -i "/git-url/a git-sha: $(cat base16-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base16.yml
+            gsed -i "/git-url/a git-sha: $(cat base64-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base64.yml
 
-            run ./ppkg install base16 --link-type=static-only --install-lib=static
-            run ./ppkg pack    base16
+            run ./ppkg install base64 --link-type=static-only --install-lib=static
+            run ./ppkg pack    base64
 
-      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/base16-*-freebsd-amd64.tar.xz .
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/base64-*-freebsd-amd64.tar.xz .
 
       - uses: actions/upload-artifact@v3
         with:
-          name: base16-freebsd-amd64-tar-xz
-          path: ${{ github.workspace }}/base16-*-freebsd-amd64.tar.xz
+          name: base64-freebsd-amd64-tar-xz
+          path: ${{ github.workspace }}/base64-*-freebsd-amd64.tar.xz
 
   macos:
     needs: freebsd-amd64
@@ -163,7 +163,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-src-git-sha
+          name: base64-src-git-sha
           path: .
 
       - run: brew uninstall go@1.17
@@ -176,15 +176,16 @@ jobs:
       - run: ./xcpkg update
 
       - run: |
-          gsed -i "/git-url/a git-sha: $(cat base16-src-git-sha)" ~/.xcpkg/repos.d/offical-core/formula/base16.yml
+          gsed -i "/git-url/a git-sha: $(cat base64-src-git-sha)" ~/.xcpkg/repos.d/offical-core/formula/base64.yml
 
-      - run: ./xcpkg install MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/base16 --link-type=static-prefered --install-lib=static
-      - run: ./xcpkg pack    MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/base16 -o .
+      - run: ./xcpkg install MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/base64 --link-type=static-prefered --install-lib=static
+      - run: ./xcpkg pack    MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/base64 -o .
 
       - uses: actions/upload-artifact@v3
         with:
-          name: base16-macos${{ matrix.target-version }}-${{ matrix.target-arch }}-tar-xz
-          path: ${{ github.workspace }}/base16-*.tar.xz
+          name: base64-macos${{ matrix.target-version }}-${{ matrix.target-arch }}-tar-xz
+          path: ${{ github.workspace }}/base64-*.tar.xz
+
 
   linux-aarch64:
     needs: macos
@@ -194,7 +195,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-src-git-sha
+          name: base64-src-git-sha
           path: .
 
       - run: |
@@ -221,12 +222,12 @@ jobs:
           run ./ppkg setup --use-system-package-manager
           run ./ppkg update
 
-          sed -i "/git-url/a git-sha: $(cat base16-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base16.yml
+          sed -i "/git-url/a git-sha: $(cat base64-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base64.yml
 
-          run ./ppkg install base16 gh --link-type=static-only --install-lib=static
-          run ./ppkg pack    base16
+          run ./ppkg install base64 gh --link-type=static-only --install-lib=static
+          run ./ppkg pack    base64
 
-          ls ~/.ppkg/packed/base16-*.tar.xz > filepath.txt
+          ls ~/.ppkg/packed/base64-*.tar.xz > filepath.txt
           EOF
 
           chmod +x run.sh
@@ -240,8 +241,8 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: base16---linux-aarch64-tar-xz
-          path: base16-*-linux-aarch64.tar.xz
+          name: base64---linux-aarch64-tar-xz
+          path: base64-*-linux-aarch64.tar.xz
 
 
   linux-s390x:
@@ -252,7 +253,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-src-git-sha
+          name: base64-src-git-sha
           path: .
 
       - run: |
@@ -279,12 +280,12 @@ jobs:
           run ./ppkg setup --use-system-package-manager
           run ./ppkg update
 
-          sed -i "/git-url/a git-sha: $(cat base16-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base16.yml
+          sed -i "/git-url/a git-sha: $(cat base64-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base64.yml
 
-          run ./ppkg install base16 gh --link-type=static-only --install-lib=static
-          run ./ppkg pack    base16
+          run ./ppkg install base64 gh --link-type=static-only --install-lib=static
+          run ./ppkg pack    base64
 
-          ls ~/.ppkg/packed/base16-*.tar.xz > filepath.txt
+          ls ~/.ppkg/packed/base64-*.tar.xz > filepath.txt
           EOF
 
           chmod +x run.sh
@@ -298,12 +299,12 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: base16---linux-s390x-tar-xz
-          path: base16-*-linux-s390x.tar.xz
+          name: base64---linux-s390x-tar-xz
+          path: base64-*-linux-s390x.tar.xz
 
 
   linux-x86_64:
-    needs: linux-s390x
+    needs: linux-aarch64
     runs-on: ubuntu-latest
 
     container: alpine:3.16
@@ -316,7 +317,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-src-git-sha
+          name: base64-src-git-sha
           path: .
 
       - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
@@ -325,65 +326,66 @@ jobs:
       - run: ./ppkg update
 
       - run: |
-          sed -i "/git-url/a git-sha: $(cat base16-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base16.yml
+          sed -i "/git-url/a git-sha: $(cat base64-src-git-sha)" ~/.ppkg/repos.d/offical-core/formula/base64.yml
 
-      - run: ./ppkg install base16 gh --link-type=static-only --install-lib=static
-      - run: ./ppkg pack    base16
+      - run: ./ppkg install base64 gh --link-type=static-only --install-lib=static
+      - run: ./ppkg pack    base64
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-netbsd-amd64-tar-xz
+          name: base64-netbsd-amd64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-openbsd-amd64-tar-xz
+          name: base64-openbsd-amd64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-freebsd-amd64-tar-xz
+          name: base64-freebsd-amd64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-macos11.0-x86_64-tar-xz
+          name: base64-macos11.0-x86_64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-macos12.0-x86_64-tar-xz
+          name: base64-macos12.0-x86_64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-macos13.0-x86_64-tar-xz
+          name: base64-macos13.0-x86_64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-macos11.0-arm64-tar-xz
+          name: base64-macos11.0-arm64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-macos12.0-arm64-tar-xz
+          name: base64-macos12.0-arm64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16-macos13.0-arm64-tar-xz
+          name: base64-macos13.0-arm64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16---linux-aarch64-tar-xz
+          name: base64---linux-aarch64-tar-xz
           path: ~/.ppkg/packed/
 
       - uses: actions/download-artifact@v3
         with:
-          name: base16---linux-s390x-tar-xz
+          name: base64---linux-s390x-tar-xz
           path: ~/.ppkg/packed/
+
 
       - run: ls -a
       - run: ls ~/.ppkg/packed
@@ -393,13 +395,13 @@ jobs:
       - run: git config --global --add safe.directory /__w/test/test
 
       - run: |
-          GIT_SHA="$(cat base16-src-git-sha)"
+          GIT_SHA="$(cat base64-src-git-sha)"
 
           cd ~/.ppkg/packed
 
           printf 'build-from: https://github.com/leleliu008/C-examples/tree/%s\n\n' "$GIT_SHA" > notes.md
-          printf 'sha256sum:\n```\n%s\n```\n' "$(sha256sum base16-*.tar.xz)" >> notes.md
+          printf 'sha256sum:\n```\n%s\n```\n' "$(sha256sum base64-*.tar.xz)" >> notes.md
 
       - run: |
-          V=$(ls ~/.ppkg/packed/base16-*-linux-x86_64.tar.xz | cut -d- -f2)
-          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/base16-*.tar.xz --title $V --notes-file ~/.ppkg/packed/notes.md
+          V=$(ls ~/.ppkg/packed/base64-*-linux-x86_64.tar.xz | cut -d- -f2)
+          ~/.ppkg/installed/gh/bin/gh release create $V ~/.ppkg/packed/base64-*.tar.xz --title $V --notes-file ~/.ppkg/packed/notes.md
