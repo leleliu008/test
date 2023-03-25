@@ -1,0 +1,43 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: FreeBSD-pkg
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: macos-12
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [13]
+
+    steps:
+      - uses: leleliu008/github-actions-vagrant@main
+        with:
+          mem: 2048
+          box: generic/freebsd${{ matrix.version }}
+          run: |
+            export HOME=/home/vagrant
+
+            run pkg install -y curl libnghttp2
+
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+            run chmod a+x ppkg
+            run ./ppkg setup --use-system-package-manager
+            run ./ppkg update
+            run ./ppkg install pkg --link-type=static-prefered --install-lib=static
+            run ./ppkg pack    pkg
+
+      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/pkg-*-freebsd-amd64.tar.xz .
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: pkg---freebsd-amd64-tar-xz
+          path: pkg-*-freebsd-amd64.tar.xz
