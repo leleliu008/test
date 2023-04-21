@@ -11,6 +11,8 @@ jobs:
     container: alpine:3.16
 
     steps:
+      - run: apk update
+      - run: apk add g++ libc-dev linux-headers
       - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
       - run: ./ppkg setup
