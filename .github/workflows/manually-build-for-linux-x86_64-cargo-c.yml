@@ -1,0 +1,24 @@
+name: manually build cargo-c for linux-x86_64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  linux-x86_64:
+
+    runs-on: ubuntu-latest
+
+    container: alpine:3.16
+
+    steps:
+      - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
+      - run: ./ppkg setup
+      - run: ./ppkg update
+      - run: ./ppkg install cargo-c --link-type=static-only --install-lib=static
+      - run: ./ppkg pack    cargo-c -o .
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: cargo-c---linux-x86_64-tar-xz
+          path: cargo-c-*-linux-x86_64.tar.xz
