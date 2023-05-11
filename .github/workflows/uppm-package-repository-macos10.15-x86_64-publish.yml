@@ -1,4 +1,4 @@
-name: macos11.0-x86_64-publish
+name: macos10.15-x86_64-publish
 
 on:
   workflow_dispatch
@@ -10,7 +10,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       PKG_NAMES: patchelf gettext-tools glib-tools grpc-plugins xsltproc libxml2-utils
-      PLATFORM_VERSION: '11.0'
+      PLATFORM_VERSION: '10.15'
 
     steps:
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
