@@ -9,7 +9,7 @@ jobs:
 
     env:
       GH_TOKEN: ${{ github.token }}
-      PKG_NAMES: cargo-cbuild
+      PKG_NAMES: cargo-c
       PLATFORM_VERSION: '10.15'
 
     steps:
