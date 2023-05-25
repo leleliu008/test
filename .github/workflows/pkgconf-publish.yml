@@ -7,22 +7,7 @@ on:
 
 jobs:
 
-  source:
-    runs-on: ubuntu-latest
-
-    steps:
-      - id:  inspect-git-sha
-        run: |
-          git clone --depth=1 https://github.com/leleliu008/C-examples
-          cd C-examples
-          printf 'GIT_SHA=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-    outputs:
-      git-sha: ${{ steps.inspect-git-sha.outputs.GIT_SHA }}
-
-
   netbsd-amd64:
-    needs: source
 
     runs-on: macos-12
 
@@ -49,9 +34,6 @@ jobs:
             run chmod a+x ppkg
             run ./ppkg setup --use-system-package-manager
             run ./ppkg update
-
-            gsed -i "/git-url/a git-sha: ${{ needs.source.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/pkgconf.yml
-
             run ./ppkg install pkgconf --link-type=static-only --install-lib=static
             run ./ppkg pack    pkgconf
 
@@ -64,7 +46,7 @@ jobs:
 
 
   openbsd-amd64:
-    needs: [source, netbsd-amd64]
+    needs: [netbsd-amd64]
 
     runs-on: macos-12
 
@@ -87,9 +69,6 @@ jobs:
             run chmod a+x ppkg
             run ./ppkg setup --use-system-package-manager
             run ./ppkg update
-
-            gsed -i "/git-url/a git-sha: ${{ needs.source.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/pkgconf.yml
-
             run ./ppkg install pkgconf --link-type=static-only --install-lib=static
             run ./ppkg pack    pkgconf
 
@@ -102,7 +81,7 @@ jobs:
 
 
   freebsd-amd64:
-    needs: [source, openbsd-amd64]
+    needs: [openbsd-amd64]
 
     runs-on: macos-12
 
@@ -120,9 +99,6 @@ jobs:
             run chmod a+x ppkg
             run ./ppkg setup --use-system-package-manager
             run ./ppkg update
-
-            gsed -i "/git-url/a git-sha: ${{ needs.source.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/pkgconf.yml
-
             run ./ppkg install pkgconf --link-type=static-only --install-lib=static
             run ./ppkg pack    pkgconf
 
@@ -135,7 +111,7 @@ jobs:
 
 
   macos:
-    needs: [source, freebsd-amd64]
+    needs: [freebsd-amd64]
 
     strategy:
       fail-fast: false
@@ -153,10 +129,6 @@ jobs:
       - run: chmod a+x xcpkg
       - run: ./xcpkg setup --use-brew
       - run: ./xcpkg update
-
-      - run: |
-          gsed -i "/git-url/a git-sha: ${{ needs.source.outputs.git-sha }}" ~/.xcpkg/repos.d/offical-core/formula/pkgconf.yml
-
       - run: ./xcpkg install MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/pkgconf --link-type=static-prefered --install-lib=static
       - run: ./xcpkg pack    MacOSX/${{ matrix.target-version }}/${{ matrix.target-arch }}/pkgconf -o .
 
@@ -167,7 +139,7 @@ jobs:
 
 
   linux-aarch64:
-    needs: [source, macos]
+    needs: [macos]
 
     runs-on: ubuntu-latest
 
@@ -195,10 +167,9 @@ jobs:
           run chmod a+x ppkg
           run ./ppkg setup --use-system-package-manager
           run ./ppkg update
-
-          sed -i "/git-url/a git-sha: ${{ needs.source.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/pkgconf.yml
-
           run ./ppkg install pkgconf --link-type=static-only --install-lib=static
+          run rm -rf ~/.ppkg/installed/pkgconf/include
+          run rm -rf ~/.ppkg/installed/pkgconf/lib
           run ./ppkg pack    pkgconf -o .
           EOF
 
@@ -217,7 +188,7 @@ jobs:
 
 
   linux-s390x:
-    needs: [source, linux-aarch64]
+    needs: [linux-aarch64]
 
     runs-on: ubuntu-latest
 
@@ -245,10 +216,9 @@ jobs:
           run chmod a+x ppkg
           run ./ppkg setup --use-system-package-manager
           run ./ppkg update
-
-          sed -i "/git-url/a git-sha: ${{ needs.source.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/pkgconf.yml
-
           run ./ppkg install pkgconf --link-type=static-only --install-lib=static
+          run rm -rf ~/.ppkg/installed/pkgconf/include
+          run rm -rf ~/.ppkg/installed/pkgconf/lib
           run ./ppkg pack    pkgconf -o .
           EOF
 
@@ -267,22 +237,21 @@ jobs:
 
 
   linux-x86_64:
-    needs: [source, linux-s390x]
+    needs: [linux-s390x]
 
     runs-on: ubuntu-latest
 
-    container: alpine:3.16
+    container: alpine:3.18
 
     steps:
       - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
       - run: ./ppkg setup --use-system-package-manager
       - run: ./ppkg update
-
-      - run: |
-          sed -i "/git-url/a git-sha: ${{ needs.source.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/pkgconf.yml
-
       - run: ./ppkg install pkgconf --link-type=static-only --install-lib=static
+      - run: |
+          rm -rf ~/.ppkg/installed/pkgconf/include
+          rm -rf ~/.ppkg/installed/pkgconf/lib
       - run: ./ppkg pack    pkgconf -o .
 
       - uses: actions/upload-artifact@v3
@@ -292,7 +261,7 @@ jobs:
 
 
   publish:
-    needs: [source, linux-x86_64]
+    needs: [linux-x86_64]
 
     runs-on: ubuntu-latest
 
