@@ -113,7 +113,6 @@ jobs:
       MACOSX_DEPLOYMENT_TARGET: 10.15
 
     steps:
-      - run: brew uninstall go@1.17
       - run: brew update
       - run: brew install --overwrite python@3.10 python@3.11
 

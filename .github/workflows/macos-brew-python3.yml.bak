@@ -38,7 +38,6 @@ jobs:
 
     steps:
       - run: brew config
-      - run: brew uninstall go@1.17
       - run: brew cleanup
       - run: brew doctor
       - run: brew update

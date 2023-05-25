@@ -20,7 +20,6 @@ jobs:
     runs-on: macos-${{ matrix.version }}
 
     steps:
-      - run: brew uninstall go@1.17
 
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
