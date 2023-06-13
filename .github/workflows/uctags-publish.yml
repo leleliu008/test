@@ -109,6 +109,9 @@ jobs:
                 export SSL_CERT_FILE="$ETCCERTSDIR/ca-certificates.crt"
             fi
 
+            run sudo pkgin -y update
+            run sudo pkgin -y install llvm
+
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
             run chmod a+x ppkg
             run ./ppkg setup
@@ -140,7 +143,7 @@ jobs:
           mem: 2048
           box: generic/openbsd7
           run: |
-            run sudo pkg_add curl
+            run sudo pkg_add curl gcc%11
 
             export HOME=/home/vagrant
             export LD_LIBRARY_PATH=/usr/local/lib
@@ -178,7 +181,8 @@ jobs:
           run: |
             export HOME=/home/vagrant
 
-            run pkg install -y curl libnghttp2
+            run pkg update
+            run pkg install -y gcc curl libnghttp2
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
             run chmod a+x ppkg
@@ -252,6 +256,9 @@ jobs:
 
           run uname -a
 
+          run apk update
+          run apk add g++ libc-dev linux-headers
+
           run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           run chmod a+x ppkg
           run ./ppkg setup
@@ -285,6 +292,9 @@ jobs:
     container: alpine:3.16
 
     steps:
+      - run: apk update
+      - run: apk add g++ libc-dev linux-headers
+
       - run: wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
       - run: ./ppkg setup
