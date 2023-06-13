@@ -117,7 +117,7 @@ jobs:
             run ./ppkg setup
             run ./ppkg update
 
-            gsed -i "/git-url/a git-sha: ${{ needs.check.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
+            ~/.uppm/installed/gsed/bin/gsed -i "/git-url/a git-sha: ${{ needs.check.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
 
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
@@ -155,7 +155,7 @@ jobs:
             run ./ppkg setup
             run ./ppkg update
 
-            gsed -i "/git-url/a git-sha: ${{ needs.check.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
+            ~/.uppm/installed/gsed/bin/gsed -i "/git-url/a git-sha: ${{ needs.check.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
 
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
@@ -189,7 +189,7 @@ jobs:
             run ./ppkg setup
             run ./ppkg update
 
-            gsed -i "/git-url/a git-sha: ${{ needs.check.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
+            ~/.uppm/installed/gsed/bin/gsed -i "/git-url/a git-sha: ${{ needs.check.outputs.git-sha }}" ~/.ppkg/repos.d/offical-core/formula/uctags.yml
 
             run ./ppkg install uctags --link-type=static-only --install-lib=static
             run ./ppkg pack    uctags
