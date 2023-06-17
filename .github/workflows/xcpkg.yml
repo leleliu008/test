@@ -9,7 +9,7 @@ jobs:
 
     env:
       GH_TOKEN: ${{ github.token }}
-      PKG_NAMES: nushell
+      PKG_NAMES: xmake
       PLATFORM_VERSION: '13.0'
 
     steps:
