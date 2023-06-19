@@ -52,9 +52,9 @@ jobs:
          ./ppkg pack ${{ matrix.pkg }} -o .
 
 
-          PACKAGE_SUMMARY="$(./ppkg receipt ${{ matrix.pkg }} summary)"
-          PACKAGE_WEB_URL="$(./ppkg receipt ${{ matrix.pkg }} web-url)"
-          PACKAGE_VERSION="$(./ppkg receipt ${{ matrix.pkg }} version)"
+          PACKAGE_SUMMARY="\$(./ppkg receipt ${{ matrix.pkg }} summary)"
+          PACKAGE_WEB_URL="\$(./ppkg receipt ${{ matrix.pkg }} web-url)"
+          PACKAGE_VERSION="\$(./ppkg receipt ${{ matrix.pkg }} version)"
 
           PACKAGE_BIN_FILENAME="${{ matrix.pkg }}-\$PACKAGE_VERSION-linux-aarch64.tar.xz"
 
@@ -62,7 +62,13 @@ jobs:
 
           PACKAGE_BIN_URL="https://github.com/leleliu008/uppm-package-repository-linux-aarch64/releases/download/@TAGNAME@/\${PACKAGE_BIN_FILENAME}"
 
-          printf 'summary: %s\nwebpage: %s\nversion: %s\nbin-url: %s\nbin-sha: %s\n' "\$PACKAGE_SUMMARY" "\$PACKAGE_WEB_URL" "\$PACKAGE_VERSION" "\$PACKAGE_BIN_URL" "\$PACKAGE_BIN_SHA"  > ${{ matrix.pkg }}.yml
+          cat > ${{ matrix.pkg }}.yml <<EOF2
+          summary: \$PACKAGE_SUMMARY
+          webpage: \$PACKAGE_WEB_URL
+          version: \$PACKAGE_VERSION 
+          bin-url: \$PACKAGE_BIN_URL 
+          bin-sha: \$PACKAGE_BIN_SHA
+          EOF2
 
           EOF
 
@@ -100,7 +106,7 @@ jobs:
           UPPM_FORMULA_ROOT_DIR="uppm-formula-repository-linux-aarch64-$TAGNAME"
           UPPM_FORMULA_DIR="$UPPM_FORMULA_ROOT_DIR/formula"
 
-          sed -i "s|TAGNAME|$TAGNAME|" *.yml
+          sed -i "s|@TAGNAME@|$TAGNAME|" *.yml
 
           install -d "$UPPM_FORMULA_ROOT_DIR/formula"
           mv *.yml   "$UPPM_FORMULA_ROOT_DIR/formula"
