@@ -63,11 +63,11 @@ jobs:
           PACKAGE_BIN_URL="https://github.com/leleliu008/uppm-package-repository-linux-aarch64/releases/download/@TAGNAME@/\${PACKAGE_BIN_FILENAME}"
 
           cat > ${{ matrix.pkg }}.yml <<EOF2
-          summary: $PACKAGE_SUMMARY
-          webpage: $PACKAGE_WEB_URL
-          version: $PACKAGE_VERSION 
-          bin-url: $PACKAGE_BIN_URL 
-          bin-sha: $PACKAGE_BIN_SHA
+          summary\: $PACKAGE_SUMMARY
+          webpage\: $PACKAGE_WEB_URL
+          version\: $PACKAGE_VERSION 
+          bin-url\: $PACKAGE_BIN_URL 
+          bin-sha\: $PACKAGE_BIN_SHA
           EOF2
 
           EOF
