@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pkg: base16
+        pkg: [base16]
         #pkg: bash bat bison bmake bzip2 b3sum cmake coreutils curl darkhttpd diffutils dos2unix doxygen ed file findutils gawk git gm4 gmake gh grep gsed gtar gzip jq libarchive lzip lz4 nasm ninja openssl patchelf patch pkgconf pkg-config qpdf rsync swig sqlite tree uctags unzip uppm util-linux volta wget xmake xxd xz yasm yq zip p7zip zstd zoxide base16 base64 sysinfo easyutils gettext-tools glib-tools xsltproc libxml2-utils procps
 
     runs-on: ubuntu-latest
