@@ -95,6 +95,11 @@ jobs:
     steps:
       - run: |
           set -x
+
+          # to avaid: failed to run git: fatal: not a git repository (or any of the parent directories): .git
+          git -c init.defaultBranch=master init
+          git remote add origin ${{ github.repositoryUrl }}
+
           #for PACKAGE_NAME in bash bat bison bmake bzip2 b3sum cmake coreutils curl darkhttpd diffutils dos2unix doxygen ed file findutils gawk git gm4 gmake gh grep gsed gtar gzip jq libarchive lzip lz4 nasm ninja openssl patchelf patch pkgconf pkg-config qpdf rsync swig sqlite tree uctags unzip uppm util-linux volta wget xmake xxd xz yasm yq zip p7zip zstd zoxide base16 base64 sysinfo easyutils gettext-tools glib-tools xsltproc libxml2-utils procps
           for PACKAGE_NAME in base16
           do
@@ -144,9 +149,5 @@ jobs:
           $(cat sha256sums.txt)
           \`\`\`
           EOF
-
-          # to avaid: failed to run git: fatal: not a git repository (or any of the parent directories): .git
-          git -c init.defaultBranch=master init
-          git remote add origin ${{ github.repositoryUrl }}
 
           gh release create "$TAGNAME" *.tar.xz sha256sums.txt --title "$TAGNAME" --notes-file notes.md
