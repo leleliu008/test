@@ -58,7 +58,7 @@ jobs:
 
           PACKAGE_BIN_FILENAME="${{ matrix.pkg }}-\$PACKAGE_VERSION-linux-aarch64.tar.xz"
 
-          PACKAGE_BIN_SHA=$(sha256sum "\$PACKAGE_BIN_FILENAME" | cut -d ' ' -f1)
+          PACKAGE_BIN_SHA="\$(sha256sum "\$PACKAGE_BIN_FILENAME" | cut -d ' ' -f1)"
 
           PACKAGE_BIN_URL="https://github.com/leleliu008/uppm-package-repository-linux-aarch64/releases/download/@TAGNAME@/\${PACKAGE_BIN_FILENAME}"
 
@@ -86,6 +86,7 @@ jobs:
             ${{ matrix.pkg }}.yml
 
   publish:
+    needs: build
     runs-on: ubuntu-latest
 
     env:
