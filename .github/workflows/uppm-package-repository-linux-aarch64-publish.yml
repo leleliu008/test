@@ -108,7 +108,7 @@ jobs:
 
           date +%Y.%m.%d > ts.txt
 
-          TAGNAME="\$(cat ts.txt)"
+          TAGNAME="$(cat ts.txt)"
 
           UPPM_FORMULA_ROOT_DIR="uppm-formula-repository-linux-aarch64-$TAGNAME"
           UPPM_FORMULA_DIR="$UPPM_FORMULA_ROOT_DIR/formula"
