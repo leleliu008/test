@@ -125,7 +125,7 @@ jobs:
 
           install -d "$UPPM_FORMULA_ROOT_DIR/formula"
           mv *.yml   "$UPPM_FORMULA_ROOT_DIR/formula"
-          tar cvJf   "$UPPM_FORMULA_ROOT_DIR.tar.xz" formula
+          tar cvJf   "$UPPM_FORMULA_ROOT_DIR.tar.xz" "$UPPM_FORMULA_ROOT_DIR"
 
           sha256sum *.tar.xz > sha256sums.txt
 
