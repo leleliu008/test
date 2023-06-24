@@ -33,7 +33,13 @@ jobs:
           run ./ppkg setup --use-system-package-manager
           run ./ppkg update
           run ./ppkg install golang --link-type=static-only --install-lib=static
-          run ./ppkg pack    golang -o .
+          #run ./ppkg pack    golang -o .
+
+          V="$(./ppkg receipt golang version)"
+          D="golang-$V-linux-aarch64"
+
+          ln -s ~/.ppkg/installed/golang "$PWD/$D"
+          tar cvJf "$D.tar.xz" "$D"
           EOF
 
           chmod +x run.sh
