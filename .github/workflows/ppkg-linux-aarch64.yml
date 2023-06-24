@@ -38,8 +38,9 @@ jobs:
           V="$(./ppkg receipt golang version)"
           D="golang-$V-linux-aarch64"
 
-          ln -s ~/.ppkg/installed/golang "$PWD/$D"
-          tar cvJf "$D.tar.xz" "$D"
+          run ln -s ~/.ppkg/installed/golang "$PWD/$D"
+          run ls
+          run tar cvJf "$D.tar.xz" "$D"/.
           EOF
 
           chmod +x run.sh
