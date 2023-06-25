@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
-      - run: chmod a+x ppkg
       - run: |
           cat > run.sh <<EOF
           set -e
@@ -34,6 +32,10 @@ jobs:
 
           run uname -a
 
+          run apt -y update
+          run apt -y install curl
+          run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+          run chmod a+x ppkg
           run ./ppkg setup
           run ./ppkg update
           run ./ppkg install ${{ matrix.pkg }} --link-type=static-only --install-lib=static
