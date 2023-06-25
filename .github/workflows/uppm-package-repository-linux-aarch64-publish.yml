@@ -33,7 +33,7 @@ jobs:
           run uname -a
 
           run apt -y update
-          run apt -y install curl
+          run apt -y install curl xz-utils g++ linux-headers-generic
           run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           run chmod a+x ppkg
           run ./ppkg setup
