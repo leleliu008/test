@@ -32,8 +32,8 @@ jobs:
           run chmod a+x ppkg
           run ./ppkg setup --use-system-package-manager
           run ./ppkg update
-          run ./ppkg install golang --link-type=static-only --install-lib=static
-          run ./ppkg pack    golang -o .
+          run ./ppkg install lzip --link-type=static-only --install-lib=static
+          run ./ppkg pack    lzip -o .
           EOF
 
           chmod +x run.sh
@@ -46,5 +46,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: golang---linux-aarch64-musl-tar-xz
-          path: golang-*-linux-aarch64-musl.tar.xz
+          name: lzip---linux-aarch64-tar-xz
+          path: lzip-*-linux-aarch64.tar.xz
