@@ -29,7 +29,7 @@ jobs:
           run uname -a
 
           run apk update
-          run apk add wget cmake ninja gcc libc-dev linux-headers zlib perl
+          run apk add wget cmake make gcc libc-dev linux-headers zlib perl
 
           run wget https://www.openssl.org/source/openssl-3.1.1.tar.gz
           run tar vxf openssl-3.1.1.tar.gz
@@ -57,7 +57,6 @@ jobs:
             -DCMAKE_FIND_ROOT_PATH=/opt/openssl \
             -DCMAKE_PROJECT_INCLUDE=./project-after.cmake \
             -DCMAKE_INSTALL_PREFIX=./output \
-            -G Ninja \
             -S . \
             -B build.d
           run cmake --build   build.d
