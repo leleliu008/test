@@ -52,7 +52,6 @@ jobs:
             -DLINT=OFF \
             -DCMAKE_VERBOSE_MAKEFILE=ON \
             -DCMAKE_FIND_ROOT_PATH=/opt/openssl \
-            -DCMAKE_PROJECT_INCLUDE=../project-after.cmake \
             -DCMAKE_INSTALL_PREFIX=./output \
             -S . \
             -B build.d
