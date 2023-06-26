@@ -1,0 +1,74 @@
+name: ppkg-linux-ppc64le-openssh-openssl
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          cat > run.sh <<EOF
+          set -e
+
+          COLOR_GREEN='\033[0;32m'        # Green
+          COLOR_PURPLE='\033[0;35m'       # Purple
+          COLOR_OFF='\033[0m'             # Reset
+
+          echo() {
+              printf '%b\n' "\$*"
+          }
+
+          run() {
+              echo "\${COLOR_PURPLE}==>\${COLOR_OFF} \${COLOR_GREEN}\$@\${COLOR_OFF}"
+              eval "\$*"
+          }
+
+          run uname -a
+
+          run apk update
+          run apk add wget cmake ninja gcc libc-dev linux-headers zlib perl
+
+          OPENSSL_INSTALL_DIR="$HOME/openssl"
+
+          run wget https://www.openssl.org/source/openssl-3.1.1.tar.gz
+          run tar vxf openssl-3.1.1.tar.gz
+          run cd openssl-3.1.1
+          run ./config no-tests no-shared --prefix="$OPENSSL_INSTALL_DIR"
+          run perl configdata.pm --dump
+          run make
+          run make install
+
+          # make sure static libraries are found
+          printf 'set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")\n' > project-after.cmake
+
+          run wget https://libssh2.org/download/libssh2-1.11.0.tar.gz
+          run tar vxf libssh2-1.11.0.tar.gz
+          run cd libssh2-1.11.0
+          run cmake \
+            -DBUILD_TESTING=OFF \
+            -DBUILD_EXAMPLES=OFF \
+            -DBUILD_SHARED_LIBS=ON \
+            -DBUILD_STATIC_LIBS=ON \
+            -DENABLE_ZLIB_COMPRESSION=ON \
+            -DCRYPTO_BACKEND=OpenSSL \
+            -DLINT=OFF \
+            -DCMAKE_VERBOSE_MAKEFILE=ON \
+            -DCMAKE_FIND_ROOT_PATH="$OPENSSL_INSTALL_DIR" \
+            -DCMAKE_PROJECT_INCLUDE=./project-after.cmake \
+            -DCMAKE_INSTALL_PREFIX=./output \
+            -G Ninja \
+            -S . \
+            -B build.d
+          run cmake --build   build.d
+          run cmake --install build.d
+
+          EOF
+
+          chmod +x run.sh
+
+      # https://github.com/multiarch/qemu-user-static
+      - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - run: docker run -v $PWD:$PWD -w $PWD --name alpine ppc64le/alpine sh run.sh
