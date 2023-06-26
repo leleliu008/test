@@ -29,7 +29,7 @@ jobs:
           run uname -a
 
           run apk update
-          run apk add wget cmake make gcc libc-dev linux-headers zlib perl
+          run apk add wget cmake make gcc libc-dev linux-headers zlib-dev perl
 
           run wget https://www.openssl.org/source/openssl-3.1.1.tar.gz
           run tar vxf openssl-3.1.1.tar.gz
@@ -37,7 +37,7 @@ jobs:
           run ./config no-tests no-shared --prefix=/opt/openssl
           run perl configdata.pm --dump
           run make
-          run make install
+          run make install_sw
 
           # make sure static libraries are found
           printf 'set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")\n' > project-after.cmake
