@@ -31,12 +31,10 @@ jobs:
           run apk update
           run apk add wget cmake ninja gcc libc-dev linux-headers zlib perl
 
-          OPENSSL_INSTALL_DIR="$HOME/openssl"
-
           run wget https://www.openssl.org/source/openssl-3.1.1.tar.gz
           run tar vxf openssl-3.1.1.tar.gz
           run cd openssl-3.1.1
-          run ./config no-tests no-shared --prefix="$OPENSSL_INSTALL_DIR"
+          run ./config no-tests no-shared --prefix=/opt/openssl
           run perl configdata.pm --dump
           run make
           run make install
@@ -56,7 +54,7 @@ jobs:
             -DCRYPTO_BACKEND=OpenSSL \
             -DLINT=OFF \
             -DCMAKE_VERBOSE_MAKEFILE=ON \
-            -DCMAKE_FIND_ROOT_PATH="$OPENSSL_INSTALL_DIR" \
+            -DCMAKE_FIND_ROOT_PATH=/opt/openssl \
             -DCMAKE_PROJECT_INCLUDE=./project-after.cmake \
             -DCMAKE_INSTALL_PREFIX=./output \
             -G Ninja \
