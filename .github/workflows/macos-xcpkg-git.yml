@@ -1,0 +1,33 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: macos-xcpkg-git
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-version: ['11.0', '12.0', '13.0']
+
+    runs-on: macos-12
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
+      - run: chmod a+x xcpkg
+      - run: ./xcpkg setup
+      - run: ./xcpkg update
+      - run: ./xcpkg install MacOSX/${{ matrix.target-version }}/arm64/git --link-type=static-prefered --install-lib=static
+      - run: ./xcpkg pack    MacOSX/${{ matrix.target-version }}/arm64/git -o .
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: git---macos${{ matrix.target-version }}-arm64-tar-xz
+          path: git-*-macos*-arm64.tar.xz
