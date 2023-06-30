@@ -26,5 +26,6 @@ jobs:
             run ./ppkg update
             run ./ppkg install uppm --link-type=static-only --install-lib=static
             run ./ppkg pack    uppm
+            sudo cp ~/.uppm/installed/bash/bin/bash /bin/bash
 
       - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/uppm-*-openbsd-amd64.tar.xz .
