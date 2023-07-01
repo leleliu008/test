@@ -14,4 +14,4 @@ jobs:
       - run: ./xcpkg sysinfo
       - run: ./xcpkg setup
       - run: ./xcpkg update
-      - run: ./xcpkg install iPhoneOS/14.0/arm64/libpng
+      - run: ./xcpkg install iPhoneOS/14.0/arm64/fontconfig
