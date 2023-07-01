@@ -73,5 +73,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: uctags---openbsd-amd64-tar-xz
-          path: uctags-*-openbsd-amd64.tar.xz
+          name: uppm---openbsd-amd64-tar-xz
+          path: uppm-*-openbsd-amd64.tar.xz
