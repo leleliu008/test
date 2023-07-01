@@ -7,26 +7,67 @@ jobs:
   openbsd-amd64:
     runs-on: macos-12
 
+    env:
+      VAGRANT_LOG: info
+      # https://www.vagrantup.com/docs/other/debugging
+
     steps:
-      - run: brew install openssh
+      - run: |
+          echo 'set -e' > shell.sh
 
-      - uses: leleliu008/github-actions-vagrant@main
+          export -p | grep 'GITHUB_' >> shell.sh
+
+          cat >> shell.sh <<'EOF'
+          run() {
+            printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+            eval "$*"
+          }
+
+          run sudo pkg_add curl gtar-- gcc%11
+
+          run sudo ln -s /usr/local/bin/gtar /usr/bin/tar
+
+          export HOME=/home/vagrant
+          export LD_LIBRARY_PATH=/usr/local/lib
+
+          run cd /home/vagrant/${{ github.repository }}
+          run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+          run chmod a+x ppkg
+          run ./ppkg setup
+          run ./ppkg update
+          run ./ppkg install uppm --link-type=static-only --install-lib=static
+          run ./ppkg pack    uppm -o .
+          run ls uppm-*-openbsd-amd64.tar.xz > name.txt
+          run curl -LO https://raw.githubusercontent.com/emikulic/darkhttpd/master/darkhttpd.c
+          run cc -o darkhttpd darkhttpd.c
+          run ./darkhttpd . --port 8080 &
+          EOF
+
+          cat shell.sh
+      shell: bash 
+
+      - run: |
+          tee Vagrantfile <<EOF
+          Vagrant.configure("2") do |config|
+            config.vm.box = "generic/openbsd7"
+
+            config.vm.provider "virtualbox" do |vb|
+              vb.memory = "8192"
+            end
+
+            config.vm.network "forwarded_port", guest: 8080, host: 8080
+            config.vm.synced_folder ".", "/home/vagrant/${{ github.repository }}"
+            config.vm.provision "shell", path: "shell.sh"
+          end
+          EOF
+
+      - run: vagrant init generic/openbsd7
+      - run: vagrant up --provision
+
+      - run: curl -O http://localhost:8080/name.txt
+      - run: curl -O http://localhost:8080/$(cat name.txt)
+
+      - uses: actions/upload-artifact@v3
         with:
-          mem: 8192
-          box: generic/openbsd7
-          run: |
-            run sudo pkg_add curl gtar-- gcc%11
-
-            run sudo ln -s /usr/local/bin/gtar /usr/bin/tar
-
-            export HOME=/home/vagrant
-            export LD_LIBRARY_PATH=/usr/local/lib
-
-            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
-            run chmod a+x ppkg
-            run ./ppkg setup
-            run ./ppkg update
-            run ./ppkg install uppm --link-type=static-only --install-lib=static
-            run ./ppkg pack    uppm
-
-      - run: scp -i $VAGRANT_CWD/.vagrant/machines/default/virtualbox/private_key -o StrictHostKeyChecking=no -r -P 2222 vagrant@127.0.0.1:/home/vagrant/.ppkg/packed/uppm-*-openbsd-amd64.tar.xz .
+          name: uctags---openbsd-amd64-tar-xz
+          path: uctags-*-openbsd-amd64.tar.xz
