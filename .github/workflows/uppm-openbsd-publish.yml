@@ -61,7 +61,6 @@ jobs:
           end
           EOF
 
-      - run: vagrant init generic/openbsd7
       - run: vagrant up --provision
 
       - run: curl -O http://localhost:8080/name.txt
