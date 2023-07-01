@@ -41,7 +41,9 @@ jobs:
           run ./ppkg update
           run ./ppkg install uppm --link-type=static-only --install-lib=static
           run ./ppkg pack    uppm -o .
-          run ls uppm-*-openbsd-amd64.tar.xz > name.txt
+
+          ls uppm-*-openbsd-amd64.tar.xz > name.txt
+
           run curl -LO https://raw.githubusercontent.com/emikulic/darkhttpd/master/darkhttpd.c
           run cc -o darkhttpd darkhttpd.c
           run ./darkhttpd . --port 8080 &
@@ -64,8 +66,7 @@ jobs:
           end
           EOF
 
-      - run: |
-          vagrant up --provider virtualbox --provision
+      - run: vagrant up --provider virtualbox --provision
 
       - run: curl -O http://localhost:8080/name.txt
       - run: curl -O http://localhost:8080/$(cat name.txt)
