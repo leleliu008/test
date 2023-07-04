@@ -25,7 +25,6 @@ jobs:
           dep-pkg: zlib
           install: |
               cmakew \
-                  -DCMAKE_MACOSX_BUNDLE=OFF \
                   -DPNG_STATIC=ON \
                   -DPNG_SHARED=ON \
                   -DPNG_TESTS=OFF \
