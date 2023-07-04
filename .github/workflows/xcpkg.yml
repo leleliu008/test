@@ -31,5 +31,5 @@ jobs:
                   -DPNG_TESTS=OFF \
                   -DPNG_DEBUG=OFF \
                   -DPNG_ARM_NEON=off
-                  EOF
+          EOF
       - run: ./xcpkg install iPhoneOS/14.0/arm64/libpng
