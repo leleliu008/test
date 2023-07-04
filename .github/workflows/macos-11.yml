@@ -1,0 +1,20 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: macOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [11,12]
+
+    runs-on: macos-${{ matrix.version }}
+
+    steps:
+      - run: brew update
