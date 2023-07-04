@@ -15,7 +15,7 @@ jobs:
       - run: ./xcpkg setup
       - run: ./xcpkg update
       - run: |
-          cat ~/.xcpkg/repos.d/offical-core/formula/libpng.yml <<EOF
+          cat > ~/.xcpkg/repos.d/offical-core/formula/libpng.yml <<EOF
           summary: Library for manipulating PNG images
           web-url: http://www.libpng.org/pub/png/libpng.html
           git-url: https://github.com/glennrp/libpng
