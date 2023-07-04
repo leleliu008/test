@@ -17,4 +17,5 @@ jobs:
     runs-on: macos-${{ matrix.version }}
 
     steps:
+      - run: brew untap homebrew/core homebrew/cask
       - run: brew update
