@@ -17,5 +17,6 @@ jobs:
     runs-on: macos-${{ matrix.version }}
 
     steps:
-      - run: brew untap homebrew/core homebrew/cask
-      - run: brew update
+      - run: |
+          brew install --overwrite python@3.10 python@3.11
+          brew install automake pkg-config bash libxml2 jansson libyaml gdb docutils pcre2
