@@ -21,7 +21,7 @@ jobs:
 
           cat > MSG <<EOF
           $HEAD
-          tagged by GitHub Actions workflow: https://github.com/universal-ctags/ctags/blob/master/.github/workflows/tagging.yml
+
           EOF
 
           git tag -a -m "$(cat MSG)" p6.0.20230706.0
