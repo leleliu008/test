@@ -12,10 +12,8 @@ jobs:
         with:
           fetch-depth: 0
 
-            #- run: git config user.name  'github-actions'
-            #- run: git config user.email 'Universal-ctags@users.noreply.github.com'
+      - run: git config user.name  'Universal-ctags GitHub Actions'
+      - run: git config user.email 'Universal-ctags@users.noreply.github.com'
 
-      - run: git config user.name  'github-actions'
-      - run: git config user.email 'action@github.com'
-      - run: git tag -a -m "Create a weekly tag" p6.0.20230706.2
-      - run: git push origin p6.0.20230706.2
+      - run: git tag -a -m "https://github.com/universal-ctags/ctags/tree/$(git rev-parse HEAD)" p6.0.20230706.0
+      - run: git push origin p6.0.20230706.0
