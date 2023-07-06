@@ -16,6 +16,6 @@ jobs:
             #- run: git config user.email 'Universal-ctags@users.noreply.github.com'
 
       - run: git config user.name  'github-actions'
-      - run: git config user.email 'opensource+cli@github.com'
-      - run: git tag -a -m "Create a weekly tag" p6.0.20230706.1
-      - run: git push origin p6.0.20230706.1
+      - run: git config user.email 'action@github.com'
+      - run: git tag -a -m "Create a weekly tag" p6.0.20230706.2
+      - run: git push origin p6.0.20230706.2
