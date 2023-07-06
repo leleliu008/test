@@ -12,8 +12,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - run: ls -R
       - run: git config user.name  'Universal-ctags GitHub Actions'
       - run: git config user.email 'Universal-ctags@users.noreply.github.com'
 
-      - run: git tag -a -m "$(git rev-parse HEAD)" p6.0.20230706.0
+      - run: |
+          HEAD="$(git rev-parse HEAD)"
+
+          cat > MSG <<EOF
+          $HEAD
+          tagged by GitHub Actions workflow: https://github.com/universal-ctags/ctags/blob/master/.github/workflows/tagging.yml
+          EOF
+
+          git tag -a -m "$(cat MSG)" p6.0.20230706.0
       - run: git push origin p6.0.20230706.0
