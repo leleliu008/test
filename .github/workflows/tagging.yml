@@ -15,13 +15,5 @@ jobs:
       - run: git config user.name  'Universal-ctags GitHub Actions'
       - run: git config user.email 'Universal-ctags@users.noreply.github.com'
 
-      - run: |
-          HEAD="$(git rev-parse HEAD)"
-
-          cat > MSG <<EOF
-          $HEAD
-          https://github.com/universal-ctags/ctags/tree/$HEAD
-          EOF
-
-          git tag -a -m "$(cat MSG)" p6.0.20230706.0
+      - run: git tag -a -m "$(git rev-parse HEAD)" p6.0.20230706.0
       - run: git push origin p6.0.20230706.0
