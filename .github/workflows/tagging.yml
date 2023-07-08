@@ -8,11 +8,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - run: ls -R
+        run: |
+          cat git-rev-parse-HEAD-request > QUERY <<EOF
+          {
+            repository(owner: "universal-ctags", name: "ctags") {
+              ref(qualifiedName: "refs/heads/master") {
+                target {
+                  oid
+                }
+              }
+            }
+          }
+          EOF
 
       - run: git config user.name  'Universal-ctags GitHub Actions'
       - run: git config user.email 'Universal-ctags@users.noreply.github.com'
