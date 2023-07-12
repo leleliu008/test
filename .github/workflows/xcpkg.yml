@@ -14,21 +14,11 @@ jobs:
       - run: ./xcpkg sysinfo
       - run: ./xcpkg setup
       - run: ./xcpkg update
-      - run: |
-          cat > ~/.xcpkg/repos.d/offical-core/formula/libpng.yml <<EOF
-          summary: Library for manipulating PNG images
-          web-url: http://www.libpng.org/pub/png/libpng.html
-          git-url: https://github.com/glennrp/libpng
-          src-url: https://downloads.sourceforge.net/libpng/libpng-1.6.40.tar.xz
-          src-sha: 535b479b2467ff231a3ec6d92a525906fb8ef27978be4f66dbe05d3f3a01b3a1
-          license: libpng-2.0
-          dep-pkg: zlib
-          install: |
-              cmakew \
-                  -DPNG_STATIC=ON \
-                  -DPNG_SHARED=ON \
-                  -DPNG_TESTS=OFF \
-                  -DPNG_DEBUG=OFF \
-                  -DPNG_ARM_NEON=off
-          EOF
-      - run: ./xcpkg install iPhoneOS/14.0/arm64/libpng
+      - run: ./xcpkg install MacOSX/10.15/x86_64/util-linux --link-type=static-prefered --install-lib=static
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: util-linux-macos${{ matrix.target-version }}-${{ matrix.target-arch }}-tar-xz
+          path: util-linux-*.tar.xz
+
+
