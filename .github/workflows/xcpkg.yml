@@ -15,6 +15,7 @@ jobs:
       - run: ./xcpkg setup
       - run: ./xcpkg update
       - run: ./xcpkg install MacOSX/10.15/x86_64/util-linux --link-type=static-prefered --install-lib=static
+      - run: ./xcpkg pack    MacOSX/10.15/x86_64/util-linux -o .
 
       - uses: actions/upload-artifact@v3
         with:
