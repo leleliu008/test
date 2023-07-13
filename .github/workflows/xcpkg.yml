@@ -15,7 +15,7 @@ jobs:
       - run: ./xcpkg setup
       - run: ./xcpkg update
       - run: |
-          ./xcpkg install MacOSX/10.15/x86_64/glib --link-type=static-prefered --install-lib=static || find ~/.xcpkg/run -name 'meson-log.txt' -printf '%p\n' -exec cat {} \;
+          ./xcpkg install MacOSX/10.15/x86_64/glib --link-type=static-prefered --install-lib=static || find ~/.xcpkg/run -name 'meson-log.txt' -exec cat {} \;
       - run: ./xcpkg pack    MacOSX/10.15/x86_64/glib -o .
 
       - uses: actions/upload-artifact@v3
