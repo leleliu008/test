@@ -2,80 +2,80 @@ name: manually build uctags for linux
 
 on:
   workflow_dispatch:
+    inputs:
+      target-arch:
+        description: choose a target arch to be built for
+        type: choice
+        options:
+          - x86_64
+          - aarch64
+          - ppc64le
+          - riscv64
+          - s390x
 
-    target-arch:
-      description: choose a target arch to be built for
-      type: choice
-      options:
-        - x86_64
-        - aarch64
-        - ppc64le
-        - riscv64
-        - s390x
+      enable-manpages:
+        description: whether generate manpages
+        type: boolean
+        required: false
+        default: false
 
-    enable-manpages:
-      description: whether generate manpages
-      type: boolean
-      required: false
-      default: false
+      enable-json:
+        description: whether enable json support
+        type: boolean
+        required: false
+        default: true
 
-    enable-json:
-      description: whether enable json support
-      type: boolean
-      required: false
-      default: true
+      enable-yaml:
+        description: whether enable yaml support
+        type: boolean
+        required: false
+        default: true
 
-    enable-yaml:
-      description: whether enable yaml support
-      type: boolean
-      required: false
-      default: true
+      enable-xml:
+        description: whether enable xml support
+        type: boolean
+        required: false
+        default: true
 
-    enable-xml:
-      description: whether enable xml support
-      type: boolean
-      required: false
-      default: true
+      enable-libiconv:
+        description: whether enable libiconv support
+        type: boolean
+        required: false
+        default: true
 
-    enable-libiconv:
-      description: whether enable libiconv support
-      type: boolean
-      required: false
-      default: true
+      enable-seccomp:
+        description: whether enable seccomp support
+        type: boolean
+        required: false
+        default: false
 
-    enable-seccomp:
-      description: whether enable seccomp support
-      type: boolean
-      required: false
-      default: false
+      enable-threads:
+        description: whether enable threads support
+        type: boolean
+        required: false
+        default: true
 
-    enable-threads:
-      description: whether enable threads support
-      type: boolean
-      required: false
-      default: true
+      enable-largefile:
+        description: whether enable large file support
+        type: boolean
+        required: false
+        default: true
 
-    enable-largefile:
-      description: whether enable large file support
-      type: boolean
-      required: false
-      default: true
+      enable-etags:
+        description: whether create a symlink named etags which link to ctags
+        type: boolean
+        required: false
+        default: false
 
-    enable-etags:
-      description: whether create a symlink named etags which link to ctags
-      type: boolean
-      required: false
-      default: false
-
-    regex-backend:
-      description: choose a regex backend to be built with
-      type: choice
-      options:
-        - none
-        - gnu-regex
-        - pcre2
-      required: false
-      default: gnu-regex
+      regex-backend:
+        description: choose a regex backend to be built with
+        type: choice
+        options:
+          - none
+          - gnu-regex
+          - pcre2
+        required: false
+        default: gnu-regex
 
 jobs:
   build:
