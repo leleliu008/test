@@ -14,12 +14,12 @@ jobs:
       - run: ./xcpkg sysinfo
       - run: ./xcpkg setup
       - run: ./xcpkg update
-      - run: ./xcpkg install MacOSX/10.15/x86_64/doxygen --link-type=static-prefered --install-lib=static
-      - run: ./xcpkg pack    MacOSX/10.15/x86_64/doxygen -o .
+      - run: ./xcpkg install MacOSX/10.15/x86_64/glib-tools --link-type=static-prefered --install-lib=static
+      - run: ./xcpkg pack    MacOSX/10.15/x86_64/glib-tools -o .
 
       - uses: actions/upload-artifact@v3
         with:
-          name: doxygen-macos${{ matrix.target-version }}-${{ matrix.target-arch }}-tar-xz
-          path: doxygen-*.tar.xz
+          name: glib-tools-macos${{ matrix.target-version }}-${{ matrix.target-arch }}-tar-xz
+          path: glib-tools-*.tar.xz
 
 
