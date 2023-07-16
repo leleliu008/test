@@ -1,0 +1,164 @@
+name: manually build uctags for linux
+
+on:
+  workflow_dispatch:
+
+    target-arch:
+      description: choose a target arch to be built for
+      type: choice
+      options:
+        - x86_64
+        - aarch64
+        - ppc64le
+        - riscv64
+        - s390x
+
+    enable-manpages:
+      description: whether generate manpages
+      type: boolean
+      required: false
+      default: false
+
+    enable-json:
+      description: whether enable json support
+      type: boolean
+      required: false
+      default: true
+
+    enable-yaml:
+      description: whether enable yaml support
+      type: boolean
+      required: false
+      default: true
+
+    enable-xml:
+      description: whether enable xml support
+      type: boolean
+      required: false
+      default: true
+
+    enable-libiconv:
+      description: whether enable libiconv support
+      type: boolean
+      required: false
+      default: true
+
+    enable-seccomp:
+      description: whether enable seccomp support
+      type: boolean
+      required: false
+      default: false
+
+    enable-threads:
+      description: whether enable threads support
+      type: boolean
+      required: false
+      default: true
+
+    enable-largefile:
+      description: whether enable large file support
+      type: boolean
+      required: false
+      default: true
+
+    enable-etags:
+      description: whether create a symlink named etags which link to ctags
+      type: boolean
+      required: false
+      default: false
+
+    regex-backend:
+      description: choose a regex backend to be built with
+      type: choice
+      options:
+        - none
+        - gnu-regex
+        - pcre2
+      required: false
+      default: gnu-regex
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          cat > run.sh <<EOF
+          set -e
+
+          COLOR_GREEN='\033[0;32m'        # Green
+          COLOR_PURPLE='\033[0;35m'       # Purple
+          COLOR_OFF='\033[0m'             # Reset
+
+          echo() {
+              printf '%b\n' "\$*"
+          }
+
+          run() {
+              echo "\${COLOR_PURPLE}==>\${COLOR_OFF} \${COLOR_GREEN}\$@\${COLOR_OFF}"
+              eval "\$*"
+          }
+
+          run uname -a
+
+          run apk update
+          run apk add g++ libc-dev linux-headers
+
+          echo ${{ github.event.inputs.target-arch }}
+          echo ${{ github.event.inputs.enable-json }}
+          echo ${{ github.event.inputs.enable-yaml }}
+          echo ${{ github.event.inputs.enable-xml  }}
+          echo ${{ github.event.inputs.enable-threads }}
+          echo ${{ github.event.inputs.enable-seccomp }}
+          echo ${{ github.event.inputs.enable-libiconv }}
+          echo ${{ github.event.inputs.enable-manpages }}
+          echo ${{ github.event.inputs.enable-largefile }}
+          echo ${{ github.event.inputs.regex-backend }}
+          echo ${{ github.event.inputs.enable-etags }}
+
+
+          run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+          run chmod a+x ppkg
+          run ./ppkg setup
+          run ./ppkg update
+
+          cat > ~/.ppkg/repos.d/offical-core/formula/uctags.yml <<EOF
+          summary: Maintained ctags implementation
+          git-url: https://github.com/universal-ctags/ctags
+          license: GPL-2.0-or-later
+          dep-pkg: jansson libyaml libxml2
+          dep-upp: pkg-config
+          bsystem: autogen
+          install: configure
+          EOF
+
+          run ./ppkg install uctags --link-type=static-only --install-lib=static
+          run ./ppkg pack    uctags -o .
+          EOF
+
+          chmod +x run.sh
+
+
+      - run: |
+          case ${{ github.event.inputs.target-arch }} in
+            x86_64)  IMAGE='alpine:3.18'    ;;
+            aarch64) IMAGE='arm64v8/alpine' ;;
+            ppc64le) IMAGE='ppc64le/alpine' ;;
+            riscv64) IMAGE='riscv64/alpine:edge' ;;
+            s390x)   IMAGE='s390x/alpine'   ;;
+          esac
+
+          if [ '${{ github.event.inputs.target-arch }}' != 'x86_64' ] ; then
+            # https://github.com/multiarch/qemu-user-static
+            docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+          fi
+
+          docker run -v $PWD:$PWD -w $PWD --name alpine "$IMAGE" sh run.sh
+
+      - run: ls
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: uctags---linux-${{ github.event.inputs.target-arch }}-tar-xz
+          path: uctags-*-linux-${{ github.event.inputs.target-arch }}.tar.xz
