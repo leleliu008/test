@@ -61,12 +61,6 @@ on:
         required: false
         default: true
 
-      enable-etags:
-        description: whether create a symlink named etags which link to ctags
-        type: boolean
-        required: false
-        default: false
-
       regex-backend:
         description: choose a regex backend to be built with
         type: choice
@@ -115,7 +109,6 @@ jobs:
           echo ${{ github.event.inputs.enable-manpages }}
           echo ${{ github.event.inputs.enable-largefile }}
           echo ${{ github.event.inputs.regex-backend }}
-          echo ${{ github.event.inputs.enable-etags }}
 
 
           run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
