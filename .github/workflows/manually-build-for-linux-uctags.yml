@@ -176,7 +176,7 @@ jobs:
           run apk update
           run apk add g++ libc-dev linux-headers
 
-          if [ '${{ github.event.inputs.regex-backend }}' = 'true' ] ; then
+          if [ '${{ github.event.inputs.enable-manpages }}' = 'true' ] ; then
               run apk add python3 py3-pip
               run pip3 install -U docutils
           fi
