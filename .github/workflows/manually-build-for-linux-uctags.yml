@@ -78,6 +78,81 @@ jobs:
 
     steps:
       - run: |
+          unset DEP_PKG
+          unset CONFIGURE_ARGS
+
+          if [ '${{ github.event.inputs.enable-threads }}' = 'false' ] ; then
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --disable-threads"
+          else
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --enable-threads"
+          fi
+
+          if [ '${{ github.event.inputs.enable-largefile }}' = 'false' ] ; then
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --disable-largefile"
+          else
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --enable-largefile"
+          fi
+
+          if [ '${{ github.event.inputs.enable-json }}' = 'false' ] ; then
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --disable-json"
+          else
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --enable-json"
+              DEP_PKG="$DEP_PKG jansson"
+          fi
+
+          if [ '${{ github.event.inputs.enable-yaml }}' = 'false' ] ; then
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --disable-yaml"
+          else
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --enable-yaml"
+              DEP_PKG="$DEP_PKG libyaml"
+          fi
+
+          if [ '${{ github.event.inputs.enable-xml }}' = 'false' ] ; then
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --disable-xml"
+          else
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --enable-xml"
+              DEP_PKG="$DEP_PKG libxml2"
+          fi
+
+          if [ '${{ github.event.inputs.enable-libiconv }}' = 'false' ] ; then
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --disable-libiconv"
+          else
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --enable-libiconv"
+              DEP_PKG="$DEP_PKG libiconv"
+          fi
+
+          if [ '${{ github.event.inputs.enable-seccomp }}' = 'false' ] ; then
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --disable-seccomp"
+          else
+              CONFIGURE_ARGS="$CONFIGURE_ARGS --enable-seccomp"
+              DEP_PKG="$DEP_PKG libseccomp"
+          fi
+
+          case ${{ github.event.inputs.regex-backend }} in
+              none)
+                CONFIGURE_ARGS="$CONFIGURE_ARGS --disable-pcre2 --without-included-regex"
+                ;;
+              gnu-regex)
+                CONFIGURE_ARGS="$CONFIGURE_ARGS --disable-pcre2 --with-included-regex"
+                ;;
+              pcre2)
+                CONFIGURE_ARGS="$CONFIGURE_ARGS --enable-pcre2"
+                DEP_PKG="$DEP_PKG pcre2"
+                ;;
+              *) echo "unexpected regex-backend: ${{ github.event.inputs.regex-backend }}"
+          esac
+
+          tee uctags.yml <<EOF
+          summary: Maintained ctags implementation
+          git-url: https://github.com/universal-ctags/ctags
+          license: GPL-2.0-or-later
+          dep-pkg: "$DEP_PKG"
+          dep-upp: pkg-config
+          bsystem: autogen
+          install: configure "$CONFIGURE_ARGS"
+          EOF
+
+      - run: |
           cat > run.sh <<EOF
           set -e
 
@@ -99,39 +174,21 @@ jobs:
           run apk update
           run apk add g++ libc-dev linux-headers
 
-          echo ${{ github.event.inputs.target-arch }}
-          echo ${{ github.event.inputs.enable-json }}
-          echo ${{ github.event.inputs.enable-yaml }}
-          echo ${{ github.event.inputs.enable-xml  }}
-          echo ${{ github.event.inputs.enable-threads }}
-          echo ${{ github.event.inputs.enable-seccomp }}
-          echo ${{ github.event.inputs.enable-libiconv }}
-          echo ${{ github.event.inputs.enable-manpages }}
-          echo ${{ github.event.inputs.enable-largefile }}
-          echo ${{ github.event.inputs.regex-backend }}
-
+          if [ '${{ github.event.inputs.regex-backend }}' = 'true' ] ; then
+              run apk add python3 py3-pip
+              run pip3 install -U docutils
+          fi
 
           run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           run chmod a+x ppkg
           run ./ppkg setup
           run ./ppkg update
-
-          cat > ~/.ppkg/repos.d/offical-core/formula/uctags.yml <<EOF
-          summary: Maintained ctags implementation
-          git-url: https://github.com/universal-ctags/ctags
-          license: GPL-2.0-or-later
-          dep-pkg: jansson libyaml libxml2
-          dep-upp: pkg-config
-          bsystem: autogen
-          install: configure
-          EOF
-
+          run mv uctags.yml ~/.ppkg/repos.d/offical-core/formula/
           run ./ppkg install uctags --link-type=static-only --install-lib=static
           run ./ppkg pack    uctags -o .
           EOF
 
           chmod +x run.sh
-
 
       - run: |
           case ${{ github.event.inputs.target-arch }} in
