@@ -77,7 +77,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: |
+      - name: create formula
+        run: |
           unset DEP_PKG
           unset CONFIGURE_ARGS
 
@@ -146,13 +147,14 @@ jobs:
           summary: Maintained ctags implementation
           git-url: https://github.com/universal-ctags/ctags
           license: GPL-2.0-or-later
-          dep-pkg: "$DEP_PKG"
+          dep-pkg: $DEP_PKG
           dep-upp: pkg-config
           bsystem: autogen
-          install: configure "$CONFIGURE_ARGS"
+          install: configure $CONFIGURE_ARGS
           EOF
 
-      - run: |
+      - name: create run.sh
+        run: |
           cat > run.sh <<EOF
           set -e
 
@@ -190,7 +192,8 @@ jobs:
 
           chmod +x run.sh
 
-      - run: |
+      - name: execute run.sh in the docker container
+        run: |
           case ${{ github.event.inputs.target-arch }} in
             x86_64)  IMAGE='alpine:3.18'    ;;
             aarch64) IMAGE='arm64v8/alpine' ;;
