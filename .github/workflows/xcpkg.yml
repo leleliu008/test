@@ -14,12 +14,12 @@ jobs:
       - run: ./xcpkg sysinfo
       - run: ./xcpkg setup
       - run: ./xcpkg update
-      - run: ./xcpkg install MacOSX/10.15/x86_64/glib-tools --link-type=static-prefered --install-lib=static
-      - run: ./xcpkg pack    MacOSX/10.15/x86_64/glib-tools -o .
+      - run: ./xcpkg install MacOSX/10.15/x86_64/mpir --link-type=static-prefered --install-lib=static
+      - run: ./xcpkg pack    MacOSX/10.15/x86_64/mpir -o .
 
       - uses: actions/upload-artifact@v3
         with:
-          name: glib-tools-macos${{ matrix.target-version }}-${{ matrix.target-arch }}-tar-xz
-          path: glib-tools-*.tar.xz
+          name: mpir-macos${{ matrix.target-version }}-${{ matrix.target-arch }}-tar-xz
+          path: mpir-*.tar.xz
 
 
