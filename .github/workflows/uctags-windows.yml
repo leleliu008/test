@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         version: [2019, 2022]
-        target-arch: [x86, x86_64]
+        target-arch: [x86, x64]
 
     runs-on: windows-${{ matrix.version }}
 
@@ -38,7 +38,7 @@ jobs:
             set "XX="
           )
 
-          if "${{ matrix.target-arch }}" == "x86_64" (
+          if "${{ matrix.target-arch }}" == "x64" (
             set "TARGET_ARCH=amd64"
           ) else (
             set "TARGET_ARCH=x86"
