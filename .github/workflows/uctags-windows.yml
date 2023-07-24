@@ -50,5 +50,5 @@ jobs:
           nmake -f mk_mvc.mak
 
       - run: file ctags.exe
-      - run: ./ctags.exe --version
+      - run: ctags.exe --version
       - run: dir
