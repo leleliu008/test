@@ -47,7 +47,7 @@ jobs:
           )
 
           @rem https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170#developer_command_file_locations
-          call "C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat" -host_arch=amd64 "-arch=%TARGET_ARCH%"
+          :: call "C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat" -host_arch=amd64 "-arch=%TARGET_ARCH%"
 
           nmake -f mk_mvc.mak
 
