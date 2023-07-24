@@ -38,6 +38,8 @@ jobs:
             set "XX="
           )
 
+          rem XX
+
           if "${{ matrix.target-arch }}" == "x86_64" (
             set "TARGET_ARCH=amd64"
           ) else (
