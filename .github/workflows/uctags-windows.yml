@@ -47,7 +47,24 @@ jobs:
           @rem https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170#developer_command_file_locations
           call "C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat" -host_arch=amd64 -arch=%TARGET_ARCH%
 
-          nmake -f mk_mvc.mak
+          :: Build libiconv (MSVC port)
+          git clone --depth=1 https://github.com/koron/libiconv.git
+          cd libiconv\msvc10
+          nmake NODEBUG=1 NOMSVCRT=1
+
+          :: Install libiconv
+          set LIBICONV_INSTALL_DIR=${{ github.workspace }}/libiconv-installed
+
+          mkdir          %LIBICONV_INSTALL_DIR%\include
+          copy iconv.h   %LIBICONV_INSTALL_DIR%\include
+
+          mkdir          %LIBICONV_INSTALL_DIR%\lib
+          copy iconv.lib %LIBICONV_INSTALL_DIR%\lib
+
+          :: Build ctags with nmake
+          @echo on
+          cd ${{ github.workspace }}
+          nmake -f mk_mvc.mak WITH_ICONV=yes ICONV_DIR=%LIBICONV_INSTALL_DIR% PDB=yes
 
       - run: file ctags.exe
       - run: ctags.exe --version
