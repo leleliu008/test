@@ -1,23 +1,36 @@
-# Copyright: 2022 fpliu
-# License: GPL-2.0-or-later
-
-name: Windows
+name: manually build uctags for windows
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      target-arch:
+        description: choose the target arch to be built for
+        type: choice
+        options:
+          - x86
+          - x64
+
+      msvc-version:
+        description: choose the Visual Studio version to be built with
+        type: choice
+        options:
+          - 2019
+          - 2022
+
+      enable-manpages:
+        description: whether generate manpages
+        type: boolean
+        default: false
+
+      enable-libiconv:
+        description: whether enable libiconv support
+        type: boolean
+        default: false
 
 jobs:
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        version: [2019, 2022]
-        target-arch: [x86, x64]
+  build:
 
-    runs-on: windows-${{ matrix.version }}
+    runs-on: windows-${{ github.event.inputs.msvc-version }}
 
     defaults:
       run:
@@ -30,26 +43,23 @@ jobs:
         with:
           repository: 'universal-ctags/ctags'
 
-      - name: build
+      - if: ${{ github.event.inputs.enable-libiconv == 'true' }}
+        name: build uctags with libiconv
         run: |
-          if "${{ matrix.version }}" == "2019" (
+          if "${{ github.event.inputs.msvc-version }}" == "2019" (
             set "XX= (x86)"
           ) else (
             set "XX="
           )
 
-          if "${{ matrix.target-arch }}" == "x64" (
+          if "${{ github.event.inputs.target-arch }}" == "x64" (
             set "TARGET_ARCH=amd64"
           ) else (
             set "TARGET_ARCH=x86"
           )
 
-
           :: Setup MSVC build environment
-          @rem https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170#developer_command_file_locations
-          @echo on
-          :: call "C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat" -host_arch=amd64 -arch=%TARGET_ARCH%
-          call "C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %TARGET_ARCH%
+          call "C:\Program Files%XX%\Microsoft Visual Studio\${{ github.event.inputs.msvc-version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %TARGET_ARCH%
 
           :: Build libiconv (MSVC port)
           @echo on
@@ -74,6 +84,35 @@ jobs:
 
           dumpbin /dependents ctags.exe
 
+      - if: ${{ github.event.inputs.enable-libiconv == 'false' }}
+        name: build uctags
+        run: |
+          if "${{ github.event.inputs.msvc-version }}" == "2019" (
+            set "XX= (x86)"
+          ) else (
+            set "XX="
+          )
+
+          if "${{ github.event.inputs.target-arch }}" == "x64" (
+            set "TARGET_ARCH=amd64"
+          ) else (
+            set "TARGET_ARCH=x86"
+          )
+
+          call "C:\Program Files%XX%\Microsoft Visual Studio\${{ github.event.inputs.msvc-version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %TARGET_ARCH%
+
+          cd ${{ github.workspace }}
+
+          nmake -f mk_mvc.mak PDB=yes
+
+          dumpbin /dependents ctags.exe
+
       - run: file ctags.exe
       - run: ctags.exe --version
       - run: dir
+      - run: 7z a -mx=9 uctags-windows-${{ github.event.inputs.target-arch }}.zip *.exe
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: uctags-windows-${{ github.event.inputs.target-arch }}.zip
+          path: uctags-windows-${{ github.event.inputs.target-arch }}.zip
