@@ -17,13 +17,18 @@ on:
           - 2022
           - 2019
 
-      enable-manpages:
-        description: whether generate manpages
+      enable-libiconv:
+        description: whether to enable libiconv support
         type: boolean
         default: false
 
-      enable-libiconv:
-        description: whether enable libiconv support
+      enable-manpages:
+        description: whether to generate manpages
+        type: boolean
+        default: false
+
+      enable-htmldocs:
+        description: whether to generate htmldocs
         type: boolean
         default: false
 
@@ -112,23 +117,54 @@ jobs:
 
       - run: file ctags.exe
       - run: ctags.exe --version
-      - run: dir
 
       - run: |
-          set -ex
+          ls -l
 
-          echo "PATH=$PATH"
-
-          OUTPUT_DIR="uctags-$(git rev-parse HEAD)+$(date +%s)-windows-${{ github.event.inputs.target-arch }}"
+          TIMESTAMP="$(date +%Y.%m.%d.%H.%M.%S)"
+          GIT_REV="$(git rev-parse HEAD --short)"
+          OUTPUT_DIR="uctags-${TIMESTAMP}+${GIT_REV}-windows-${{ github.event.inputs.target-arch }}"
 
           install -d "$OUTPUT_DIR/bin/"
 
           cp ctags.exe readtags.exe "$OUTPUT_DIR/bin/"
 
+          if [ "${{ github.event.inputs.enable-libiconv }}" = true ] ; then
+              cp libiconv.dll "$OUTPUT_DIR/bin/"
+          fi
+
+          if [ "${{ github.event.inputs.enable-manpages }}" = true ] || [ "${{ github.event.inputs.enable-htmldocs }}" = true ] ; then
+              pacman -Syy --noconfirm
+              pacman -S   --noconfirm automake autoconf make pkg-config gcc python3
+
+              ./autogen.sh
+              ./configure
+          fi
+
+          if [ "${{ github.event.inputs.enable-manpages }}" = true ] ; then
+              pip3 install -U docutils
+              make -C docs html
+              install -d          "$OUTPUT_DIR/share/doc/"
+              mv docs/_build/html "$OUTPUT_DIR/share/doc/"
+          fi
+
+          if [ "${{ github.event.inputs.enable-htmldocs }}" = true ] ; then
+              pip3 install -U sphinx
+              make -C man
+
+              install -d "$OUTPUT_DIR/share/man/man1/"
+              install -d "$OUTPUT_DIR/share/man/man5/"
+              install -d "$OUTPUT_DIR/share/man/man7/"
+ 
+              cp man/*.1 "$OUTPUT_DIR/share/man/man1/"
+              cp man/*.5 "$OUTPUT_DIR/share/man/man5/"
+              cp man/*.7 "$OUTPUT_DIR/share/man/man7/"
+          fi
+
           zip -9 -r "${OUTPUT_DIR}.zip" "$OUTPUT_DIR"
-        shell: C:\msys64\msys2_shell.cmd -no-start -defterm -mingw64 -here -full-path -shell bash {0}
+        shell: C:\msys64\msys2_shell.cmd -no-start -defterm -mingw64 -here -full-path -shell bash -e -x {0}
 
       - uses: actions/upload-artifact@v3
         with:
-          name: uctags-windows-${{ github.event.inputs.target-arch }}.zip
-          path: uctags-windows-${{ github.event.inputs.target-arch }}.zip
+          name: uctags---windows-${{ github.event.inputs.target-arch }}.zip
+          path: uctags-*-windows-${{ github.event.inputs.target-arch }}.zip
