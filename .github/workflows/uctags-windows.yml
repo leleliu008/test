@@ -138,7 +138,7 @@ jobs:
 
           if [ "${{ github.event.inputs.enable-manpages }}" = true ] || [ "${{ github.event.inputs.enable-htmldocs }}" = true ] ; then
               pacman -Syy --noconfirm
-              pacman -S   --noconfirm automake autoconf make pkg-config gcc python3
+              pacman -S   --noconfirm automake autoconf make pkg-config gcc
 
               pip3 install -U docutils sphinx
 
@@ -146,13 +146,13 @@ jobs:
               ./configure --disable-iconv
           fi
 
-          if [ "${{ github.event.inputs.enable-manpages }}" = true ] ; then
+          if [ "${{ github.event.inputs.enable-htmldocs }}" = true ] ; then
               make -C docs html
               install -d          "$OUTPUT_DIR/share/doc/"
               mv docs/_build/html "$OUTPUT_DIR/share/doc/"
           fi
 
-          if [ "${{ github.event.inputs.enable-htmldocs }}" = true ] ; then
+          if [ "${{ github.event.inputs.enable-manpages }}" = true ] ; then
               make -C man
 
               install -d "$OUTPUT_DIR/share/man/man1/"
