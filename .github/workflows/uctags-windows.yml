@@ -49,7 +49,7 @@ jobs:
           @rem https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170#developer_command_file_locations
           @echo on
           :: call "C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\Common7\Tools\VsDevCmd.bat" -host_arch=amd64 -arch=%TARGET_ARCH%
-          call "C:\Program Files\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %TARGET_ARCH%
+          call "C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %TARGET_ARCH%
 
           :: Build libiconv (MSVC port)
           @echo on
