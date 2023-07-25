@@ -7,8 +7,8 @@ on:
         description: choose the target arch to be built for
         type: choice
         options:
-          - x86
           - x64
+          - x86
 
       msvc-version:
         description: choose the Visual Studio version to be built with
@@ -58,11 +58,12 @@ jobs:
             set "TARGET_ARCH=x86"
           )
 
+          @echo on
+
           :: Setup MSVC build environment
           call "C:\Program Files%XX%\Microsoft Visual Studio\${{ github.event.inputs.msvc-version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %TARGET_ARCH%
 
           :: Build libiconv (MSVC port)
-          @echo on
           git clone --depth=1 https://github.com/koron/libiconv.git
           cd libiconv\msvc10
           nmake NODEBUG=1 NOMSVCRT=1
@@ -99,6 +100,8 @@ jobs:
             set "TARGET_ARCH=x86"
           )
 
+          @echo on
+
           call "C:\Program Files%XX%\Microsoft Visual Studio\${{ github.event.inputs.msvc-version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %TARGET_ARCH%
 
           cd ${{ github.workspace }}
@@ -111,6 +114,12 @@ jobs:
       - run: ctags.exe --version
       - run: dir
       - run: 7z a -mx=9 uctags-windows-${{ github.event.inputs.target-arch }}.zip *.exe
+
+      - run: C:\msys64\msys2_shell.cmd -no-start -defterm -mingw64 -here -shell bash -c 'ls'
+
+      - run: |
+          date +%s
+        shell: C:\msys64\msys2_shell.cmd -no-start -defterm -mingw64 -here -shell bash {0}
 
       - uses: actions/upload-artifact@v3
         with:
