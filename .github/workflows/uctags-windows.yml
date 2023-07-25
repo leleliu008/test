@@ -57,13 +57,15 @@ jobs:
           nmake NODEBUG=1 NOMSVCRT=1
 
           :: Install libiconv
-          set LIBICONV_INSTALL_DIR=${{ github.workspace }}/libiconv-installed
+          set LIBICONV_INSTALL_DIR=${{ github.workspace }}\libiconv-installed
 
-          mkdir          %LIBICONV_INSTALL_DIR%\include
-          copy iconv.h   %LIBICONV_INSTALL_DIR%\include
+          mkdir          "%LIBICONV_INSTALL_DIR%\include"
+          copy iconv.h   "%LIBICONV_INSTALL_DIR%\include"
 
-          mkdir          %LIBICONV_INSTALL_DIR%\lib
-          copy iconv.lib %LIBICONV_INSTALL_DIR%\lib
+          mkdir          "%LIBICONV_INSTALL_DIR%\lib"
+          copy iconv.lib "%LIBICONV_INSTALL_DIR%\lib"
+
+          copy iconv.dll "${{ github.workspace }}"
 
           :: Build ctags with nmake
           cd ${{ github.workspace }}
