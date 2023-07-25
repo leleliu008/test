@@ -14,8 +14,8 @@ on:
         description: choose the Visual Studio version to be built with
         type: choice
         options:
-          - 2019
           - 2022
+          - 2019
 
       enable-manpages:
         description: whether generate manpages
@@ -113,12 +113,17 @@ jobs:
       - run: file ctags.exe
       - run: ctags.exe --version
       - run: dir
-      - run: 7z a -mx=9 uctags-windows-${{ github.event.inputs.target-arch }}.zip *.exe
-
-      - run: C:\msys64\msys2_shell.cmd -no-start -defterm -mingw64 -here -shell bash -c 'ls'
 
       - run: |
-          date +%s
+          set -ex
+
+          OUTPUT_DIR="uctags-$(git rev-parse HEAD)+$(date +%s)-windows-${{ github.event.inputs.target-arch }}"
+
+          install -d "$OUTPUT_DIR/bin/"
+
+          cp ctags.exe readtags.exe "$OUTPUT_DIR/bin/"
+
+          zip -9 -r "${OUTPUT_DIR}.zip" "$OUTPUT_DIR"
         shell: C:\msys64\msys2_shell.cmd -no-start -defterm -mingw64 -here -shell bash {0}
 
       - uses: actions/upload-artifact@v3
