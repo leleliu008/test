@@ -49,7 +49,7 @@ jobs:
           repository: 'universal-ctags/ctags'
 
       - if: ${{ github.event.inputs.enable-libiconv == 'true' }}
-        name: build uctags with libiconv
+        name: build uctags with nmake (enable-libiconv)
         run: |
           if "${{ github.event.inputs.msvc-version }}" == "2019" (
             set "XX= (x86)"
@@ -69,6 +69,7 @@ jobs:
           call "C:\Program Files%XX%\Microsoft Visual Studio\${{ github.event.inputs.msvc-version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %TARGET_ARCH%
 
           :: Build libiconv (MSVC port)
+          @echo on
           git clone --depth=1 https://github.com/koron/libiconv.git
           cd libiconv\msvc10
           nmake NODEBUG=1 NOMSVCRT=1
@@ -91,7 +92,7 @@ jobs:
           dumpbin /dependents ctags.exe
 
       - if: ${{ github.event.inputs.enable-libiconv == 'false' }}
-        name: build uctags
+        name: build uctags with nmake
         run: |
           if "${{ github.event.inputs.msvc-version }}" == "2019" (
             set "XX= (x86)"
@@ -109,6 +110,8 @@ jobs:
 
           call "C:\Program Files%XX%\Microsoft Visual Studio\${{ github.event.inputs.msvc-version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %TARGET_ARCH%
 
+          @echo on
+
           cd ${{ github.workspace }}
 
           nmake -f mk_mvc.mak PDB=yes
@@ -118,7 +121,8 @@ jobs:
       - run: file ctags.exe
       - run: ctags.exe --version
 
-      - run: |
+      - name: pack uctags
+        run: |
           ls -l
 
           TIMESTAMP="$(date +%Y.%m.%d.%H.%M.%S)"
@@ -127,10 +131,6 @@ jobs:
           install -d "$OUTPUT_DIR/bin/"
 
           cp ctags.exe readtags.exe "$OUTPUT_DIR/bin/"
-
-          if [ "${{ github.event.inputs.enable-libiconv }}" = true ] ; then
-              cp libiconv.dll "$OUTPUT_DIR/bin/"
-          fi
 
           if [ "${{ github.event.inputs.enable-manpages }}" = true ] || [ "${{ github.event.inputs.enable-htmldocs }}" = true ] ; then
               pacman -Syy --noconfirm
