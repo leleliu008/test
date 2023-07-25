@@ -122,8 +122,7 @@ jobs:
           ls -l
 
           TIMESTAMP="$(date +%Y.%m.%d.%H.%M.%S)"
-          GIT_REV="$(git rev-parse HEAD --short)"
-          OUTPUT_DIR="uctags-${TIMESTAMP}+${GIT_REV}-windows-${{ github.event.inputs.target-arch }}"
+          OUTPUT_DIR="uctags-${TIMESTAMP}-windows-${{ github.event.inputs.target-arch }}"
 
           install -d "$OUTPUT_DIR/bin/"
 
