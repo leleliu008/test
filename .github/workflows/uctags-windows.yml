@@ -66,11 +66,13 @@ jobs:
           mkdir          "%LIBICONV_INSTALL_DIR%\lib"
           copy iconv.lib "%LIBICONV_INSTALL_DIR%\lib"
 
-          :: copy iconv.dll "${{ github.workspace }}"
+          copy iconv.dll "${{ github.workspace }}"
 
           :: Build ctags with nmake
           cd ${{ github.workspace }}
           nmake -f mk_mvc.mak WITH_ICONV=yes ICONV_DIR=%LIBICONV_INSTALL_DIR% PDB=yes
+
+          dumpbin /dependents ctags.exe
 
       - run: file ctags.exe
       - run: ctags.exe --version
