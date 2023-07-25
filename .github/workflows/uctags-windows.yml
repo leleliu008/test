@@ -132,23 +132,27 @@ jobs:
 
           cp ctags.exe readtags.exe "$OUTPUT_DIR/bin/"
 
+          if [ "${{ github.event.inputs.enable-libiconv }}" = true ] ; then
+              cp iconv.dll "$OUTPUT_DIR/bin/"
+          fi
+
           if [ "${{ github.event.inputs.enable-manpages }}" = true ] || [ "${{ github.event.inputs.enable-htmldocs }}" = true ] ; then
               pacman -Syy --noconfirm
               pacman -S   --noconfirm automake autoconf make pkg-config gcc python3
 
+              pip3 install -U docutils sphinx
+
               ./autogen.sh
-              ./configure
+              ./configure --disable-iconv
           fi
 
           if [ "${{ github.event.inputs.enable-manpages }}" = true ] ; then
-              pip3 install -U docutils
               make -C docs html
               install -d          "$OUTPUT_DIR/share/doc/"
               mv docs/_build/html "$OUTPUT_DIR/share/doc/"
           fi
 
           if [ "${{ github.event.inputs.enable-htmldocs }}" = true ] ; then
-              pip3 install -U sphinx
               make -C man
 
               install -d "$OUTPUT_DIR/share/man/man1/"
