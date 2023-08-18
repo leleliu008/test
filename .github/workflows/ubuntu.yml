@@ -1,0 +1,15 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: ubuntu
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: df -h
