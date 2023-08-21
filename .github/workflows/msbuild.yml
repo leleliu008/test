@@ -38,12 +38,14 @@ jobs:
           cd win32
 
           if "${{ matrix.version }}" == "windows-2019" (
-            set "XX= (x86)"
+            set "PROGRAM_FILES_DIR=C:\Program Files (x86)"
+            set "VSVERSION=2019"
           ) else (
-            set "XX="
+            set "PROGRAM_FILES_DIR=C:\Program Files"
+            set "VSVERSION=2022"
           )
 
-          set "MSBUILD=C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
+          set "MSBUILD=%PROGRAM_FILES_DIR%\Microsoft Visual Studio\%VSVERSION%\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
 
           "%MSBUILD%" ctags_vs2013.sln /p:Configuration=${{ matrix.configuration }}
 
