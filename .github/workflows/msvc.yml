@@ -46,7 +46,7 @@ jobs:
           echo call "C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %TARGET_ARCH% >> nmake-setup.cmd
           type nmake-setup.cmd
 
-      - name: Build libiconv
+      - name: build libiconv
         run: |
           @echo on
           git clone --depth=1 https://github.com/koron/libiconv.git libiconv-source
@@ -54,20 +54,20 @@ jobs:
           call "${{ github.workspace }}\nmake-setup.cmd"
           nmake NODEBUG=1 NOMSVCRT=1
 
-      - name: Install libiconv
+      - name: install libiconv
         run: |
           @echo on
           mkdir libiconv-installed\include
           mkdir libiconv-installed\lib
 
-          copy  libiconv-source\iconv.h   libiconv-installed\include
-          copy  libiconv-source\iconv.lib libiconv-installed\lib
-          copy  libiconv-source\iconv.dll .
+          copy  libiconv-source\msvc10\iconv.h   libiconv-installed\include
+          copy  libiconv-source\msvc10\iconv.lib libiconv-installed\lib
+          copy  libiconv-source\msvc10\iconv.dll .
 
-      - name: Build ctags with nmake
+      - name: build ctags with nmake
         run: |
           @echo on
-          call .\nmake-setup.cmd
+          call nmake-setup.cmd
           nmake -f mk_mvc.mak WITH_ICONV=yes ICONV_DIR=libiconv-installed PDB=yes
           dumpbin /dependents ctags.exe
 
