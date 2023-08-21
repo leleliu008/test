@@ -1,4 +1,4 @@
-name: build with Vistual Studio
+name: build with Vistual Studio / NMake
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  nmake:
+  build:
 
     strategy:
       matrix:
@@ -49,14 +49,17 @@ jobs:
       - name: build libiconv
         run: |
           @echo on
+
           git clone --depth=1 https://github.com/koron/libiconv.git libiconv-source
           cd libiconv-source\msvc10
+
           call "${{ github.workspace }}\nmake-setup.cmd"
           nmake NODEBUG=1 NOMSVCRT=1
 
       - name: install libiconv
         run: |
           @echo on
+
           mkdir libiconv-installed\include
           mkdir libiconv-installed\lib
 
@@ -69,6 +72,13 @@ jobs:
           @echo on
           call nmake-setup.cmd
           nmake -f mk_mvc.mak WITH_ICONV=yes ICONV_DIR=libiconv-installed PDB=yes
+
+      - run: dir
+
+      - name: dumpbin ctags.exe
+        run: |
+          @echo on
+          call nmake-setup.cmd
           dumpbin /dependents ctags.exe
 
       - run: file ctags.exe
