@@ -51,7 +51,7 @@ jobs:
           @echo on
           git clone --depth=1 https://github.com/koron/libiconv.git libiconv-source
           cd libiconv-source\msvc10
-          call .\nmake-setup.cmd
+          call "${{ github.workspace }}\nmake-setup.cmd"
           nmake NODEBUG=1 NOMSVCRT=1
 
       - name: Install libiconv
