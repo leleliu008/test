@@ -43,7 +43,7 @@ jobs:
             set "XX="
           )
 
-          set "MSBUILD=C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\MSBuild\Current\Bin\msbuild.exe"
+          set "MSBUILD=C:\Program Files%XX%\Microsoft Visual Studio\${{ matrix.version }}\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
 
           "%MSBUILD%" ctags_vs2013.sln /p:Configuration=${{ matrix.configuration }}
 
