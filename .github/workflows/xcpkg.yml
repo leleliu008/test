@@ -5,7 +5,7 @@ on:
 
 jobs:
   publish:
-    runs-on: macos-13
+    runs-on: macos-12
 
     steps:
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
