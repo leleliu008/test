@@ -47,7 +47,7 @@ jobs:
 
           run pkg install -y curl
 
-          run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/bin/ppkg
+          run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
 
           run chmod +x ppkg
 
