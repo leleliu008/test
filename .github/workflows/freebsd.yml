@@ -24,8 +24,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-        #- run:  vagrant init generic/freebsd${{matrix.version}}
-
       - name: gen run.sh
         run: |
           printf 'set -e\n' > run.sh
@@ -63,7 +61,7 @@ jobs:
           cat > Vagrantfile <<EOF
             Vagrant.configure("2") do |config|
               config.vm.box = "generic/freebsd${{matrix.version}}"
-              config.vm.box_version = "4.2.16"
+              config.vm.box_version = "4.2.14"
               config.vm.provider "virtualbox" do |vb|
                 vb.memory = "2048"
               end
