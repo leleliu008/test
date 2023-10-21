@@ -12,12 +12,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [11,12]
+        version: [11,12, 13]
 
     runs-on: macos-${{ matrix.version }}
 
     steps:
       - run: df -h
-        #- run: |
-        #  brew install --overwrite python@3.10 python@3.11
-        #  brew install automake pkg-config bash libxml2 jansson libyaml gdb docutils pcre2
+      - run: brew install automake pkg-config jansson libyaml pcre2
+      - run: pip3 install docutils
