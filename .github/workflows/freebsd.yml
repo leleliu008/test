@@ -45,7 +45,7 @@ jobs:
 
           run id
 
-          run pkg install -y curl
+          run pkg install -y curl gcc
 
           run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
 
@@ -63,9 +63,8 @@ jobs:
           cat > Vagrantfile <<EOF
             Vagrant.configure("2") do |config|
               config.vm.box = "generic/freebsd${{matrix.version}}"
-              config.vm.box_version = "4.2.14"
               config.vm.provider "virtualbox" do |vb|
-                vb.memory = "2048"
+                vb.memory = "4096"
               end
               config.vm.synced_folder "${{github.workspace}}", "/home/vagrant/${{github.repository}}", type: "rsync"
               config.vm.provision "shell", path: "run.sh"
