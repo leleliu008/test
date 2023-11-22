@@ -23,7 +23,7 @@ jobs:
       with:
         msystem: ${{ matrix.msystem }}
         update: true
-        install: automake autoconf pkg-config python dos2unix
+        install: automake autoconf make python dos2unix
         pacboy: toolchain:p python3-sphinx:p jansson:p libxml2:p libyaml:p pcre2:p
 
     - run: git config --global core.autocrlf input
