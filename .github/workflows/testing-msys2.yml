@@ -25,7 +25,7 @@ jobs:
         msystem: ${{ matrix.msystem }}
         update: true
         install: automake autoconf make dos2unix
-        pacboy: toolchain:p python3-sphinx:p jansson:p libyaml:p pcre2:p
+        pacboy: toolchain:p python3-sphinx:p jansson:p libyaml:p pcre2:p zlib:p
 
     - name: install libxml2-2.11.5
       run: |
