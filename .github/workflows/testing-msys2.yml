@@ -11,6 +11,7 @@ jobs:
     runs-on: windows-latest
 
     strategy:
+      fail-fast: false
       matrix:
         msystem: [MINGW32, MINGW64, CLANG32, CLANG64]
 
