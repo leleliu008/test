@@ -20,6 +20,9 @@ jobs:
         working-directory: build.d
 
     steps:
+      - uses: actions/checkout@v4
+        working-directory: ${{ github.workspace }}
+
       - run: install -d build.d
         working-directory: ${{ github.workspace }}
 
