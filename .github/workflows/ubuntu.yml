@@ -20,5 +20,8 @@ jobs:
         working-directory: build.d
 
     steps:
+      - run: install -d build.d
+        working-directory: ${{ github.workspace }}
+
       - run: pwd
       - run: ls ${{ github.workspace }}
