@@ -27,9 +27,9 @@ jobs:
         pacboy: toolchain:p python3-sphinx:p jansson:p libxml2:p libyaml:p pcre2:p
 
     - run: git config --global core.autocrlf input
+      shell: bash
 
     - uses: actions/checkout@v4
-      shell: bash
       with:
         repository: universal-ctags/ctags
 
