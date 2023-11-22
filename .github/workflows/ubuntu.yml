@@ -5,11 +5,20 @@ name: ubuntu
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   test:
 
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: build.d
+
     steps:
-      - run: df -h
+      - run: pwd
+      - run: ls ${{ github.workspace }}
