@@ -87,7 +87,11 @@ jobs:
           repository: universal-ctags/ctags
 
       - run: ./autogen.sh
-      - run: ./configure --host=amd64-unknown-freebsd --prefix=${{ github.workspace }}/uctags-freebsd-amd64 --enable-static
+      - run: |
+          ./configure --host=amd64-unknown-freebsd --prefix=${{ github.workspace }}/uctags-freebsd-amd64 --enable-static || {
+            cat config.log
+            exit 1
+          }
       - run: make V=1
       - run: make install
 
