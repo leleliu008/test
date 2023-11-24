@@ -22,6 +22,10 @@ jobs:
       PKG_CONFIG_PATH: ${{ github.workspace }}/amd64-unknown-freebsd-3rdroot/lib/pkgconfig
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: universal-ctags/ctags
+
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install clang cmake make automake autoconf curl file
 
@@ -81,10 +85,6 @@ jobs:
           cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/amd64-unknown-freebsd-3rdroot -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTING=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
           cmake --build build.d
           cmake --install build.d
-
-      - uses: actions/checkout@v4
-        with:
-          repository: universal-ctags/ctags
 
       - run: ./autogen.sh
       - run: |
