@@ -17,8 +17,8 @@ jobs:
 
     env:
       CC: clang --target=amd64-unknown-freebsd --sysroot=${{ github.workspace }}/amd64-unknown-freebsd-sysroot
-      CFLAGS:  -I${{ github.workspace }}/amd64-unknown-freebsd-3rdroot/include -v
-      LDFLAGS: -L${{ github.workspace }}/amd64-unknown-freebsd-3rdroot/lib
+      CFLAGS:  -I${{ github.workspace }}/amd64-unknown-freebsd-3rdroot/include -v -fPIC
+      LDFLAGS: -L${{ github.workspace }}/amd64-unknown-freebsd-3rdroot/lib -Wl,-v
       PKG_CONFIG_PATH: ${{ github.workspace }}/amd64-unknown-freebsd-3rdroot/lib/pkgconfig
 
     steps:
