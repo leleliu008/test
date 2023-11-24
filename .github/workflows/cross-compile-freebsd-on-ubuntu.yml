@@ -86,6 +86,16 @@ jobs:
           cmake --build build.d
           cmake --install build.d
 
+      - name: build libpcre2
+        run: |
+          install -d src/libpcre2
+          cd         src/libpcre2
+          curl -L -o src.tar.gz https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.bz2
+          tar vxf    src.tar.gz --strip-components=1
+          cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/amd64-unknown-freebsd-3rdroot -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTING=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DCMAKE_C_STANDARD=99 -DCMAKE_C_STANDARD_REQUIRED=ON -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DPCRE2_BUILD_PCRE2GREP=OFF -DPCRE2_BUILD_TESTS=OFF -DPCRE2_SUPPORT_VALGRIND=OFF -DPCRE2_SUPPORT_UNICODE=ON
+          cmake --build build.d
+          cmake --install build.d
+
       - run: ./autogen.sh
       - run: |
           ./configure --host=amd64-unknown-freebsd --prefix=${{ github.workspace }}/uctags-freebsd-amd64 --enable-static || {
