@@ -17,21 +17,19 @@ jobs:
 
     env:
       CC: clang --target=amd64-unknown-freebsd --sysroot=${{ github.workspace }}/amd64-unknown-freebsd-sysroot
-      CFLAGS:  -I${{ github.workspace }}/out/include
-      LDFLAGS: -L${{ github.workspace }}/out/lib
-      PKG_CONFIG_PATH: ${{ github.workspace }}/out/lib/pkgconfig
+      CFLAGS:  -I${{ github.workspace }}/amd64-unknown-freebsd-3rdroot/include
+      LDFLAGS: -L${{ github.workspace }}/amd64-unknown-freebsd-3rdroot/lib
+      PKG_CONFIG_PATH: ${{ github.workspace }}/amd64-unknown-freebsd-3rdroot/lib/pkgconfig
 
     steps:
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install clang cmake make automake autoconf curl file
 
-      - name: install sysroot for amd64-unknown-freebsd
-        run: |
-          install -d amd64-unknown-freebsd-sysroot
-          curl -L -o amd64-unknown-freebsd-sysroot.txz https://archive.freebsd.org/old-releases/amd64/${{ matrix.freebsd-release-version }}-RELEASE/base.txz
-          tar vxf    amd64-unknown-freebsd-sysroot.txz -C amd64-unknown-freebsd-sysroot
+      - run: install -d amd64-unknown-freebsd-sysroot
+      - run: install -d amd64-unknown-freebsd-3rdroot
 
-      - run: install -d out
+      - run: curl -L -o amd64-unknown-freebsd-sysroot.txz https://archive.freebsd.org/old-releases/amd64/${{ matrix.freebsd-release-version }}-RELEASE/base.txz
+      - run: tar vxf    amd64-unknown-freebsd-sysroot.txz -C amd64-unknown-freebsd-sysroot
 
       - name: build libyaml
         run: |
@@ -39,8 +37,8 @@ jobs:
           cd         src/libyaml
           curl -L -o src.tar.gz https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz
           tar vxf    src.tar.gz --strip-components=1
-          ./configure --host=amd64-unknown-freebsd --prefix=${{ github.workspace }}/out
-          make
+          ./configure --host=amd64-unknown-freebsd --prefix=${{ github.workspace }}/amd64-unknown-freebsd-3rdroot
+          make V=1
           make install
 
       - name: build libiconv
@@ -49,8 +47,8 @@ jobs:
           cd         src/libiconv
           curl -L -o src.tar.gz https://ftp.gnu.org/gnu/libiconv/libiconv-1.17.tar.gz
           tar vxf    src.tar.gz --strip-components=1
-          ./configure --host=amd64-unknown-freebsd --prefix=${{ github.workspace }}/out --enable-extra-encodings
-          make
+          ./configure --host=amd64-unknown-freebsd --prefix=${{ github.workspace }}/amd64-unknown-freebsd-3rdroot --enable-extra-encodings
+          make V=1
           make install
 
       - name: build zlib
@@ -60,7 +58,7 @@ jobs:
           curl -L -o src.tar.gz https://zlib.net/fossils/zlib-1.3.tar.gz
           tar vxf    src.tar.gz --strip-components=1
           sed -i 's|/share/pkgconfig|/lib/pkgconfig|' CMakeLists.txt
-          cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/out -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTING=OFF
+          cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/amd64-unknown-freebsd-3rdroot -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTING=OFF
           cmake --build build.d
           cmake --install build.d
 
@@ -70,8 +68,8 @@ jobs:
           cd         src/libxml2
           curl -L -o src.tar.gz https://download.gnome.org/sources/libxml2/2.11/libxml2-2.11.6.tar.xz
           tar vxf    src.tar.gz --strip-components=1
-          ./configure --host=amd64-unknown-freebsd --prefix=${{ github.workspace }}/out --with-zlib --without-lzma --without-python --without-readline --without-coverage --enable-ipv6 LIBS=-liconv
-          make
+          ./configure --host=amd64-unknown-freebsd --prefix=${{ github.workspace }}/amd64-unknown-freebsd-3rdroot --with-zlib --without-lzma --without-python --without-readline --without-coverage --enable-ipv6 LIBS=-liconv
+          make V=1
           make install
 
       - name: build jansson
@@ -80,11 +78,14 @@ jobs:
           cd         src/jansson
           curl -L -o src.tar.gz https://github.com/akheron/jansson/releases/download/v2.14/jansson-2.14.tar.gz
           tar vxf    src.tar.gz --strip-components=1
-          cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/out -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTING=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
+          cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/amd64-unknown-freebsd-3rdroot -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTING=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
           cmake --build build.d
           cmake --install build.d
 
       - uses: actions/checkout@v4
+        with:
+          repository: universal-ctags/ctags
+
       - run: ./autogen.sh
       - run: ./configure --host=amd64-unknown-freebsd --prefix=${{ github.workspace }}/uctags-freebsd-amd64 --enable-static
       - run: make V=1
