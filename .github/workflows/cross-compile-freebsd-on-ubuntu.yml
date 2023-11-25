@@ -135,4 +135,6 @@ jobs:
           box: generic/freebsd13
           log: warn
           run: |
+            ls -l bin/ctags
+            chmod +x bin/ctags
             run bin/ctags --version
