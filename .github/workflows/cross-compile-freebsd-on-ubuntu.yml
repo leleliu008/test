@@ -129,10 +129,10 @@ jobs:
 
       # https://app.vagrantup.com/boxes/search?utf8=%E2%9C%93&sort=downloads&provider=&q=freebsd
       # https://github.com/leleliu008/github-actions-vagrant
-      - uses: leleliu008/github-actions-vagrant@v2
+      - uses: leleliu008/github-actions-vagrant@main
         with:
           mem: 2048
           box: generic/freebsd13
           log: warn
           run: |
-            run uctags-freebsd-amd64/bin/ctags --version
+            run bin/ctags --version
