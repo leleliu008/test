@@ -109,7 +109,7 @@ jobs:
 
       - run: ./autogen.sh
       - run: |
-          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/uctags-openbsd-amd64 || {
+          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/uctags-openbsd-amd64 LDFLAGS="$LDFLAGS -static-pie" || {
             cat config.log
             exit 1
           }
