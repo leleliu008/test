@@ -59,7 +59,7 @@ jobs:
           cd         src/libiconv
           curl -L -o src.tar.gz https://ftp.gnu.org/gnu/libiconv/libiconv-1.17.tar.gz
           tar vxf    src.tar.gz --strip-components=1
-          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/amd64-unknown-openbsd-3rdroot --enable-extra-encodings --enable-static
+          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/amd64-unknown-openbsd-3rdroot --enable-extra-encodings --enable-static --disable-shared
           make V=1
           make install
 
@@ -80,7 +80,7 @@ jobs:
           cd         src/libxml2
           curl -L -o src.tar.gz https://download.gnome.org/sources/libxml2/2.11/libxml2-2.11.6.tar.xz
           tar vxf    src.tar.gz --strip-components=1
-          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/amd64-unknown-openbsd-3rdroot --with-zlib --without-lzma --without-python --without-readline --without-coverage --enable-ipv6 --enable-static LIBS=-liconv
+          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/amd64-unknown-openbsd-3rdroot --with-zlib --without-lzma --without-python --without-readline --without-coverage --enable-ipv6 --enable-static --disable-shared LIBS=-liconv
           make V=1
           make install
           cd ${{ github.workspace }}/amd64-unknown-openbsd-3rdroot/lib/pkgconfig
@@ -107,9 +107,11 @@ jobs:
           cmake --build build.d
           cmake --install build.d
 
+      - run: rm ${{ github.workspace }}/amd64-unknown-openbsd-3rdroot/lib/lib*.so
+
       - run: ./autogen.sh
       - run: |
-          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/uctags-openbsd-amd64 LDFLAGS="$LDFLAGS -static-pie" || {
+          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/uctags-openbsd-amd64 || {
             cat config.log
             exit 1
           }
