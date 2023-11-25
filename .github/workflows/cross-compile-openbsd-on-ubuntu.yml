@@ -32,7 +32,8 @@ jobs:
       - run: install -d amd64-unknown-openbsd-sysroot
       - run: install -d amd64-unknown-openbsd-3rdroot
 
-      - run: |
+      - name: install amd64-unknown-openbsd-sysroot
+        run: |
           major="$(printf '%s\n' ${{ matrix.openbsd-release-version }} | cut -d. -f1)"
           minor="$(printf '%s\n' ${{ matrix.openbsd-release-version }} | cut -d. -f2)"
 
@@ -42,26 +43,6 @@ jobs:
             curl -LO "https://cdn.openbsd.org/pub/OpenBSD/${{ matrix.openbsd-release-version }}/amd64/$FILENAME"
             tar vxf "$FILENAME" -C amd64-unknown-openbsd-sysroot
           done
-
-      - name: build libyaml
-        run: |
-          install -d src/libyaml
-          cd         src/libyaml
-          curl -L -o src.tar.gz https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz
-          tar vxf    src.tar.gz --strip-components=1
-          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/amd64-unknown-openbsd-3rdroot
-          make V=1
-          make install
-
-      - name: build libiconv
-        run: |
-          install -d src/libiconv
-          cd         src/libiconv
-          curl -L -o src.tar.gz https://ftp.gnu.org/gnu/libiconv/libiconv-1.17.tar.gz
-          tar vxf    src.tar.gz --strip-components=1
-          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/amd64-unknown-openbsd-3rdroot --enable-extra-encodings --enable-static --disable-shared
-          make V=1
-          make install
 
       - name: build zlib
         run: |
@@ -73,6 +54,16 @@ jobs:
           cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/amd64-unknown-openbsd-3rdroot -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTING=OFF
           cmake --build build.d
           cmake --install build.d
+
+      - name: build libiconv
+        run: |
+          install -d src/libiconv
+          cd         src/libiconv
+          curl -L -o src.tar.gz https://ftp.gnu.org/gnu/libiconv/libiconv-1.17.tar.gz
+          tar vxf    src.tar.gz --strip-components=1
+          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/amd64-unknown-openbsd-3rdroot --enable-extra-encodings --enable-static --disable-shared
+          make V=1
+          make install
 
       - name: build libxml2
         run: |
@@ -86,6 +77,16 @@ jobs:
           cd ${{ github.workspace }}/amd64-unknown-openbsd-3rdroot/lib/pkgconfig
           sed -i '/^Requires: /d'      libxml-2.0.pc
           printf 'Requires: zlib\n' >> libxml-2.0.pc
+
+      - name: build libyaml
+        run: |
+          install -d src/libyaml
+          cd         src/libyaml
+          curl -L -o src.tar.gz https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz
+          tar vxf    src.tar.gz --strip-components=1
+          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/amd64-unknown-openbsd-3rdroot
+          make V=1
+          make install
 
       - name: build jansson
         run: |
