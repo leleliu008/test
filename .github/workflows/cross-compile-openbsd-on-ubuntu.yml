@@ -83,8 +83,9 @@ jobs:
           ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/amd64-unknown-openbsd-3rdroot --with-zlib --without-lzma --without-python --without-readline --without-coverage --enable-ipv6 --enable-static LIBS=-liconv
           make V=1
           make install
-          sed -i 's|-liconv|-liconv -lz|g' ${{ github.workspace }}/amd64-unknown-openbsd-3rdroot/lib/pkgconfig/libxml-2.0.pc
-          cat ${{ github.workspace }}/amd64-unknown-openbsd-3rdroot/lib/pkgconfig/libxml-2.0.pc
+          cd ${{ github.workspace }}/amd64-unknown-openbsd-3rdroot/lib/pkgconfig
+          sed -i '/^Requires: /d'      libxml-2.0.pc
+          printf 'Requires: zlib\n' >> libxml-2.0.pc
 
       - name: build jansson
         run: |
