@@ -115,7 +115,7 @@ jobs:
 
       - run: readelf -h ctags
       - run: readelf -d ctags
-      - run: file ctags | grep FreeBSD
+      - run: file ctags | grep NetBSD
 
       - uses: actions/upload-artifact@v3
         with:

@@ -106,7 +106,7 @@ jobs:
 
       - run: ./autogen.sh
       - run: |
-          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/uctags-openbsd-amd64 --enable-static || {
+          ./configure --host=amd64-unknown-openbsd --prefix=${{ github.workspace }}/uctags-openbsd-amd64 || {
             cat config.log
             exit 1
           }
@@ -115,7 +115,7 @@ jobs:
 
       - run: readelf -h ctags
       - run: readelf -d ctags
-      - run: file ctags | grep FreeBSD
+      - run: file ctags | grep OpenBSD
 
       - uses: actions/upload-artifact@v3
         with:
