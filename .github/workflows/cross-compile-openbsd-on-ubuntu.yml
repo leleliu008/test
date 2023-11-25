@@ -84,6 +84,7 @@ jobs:
           make V=1
           make install
           sed -i 's|-liconv|-liconv -lz|g' ${{ github.workspace }}/amd64-unknown-openbsd-3rdroot/lib/pkgconfig/libxml-2.0.pc
+          cat ${{ github.workspace }}/amd64-unknown-openbsd-3rdroot/lib/pkgconfig/libxml-2.0.pc
 
       - name: build jansson
         run: |
@@ -111,6 +112,7 @@ jobs:
             cat config.log
             exit 1
           }
+      - run: cat config.log
       - run: make V=1
       - run: make install
 
