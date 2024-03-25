@@ -51,9 +51,9 @@ jobs:
           ./ppkg pack ${{ matrix.pkg }} -o .
 
 
-          PACKAGE_SUMMARY="\$(./ppkg receipt ${{ matrix.pkg }} summary)"
-          PACKAGE_WEB_URL="\$(./ppkg receipt ${{ matrix.pkg }} web-url)"
-          PACKAGE_VERSION="\$(./ppkg receipt ${{ matrix.pkg }} version)"
+          PACKAGE_SUMMARY="\$(./ppkg info-installed ${{ matrix.pkg }} summary)"
+          PACKAGE_WEB_URL="\$(./ppkg info-installed ${{ matrix.pkg }} web-url)"
+          PACKAGE_VERSION="\$(./ppkg info-installed ${{ matrix.pkg }} version)"
 
           PACKAGE_BIN_FILENAME="${{ matrix.pkg }}-\$PACKAGE_VERSION-linux-x86_64.tar.xz"
 
