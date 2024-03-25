@@ -1,0 +1,31 @@
+name: github-actions-upload-download
+
+on:
+  workflow_dispatch
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          touch a.txt
+          touch b.txt
+          tpuch c.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: x.txt
+          path: |
+              ./*.txt
+
+  download:
+    needs: upload
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: *.txt
+          path: .
+      - run: ls
