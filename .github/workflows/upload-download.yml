@@ -26,6 +26,6 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          pattern: *.txt
+          pattern: '*.txt'
           path: .
       - run: ls
