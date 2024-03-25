@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pkg: [aria2, axel, base16, base64, bash, bat, bison, bc, bsdtar, bzip2, b3sum, cmake, coreutils, curl, darkhttpd, diffutils, dos2unix, ed, file, findutils, gawk, gperf, git, gm4, gmake, gh, grep, gsed, gtar, gzip, jq, lzip, lz4, nasm, ninja, openssl, patchelf, patch, pkgconf, pkg-config, pngquant, proot, putty, qpdf, rsync, rtmpdump, sqlite3, starship, strace, swig, tcpdump, tealdear, tig, tmux, tree, uctags, unrar, unzip, uppm, util-linux, xmake, xxd, xz, yasm, youtubedr, yq, zip, p7zip, zstd, zoxide, sysinfo, easyutils, gettext-tools, glib-tools, gindent, golang, go-md2man, grpc-plugins, xsltproc, libxml2-utils, figlet, lolcat]
+        pkg: [aria2, axel, base16, base64, bash, bat, bison, bc, bsdtar, bzip2, b3sum, cmake, coreutils, cppcheck, ctop, curl, curlie, darkhttpd, diffutils, dos2unix, easyutils, ed, figlet, file, findutils, flex, gawk, gettext-tools, gh, gindent, git, glib-tools, glow, gm4, gmake, gnupg, go-md2man, gogs, golang, gotop, gotty, gperf, grep, grpc-plugins, gsed, gtar, gzip, hugo, jq, lazygit, libxml2-utils, lolcat, lz4, lzip, mediainfo, mosh, mpg123, nasm, ninja, openssl, patch, patchelf, pigz, p7zip, pkg-config, pkgconf, pngquant, proot, putty, qpdf, rsync, rtmpdump, sqlite3, starship, strace, swig, sysinfo, tcpdump, tealdeer, tig, tmux, tree, uctags, unrar, unzip, uppm, util-linux, wget, xmake, xsltproc, xxd, xz, yasm, youtubedr, yq, zip, zopfli, zstd, zoxide]
 
     runs-on: ubuntu-latest
 
