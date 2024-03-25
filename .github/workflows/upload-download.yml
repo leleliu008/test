@@ -11,7 +11,7 @@ jobs:
       - run: |
           touch a.txt
           touch b.txt
-          tpuch c.txt
+          touch c.txt
       - uses: actions/upload-artifact@v4
         with:
           name: x.txt
