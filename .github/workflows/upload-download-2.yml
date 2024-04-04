@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pkg: [aria2, axel, base16, base64, bash, bat, bison, bc, bsdtar, bzip2, b3sum, cmake, coreutils, cppcheck, ctop, curl, curlie, darkhttpd, diffutils, dos2unix, easyutils, ed, figlet, file, findutils, flex, gawk, gettext-tools, gh, gindent, git, glib-tools, glow, gm4, gmake, gnupg, go-md2man, gogs, golang, gotop, gotty, gperf, grep, grpc-plugins, gsed, gtar, gzip, hugo, jq, lazygit, libxml2-utils, lolcat, lz4, lzip, mediainfo, mosh, mpg123, nasm, ninja, openssl, patch, patchelf, pigz, p7zip, pkg-config, pkgconf, pngquant, proot, putty, qpdf, rsync, rtmpdump, sqlite3, starship, strace, swig, sysinfo, tcpdump, tealdeer, tig, tmux, tree, uctags, unrar, unzip, uppm, util-linux, wget, xmake, xsltproc, xxd, xz, yasm, youtubedr, yq, zip, zopfli, zstd, zoxide]
+        pkg: [aria2, axel, base16, base64, bash, bat, bison, bc, bsdtar, bzip2, b3sum, cargo-c, cmake, coreutils, cppcheck, ctop, curl, curlie, darkhttpd, dua, duf, dufs, dust, diffutils, dos2unix, easyutils, ed, exa, fd, figlet, file, findutils, flex, gawk, gettext-tools, gh, gindent, git, glib-tools, glow, gm4, gmake, gnupg, go-md2man, gogs, golang, gotop, gotty, gperf, grep, grpc-plugins, gsed, gtar, gzip, hugo, jj, jq, lazygit, libxml2-utils, lolcat, lz4, lzip, mediainfo, mosh, mpg123, nasm, ninja, openssl, patch, patchelf, pigz, p7zip, pkg-config, pkgconf, pngquant, proot, putty, qpdf, qrencode, rsync, rtmpdump, sqlite3, starship, strace, swig, sysinfo, tcpdump, tealdeer, tig, tmux, tree, uctags, unrar, unzip, uppm, util-linux, volta, wget, xmake, xsltproc, xxd, xz, yasm, youtubedr, yq, zip, zopfli, zstd, zoxide]
 
     runs-on: ubuntu-latest
 

@@ -1,0 +1,28 @@
+name: ppkg
+
+on:
+  workflow_dispatch
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
+      - run: ./ppkg env
+      - run: ./ppkg setup
+      - run: ./ppkg update
+      - run: ./ppkg install uctags --link-type=static-full
+      - run: ./ppkg pack    uctags -o .
+      - run: ./ppkg export.deb uctags -o .
+      - run: dpkg -i uctags-*.deb
+      - run: dpkg -L uctags
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags
+          path: uctags-*
+
+
