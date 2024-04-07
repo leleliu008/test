@@ -16,6 +16,14 @@ jobs:
     container: madhacking/gentoo
 
     steps:
+      - run: |
+          install -d /etc/portage/binrepos.conf
+          cat >      /etc/portage/binrepos.conf/gentoobinhost.conf <<EOF
+          [binhost]
+          priority = 9999
+          sync-uri = https://distfiles.gentoo.org/releases/amd64/binpackages/23.0/x86-64/
+          EOF
+
       - run: emerge -g -K -v dev-vcs/git
 
       - uses: actions/checkout@v4
