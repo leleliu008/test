@@ -477,7 +477,15 @@ jobs:
 
                 tar xvf "$FILENAME"
                 tar xvf manpages.tar.xz -C "$DIR_NAME" --strip-components=1
-                tar cJvf "$FILENAME" "$DIR_NAME"
+
+                case $FILENAME in
+                  *.tar.gz)  FMT='--gzip'  ;;
+                  *.tar.lz)  FMT='--lzip'  ;;
+                  *.tar.xz)  FMT='--xz'    ;;
+                  *.tar.bz2) FMT='--bzip2' ;;
+                esac
+
+                tar -c -v "$FMT" -f "$FILENAME" "$DIR_NAME"
             esac
           done
 
