@@ -460,6 +460,9 @@ jobs:
 
       - run: ls -a
 
+      - run: sudo apt -y update
+      - run: sudo apt -y install lzip
+
       - name: repack
         run: |
           set -x
