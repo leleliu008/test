@@ -137,20 +137,21 @@ jobs:
         target-arch: [x86_64, arm64]
 
     steps:
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
-      - run: chmod a+x xcpkg
-      - run: ./xcpkg setup
-      - run: ./xcpkg update
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
+
+      - run: ./ppkg setup
+      - run: ./ppkg update
 
       - run: |
-          ~/.uppm/installed/gsed/bin/gsed -i "/git-url/a git-sha: ${{ needs.check.outputs.git-sha }}" ~/.xcpkg/repos.d/official-core/formula/uctags.yml
+          ~/.uppm/installed/gsed/bin/gsed -i "/git-url/a git-sha: ${{ needs.check.outputs.git-sha }}" ~/.ppkg/repos.d/official-core/formula/uctags.yml
 
-      - run: ./xcpkg install MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}/uctags --link-type=static-most
+      - run: ./ppkg install macos-${{ matrix.target-version }}-${{ matrix.target-arch }}/uctags --link-type=static-most
 
-      - run: ./xcpkg pack    MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}/uctags -t tar.gz
-      - run: ./xcpkg pack    MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}/uctags -t tar.xz
-      - run: ./xcpkg pack    MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}/uctags -t tar.lz
-      - run: ./xcpkg pack    MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}/uctags -t tar.bz2
+      - run: ./ppkg pack    macos-${{ matrix.target-version }}-${{ matrix.target-arch }}/uctags -t tar.gz
+      - run: ./ppkg pack    macos-${{ matrix.target-version }}-${{ matrix.target-arch }}/uctags -t tar.xz
+      - run: ./ppkg pack    macos-${{ matrix.target-version }}-${{ matrix.target-arch }}/uctags -t tar.lz
+      - run: ./ppkg pack    macos-${{ matrix.target-version }}-${{ matrix.target-arch }}/uctags -t tar.bz2
 
       - uses: actions/upload-artifact@v4
         with:
