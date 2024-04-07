@@ -11,14 +11,14 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     
     container: madhacking/gentoo
 
     steps:
-      - run: emerge dev-vcs/git
+      - run: emerge -g -v dev-vcs/git
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - run: emerge -s "%^cmake$"
       - run: emerge -s "%^make$"
