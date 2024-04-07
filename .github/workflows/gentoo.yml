@@ -25,7 +25,7 @@ jobs:
           EOF
 
       - run: emerge --sync
-      - run: emerge -g -K -v dev-vcs/git net-misc/curl sys-devel/gcc
+      - run: emerge -g -v dev-vcs/git net-misc/curl sys-devel/gcc
 
       - uses: actions/checkout@v4
 
