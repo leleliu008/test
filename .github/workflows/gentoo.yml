@@ -24,7 +24,8 @@ jobs:
           sync-uri = https://distfiles.gentoo.org/releases/amd64/binpackages/23.0/x86-64/
           EOF
 
-      - run: emerge -g -v dev-vcs/git net-misc/curl sys-devel/gcc
+      - run: emerge --sync
+      - run: emerge -g -K -v dev-vcs/git net-misc/curl sys-devel/gcc
 
       - uses: actions/checkout@v4
 
