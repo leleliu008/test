@@ -17,7 +17,7 @@ jobs:
     runs-on: macos-${{ matrix.version }}
 
     steps:
-      - run: https://github.com/leleliu008/ndk-pkg/releases/download/ndk-pkg-core-2024.05.15/ndk-pkg-core-2024.05.15-macos-14.0-arm64.tar.xz
+      - run: curl -LO https://github.com/leleliu008/ndk-pkg/releases/download/ndk-pkg-core-2024.05.15/ndk-pkg-core-2024.05.15-macos-14.0-arm64.tar.xz
       - run: tar vxf ndk-pkg-core-2024.05.15-macos-14.0-arm64.tar.xz --strip-components=1
       - run: ./uppm setup
       - run: ./uppm update
