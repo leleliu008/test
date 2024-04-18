@@ -17,8 +17,14 @@ jobs:
     runs-on: macos-${{ matrix.version }}
 
     steps:
+      - run: curl -LO https://curl.se/ca/cacert.pem
+      - run: echo "SSL_CERT_FILE=$PWD/cacert.pem" >> "$GITHUB_ENV"
+
       - run: curl -LO https://github.com/leleliu008/ndk-pkg/releases/download/ndk-pkg-core-2024.05.15/ndk-pkg-core-2024.05.15-macos-14.0-arm64.tar.xz
       - run: tar vxf ndk-pkg-core-2024.05.15-macos-14.0-arm64.tar.xz --strip-components=1
+
       - run: ./uppm update
+
       - run: ls ~/.uppm/repos.d/official-core/formula/
+
       - run: ./uppm install docbook-xsl
