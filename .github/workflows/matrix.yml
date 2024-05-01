@@ -1,0 +1,20 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: matrix
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['--fsle', '']
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: id
