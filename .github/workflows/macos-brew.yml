@@ -19,4 +19,4 @@ jobs:
     steps:
       - run: df -h
       - run: brew info usbmuxd --json
-      - run: brew info usbmuxd --json | jq '.[0].versions.stable'
+      - run: brew info usbmuxd --json | jq -r '.[0].versions.stable'
