@@ -12,11 +12,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [11,12,13,14]
+        version: [14]
 
     runs-on: macos-${{ matrix.version }}
 
     steps:
       - run: df -h
-      - run: brew install --overwrite automake pkg-config jansson libyaml libxml2 pcre2
-      - run: pip3 install docutils
+      - run: brew info usbmuxd --json
+      - run: brew info usbmuxd --json | jq '.[0].versions.stable'
