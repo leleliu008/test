@@ -23,6 +23,7 @@ jobs:
       - run: ./xcpkg env
       - run: ./xcpkg setup
       - run: ./xcpkg update
+      - run: cd ~/.xcpkg/repos.d/official-core && git checkout dev && git pull
       - run: ./xcpkg install MacOSX-${{ matrix.version }}-arm64/dot_static
       - run: ./xcpkg pack    MacOSX-${{ matrix.version }}-arm64/dot_static
 
@@ -47,6 +48,7 @@ jobs:
       - run: ./xcpkg env
       - run: ./xcpkg setup
       - run: ./xcpkg update
+      - run: cd ~/.xcpkg/repos.d/official-core && git checkout dev && git pull
       - run: ./xcpkg install MacOSX-${{ matrix.version }}-x86_64/dot_static
       - run: ./xcpkg pack    MacOSX-${{ matrix.version }}-x86_64/dot_static
 
