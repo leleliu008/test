@@ -1,0 +1,59 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: macos-xcpkg-dot_static
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  arm64:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['14.0', '13.0', '12.0', '11.0']
+
+    runs-on: macos-14
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/dev/xcpkg
+      - run: chmod a+x xcpkg
+
+      - run: ./xcpkg env
+      - run: ./xcpkg setup
+      - run: ./xcpkg update
+      - run: ./xcpkg install MacOSX-${{ matrix.version }}-arm64/dot_static
+      - run: ./xcpkg pack    MacOSX-${{ matrix.version }}-arm64/dot_static
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dot_static-MacOSX-${{ matrix.version }}-arm64
+          path: dot_static-*.tar.xz
+
+  x86_64:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['14.0', '13.0', '12.0', '11.0', '10.15']
+
+    runs-on: macos-13
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/dev/xcpkg
+      - run: chmod a+x xcpkg
+
+      - run: ./xcpkg env
+      - run: ./xcpkg setup
+      - run: ./xcpkg update
+      - run: ./xcpkg install MacOSX-${{ matrix.version }}-x86_64/dot_static
+      - run: ./xcpkg pack    MacOSX-${{ matrix.version }}-x86_64/dot_static
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dot_static-MacOSX-${{ matrix.version }}-x86_64
+          path: dot_static-*.tar.xz
