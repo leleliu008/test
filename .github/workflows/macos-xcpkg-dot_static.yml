@@ -17,12 +17,12 @@ jobs:
     runs-on: macos-14
 
     steps:
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/dev/xcpkg
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
       - run: chmod a+x xcpkg
 
       - run: ./xcpkg env
       - run: ./xcpkg setup
-      - run: ./xcpkg formula-repo-add dev https://github.com/leleliu008/xcpkg-formula-repository-official-core --branch=dev
+      - run: ./xcpkg update
       - run: ./xcpkg install MacOSX-${{ matrix.version }}-arm64/dot_static
       - run: ./xcpkg pack    MacOSX-${{ matrix.version }}-arm64/dot_static
 
@@ -41,12 +41,12 @@ jobs:
     runs-on: macos-13
 
     steps:
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/dev/xcpkg
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
       - run: chmod a+x xcpkg
 
       - run: ./xcpkg env
       - run: ./xcpkg setup
-      - run: ./xcpkg formula-repo-add dev https://github.com/leleliu008/xcpkg-formula-repository-official-core --branch=dev
+      - run: ./xcpkg update
       - run: ./xcpkg install MacOSX-${{ matrix.version }}-x86_64/dot_static
       - run: ./xcpkg pack    MacOSX-${{ matrix.version }}-x86_64/dot_static
 
