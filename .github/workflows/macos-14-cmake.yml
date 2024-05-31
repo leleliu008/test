@@ -1,0 +1,30 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: macos-14-cmake
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+
+    runs-on: macos-14
+
+    steps:
+      - run: curl -LO https://github.com/leleliu008/uppm-package-repository-macos-14.0-arm64/releases/download/2024.05.27/cmake-3.29.3-macos-14.0-arm64.tar.xz
+      - run: tar vxf cmake-3.29.3-macos-14.0-arm64.tar.xz --strip-components=1
+
+      - run: |
+          cat > test.cmake <<EOF
+          function(re2c_bootstrap_lexer input output)
+              message("ARGV=\${ARGV}")
+              message("ARGN=\${ARGN}")
+          endfunction()
+
+          re2c_bootstrap_lexer(1 2)
+          re2c_bootstrap_lexer(1 2 3)
+          EOF
+
+      - run: bin/cmake --version
+      - run: bin/cmake -P test.cmake
