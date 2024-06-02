@@ -15,19 +15,11 @@ jobs:
       - run: curl -LO https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-macos-universal.tar.gz
       - run: tar vxf cmake-3.29.3-macos-universal.tar.gz --strip-components=1
 
-      - run: |
-          cat > test.cmake <<EOF
-          function(re2c_bootstrap_lexer input output)
-              message("ARGV=\${ARGV}")
-              message("ARGN=\${ARGN}")
-          endfunction()
-
-          re2c_bootstrap_lexer(1 2)
-          re2c_bootstrap_lexer(1 2 3)
-          EOF
+      - run: curl -LO https://github.com/akheron/jansson/releases/download/v2.14/jansson-2.14.tar.gz
+      - run: tar vxf jansson-2.14.tar.gz
 
       - run: CMake.app/Contents/bin/cmake --version
-      - run: CMake.app/Contents/bin/cmake -P test.cmake
+      - run: CMake.app/Contents/bin/cmake -Wno-dev -S jansson-2.14 -B build.d -DBUILD_TESTING=OFF -DCMAKE_VERBOSE_MAKEFILE=OFF -DCMAKE_COLOR_MAKEFILE=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
 
   test2:
 
@@ -37,16 +29,8 @@ jobs:
       - run: curl -LO https://github.com/leleliu008/uppm-package-repository-macos-11.0-x86_64/releases/download/2024.06.01/cmake-3.29.3-macos-11.0-x86_64.tar.xz
       - run: tar vxf cmake-3.29.3-macos-11.0-x86_64.tar.xz --strip-components=1
 
-      - run: |
-          cat > test.cmake <<EOF
-          function(re2c_bootstrap_lexer input output)
-              message("ARGV=\${ARGV}")
-              message("ARGN=\${ARGN}")
-          endfunction()
+      - run: curl -LO https://github.com/akheron/jansson/releases/download/v2.14/jansson-2.14.tar.gz
+      - run: tar vxf jansson-2.14.tar.gz
 
-          re2c_bootstrap_lexer(1 2)
-          re2c_bootstrap_lexer(1 2 3)
-          EOF
-
-      - run: bin/cmake --version
-      - run: bin/cmake -P test.cmake
+      - run: CMake.app/Contents/bin/cmake --version
+      - run: CMake.app/Contents/bin/cmake -Wno-dev -S jansson-2.14 -B build.d -DBUILD_TESTING=OFF -DCMAKE_VERBOSE_MAKEFILE=OFF -DCMAKE_COLOR_MAKEFILE=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
