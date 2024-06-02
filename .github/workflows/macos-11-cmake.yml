@@ -32,5 +32,5 @@ jobs:
       - run: curl -LO https://github.com/akheron/jansson/releases/download/v2.14/jansson-2.14.tar.gz
       - run: tar vxf jansson-2.14.tar.gz
 
-      - run: CMake.app/Contents/bin/cmake --version
-      - run: CMake.app/Contents/bin/cmake -Wno-dev -S jansson-2.14 -B build.d -DBUILD_TESTING=OFF -DCMAKE_VERBOSE_MAKEFILE=OFF -DCMAKE_COLOR_MAKEFILE=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
+      - run: bin/cmake --version
+      - run: bin/cmake -Wno-dev -S jansson-2.14 -B build.d -DBUILD_TESTING=OFF -DCMAKE_VERBOSE_MAKEFILE=OFF -DCMAKE_COLOR_MAKEFILE=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
