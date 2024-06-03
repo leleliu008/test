@@ -34,3 +34,28 @@ jobs:
 
       - run: bin/cmake --version
       - run: bin/cmake -Wno-dev -S jansson-2.14 -B build.d -DBUILD_TESTING=OFF -DCMAKE_VERBOSE_MAKEFILE=OFF -DCMAKE_COLOR_MAKEFILE=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
+
+
+  test3:
+
+    runs-on: macos-11
+
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [debug, release]
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
+      - run: chmod a+x xcpkg
+      - run: ./xcpkg setup
+      - run: ./xcpkg update
+      - run: ./xcpkg install cmake --profile=${{ matrix.profile }}
+      - run: ./xcpkg pack cmake
+      - run: tar vxf cmake-*.tar.gz --strip-components=1
+
+      - run: curl -LO https://github.com/akheron/jansson/releases/download/v2.14/jansson-2.14.tar.gz
+      - run: tar vxf jansson-2.14.tar.gz
+
+      - run: bin/cmake --version
+      - run: bin/cmake -Wno-dev -S jansson-2.14 -B build.d -DBUILD_TESTING=OFF -DCMAKE_VERBOSE_MAKEFILE=OFF -DCMAKE_COLOR_MAKEFILE=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
