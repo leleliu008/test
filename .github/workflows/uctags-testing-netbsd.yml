@@ -27,8 +27,8 @@ jobs:
           shell: bash
           run: |
             run() {
-              printf '%s\n' "\$*"
-              eval "\$@"
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
             }
 
             run sudo pkgin -y install mozilla-rootcerts automake autoconf pkg-config gmake
