@@ -31,7 +31,7 @@ jobs:
               eval "\$@"
             }
 
-            run pkg install -y automake pkgconf gmake python3
+            run sudo pkg install -y automake pkgconf gmake python3
             run freebsd-version
             run cc --version
             run ./autogen.sh
