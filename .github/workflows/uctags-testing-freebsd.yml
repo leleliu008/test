@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        freebsd-version: ['12.4', '13.3', '14.0', '14.1']
+        freebsd-version: ['14.1', '14.0', '13.3', '13.2']
 
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
             run ./autogen.sh
             run ./configure --prefix=/usr
             run gmake
-            run gmake install
+            run sudo gmake install
             run file ctags
             run ctags --version
             run gmake check CI=gha+vagrant+freebsd
