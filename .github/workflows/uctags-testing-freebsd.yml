@@ -24,6 +24,7 @@ jobs:
         with:
           operating_system: freebsd
           version: ${{ matrix.freebsd-version }}
+          shell: bash
           run: |
             run() {
               printf '%s\n' "$*"
