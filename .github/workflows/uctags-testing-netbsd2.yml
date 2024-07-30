@@ -20,6 +20,8 @@ jobs:
         with:
           repository: universal-ctags/ctags
 
+      - run: curl -LO https://curl.se/ca/cacert.pem
+
       - uses: cross-platform-actions/action@v0.25.0
         with:
           operating_system: netbsd
@@ -31,6 +33,8 @@ jobs:
               eval "$@"
             }
 
-            run sudo pkgin -y install curl mozilla-rootcerts
+            run sudo pkgin -y install curl
+
+            run export SSL_CERT_FILE="$PWD/cacert.pem"
 
             run curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/caf.yml
