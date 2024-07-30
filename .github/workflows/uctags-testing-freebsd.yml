@@ -27,8 +27,8 @@ jobs:
           shell: bash
           run: |
             run() {
-              printf '%s\n' "$*"
-              eval "$@"
+              printf '%s\n' "\$*"
+              eval "\$@"
             }
 
             run pkg install -y automake pkgconf gmake python3
