@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         # https://ftp.netbsd.org/pub/NetBSD/
-        netbsd-release-version: ['10.0', '9.4', '9.3', '9.2']
+        netbsd-release-version: ['10.0']
 
     runs-on: ubuntu-latest
 
@@ -44,7 +44,7 @@ jobs:
             tar vxf "$FILENAME" -C amd64-unknown-netbsd-sysroot
           done
 
-      - run: printf 'INPUT(-lstdc++ -lgcc_eh)\n' > amd64-unknown-netbsd-sysroot/usr/lib/libc++.a
+          #- run: printf 'INPUT(-lstdc++ -lgcc_eh)\n' > amd64-unknown-netbsd-sysroot/usr/lib/libc++.a
 
       - run: cmake -S . -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_COLOR_MAKEFILE=ON
 
