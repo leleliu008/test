@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          reposityory: dolik-rce/pegof
+          repository: dolik-rce/pegof
           submodules: recursive
           fetch-tags: true
 
