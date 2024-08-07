@@ -31,7 +31,7 @@ jobs:
           fetch-tags: true
 
       - run: sudo apt-get -y update
-      - run: sudo apt-get -y install curl cmake make clang
+      - run: sudo apt-get -y install curl cmake make clang lld
 
       - run: install -d amd64-unknown-netbsd-sysroot
 
