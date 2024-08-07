@@ -21,7 +21,7 @@ jobs:
       CXX: clang++ --target=amd64-unknown-netbsd --sysroot=${{ github.workspace }}/amd64-unknown-netbsd-sysroot
       CFLAGS:   -fPIC
       CXXFLAGS: -fPIC
-      LDFLAGS:  -flto -Os -static -stdlib=libc++ -fuse-ld=lld -Wl,-v
+      LDFLAGS:  -flto -Os -static -fuse-ld=lld -Wl,-v -lstdc++ -lgcc
 
     steps:
       - uses: actions/checkout@v4
