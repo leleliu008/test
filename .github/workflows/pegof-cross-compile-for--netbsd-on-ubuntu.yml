@@ -21,7 +21,7 @@ jobs:
       CXX: clang++ --target=amd64-unknown-netbsd --sysroot=${{ github.workspace }}/amd64-unknown-netbsd-sysroot
       CFLAGS:   -fPIC
       CXXFLAGS: -fPIC
-      LDFLAGS:  -flto -Os -static -stdlib=libc++
+      LDFLAGS:  -flto -Os -static -stdlib=libc++ -fuse-ld=lld
 
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
             tar vxf "$FILENAME" -C amd64-unknown-netbsd-sysroot
           done
 
-      - run: printf 'INPUT(-lstdc++ -lgcc_s)\n' > amd64-unknown-netbsd-sysroot/usr/lib/libc++.a
+      - run: printf 'INPUT(-lstdc++ -lgcc_eh)\n' > amd64-unknown-netbsd-sysroot/usr/lib/libc++.a
 
       - run: cmake -S . -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_COLOR_MAKEFILE=ON
 
