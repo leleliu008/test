@@ -22,6 +22,8 @@ jobs:
 
       - run: curl -LO https://curl.se/ca/cacert.pem
 
+      - run: ls
+
       - uses: cross-platform-actions/action@v0.25.0
         with:
           operating_system: netbsd
@@ -38,3 +40,5 @@ jobs:
             run export SSL_CERT_FILE="$PWD/cacert.pem"
 
             run curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/caf.yml
+
+      - run: ls
