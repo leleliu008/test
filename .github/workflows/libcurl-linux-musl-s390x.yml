@@ -34,17 +34,15 @@ jobs:
           run uname -a
 
           run apk update
-          run apk add wget autoconf automake libtool pkgconf make gcc libc-dev linux-headers nghttp2-dev openssl-dev zlib-dev
+          run apk add wget pkgconf make gcc libc-dev linux-headers nghttp2-dev openssl-dev zlib-dev
 
           run wget https://curl.haxx.se/download/curl-${{ matrix.version }}.tar.bz2
           run tar vxf curl-${{ matrix.version }}.tar.bz2 --strip-components 1
-          sed -i '1a set -x' configure
-          sed -i 's|tst_links_getifaddrs="yes"|tst_links_getifaddrs="no"|' m4/curl-functions.m4
-          run autoreconf -ivf
+          sed -i '/tst_links_getifaddrs=/c tst_links_getifaddrs=no' configure
           run ./configure --with-default-ssl-backend=openssl --with-openssl
           run make --jobs=3
           EOF
 
       # https://github.com/multiarch/qemu-user-static
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - run: docker run -v "$PWD:/root" -w /root s390x/alpine:3.15 sh run.sh
+      - run: docker run -v "$PWD:/root" -w /root s390x/alpine sh run.sh
