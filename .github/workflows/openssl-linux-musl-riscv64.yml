@@ -1,0 +1,25 @@
+name: build openssl for linux-musl-riscv64
+
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ '3.1.1', '3.3.1' ]
+
+    runs-on: ubuntu-latest
+
+    container: riscv64/alpine:edge
+
+    steps:
+      - run: apk update
+      - run: apk add wget perl make gcc libc-dev linux-headers
+
+      - run: wget https://www.openssl.org/source/openssl-${{ matrix.version }}.tar.gz
+      - run: tar vxf openssl-*.tar.gz --strip-components 1
+      - run: ./config no-tests no-ssl3 no-ssl3-method no-zlib
+      - run: make --jobs=2
