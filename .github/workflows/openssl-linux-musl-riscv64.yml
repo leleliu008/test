@@ -13,13 +13,35 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container: riscv64/alpine:edge
-
     steps:
-      - run: apk update
-      - run: apk add wget perl make gcc libc-dev linux-headers
+      - run: |
+          cat > run.sh <<EOF
+          set -e
 
-      - run: wget https://www.openssl.org/source/openssl-${{ matrix.version }}.tar.gz
-      - run: tar vxf openssl-*.tar.gz --strip-components 1
-      - run: ./config no-tests no-ssl3 no-ssl3-method no-zlib
-      - run: make --jobs=2
+          COLOR_GREEN='\033[0;32m'        # Green
+          COLOR_PURPLE='\033[0;35m'       # Purple
+          COLOR_OFF='\033[0m'             # Reset
+
+          echo() {
+              printf '%b\n' "\$*"
+          }
+
+          run() {
+              echo "\${COLOR_PURPLE}==>\${COLOR_OFF} \${COLOR_GREEN}\$@\${COLOR_OFF}"
+              eval "\$*"
+          }
+
+          run uname -a
+
+          run apk update
+          run apk add wget perl make gcc libc-dev linux-headers
+
+          run wget https://www.openssl.org/source/openssl-${{ matrix.version }}.tar.gz
+          run tar vxf openssl-*.tar.gz --strip-components 1
+          run ./config no-tests no-ssl3 no-ssl3-method no-zlib
+          run make --jobs=2
+          EOF
+
+      # https://github.com/multiarch/qemu-user-static
+      - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - run: docker run -v "$PWD:/root" -w /root --name alpine riscv64/alpine:edge sh run.sh
