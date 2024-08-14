@@ -34,7 +34,7 @@ jobs:
           run uname -a
 
           run apk update
-          run apk add wget pkgconf make gcc libc-dev linux-headers nghttp2-dev openssl-dev zlib-dev
+          run apk add wget perl pkgconf make gcc libc-dev linux-headers nghttp2-dev openssl-dev zlib-dev
 
           run wget https://curl.haxx.se/download/curl-${{ matrix.version }}.tar.bz2
           run tar vxf curl-${{ matrix.version }}.tar.bz2 --strip-components 1
