@@ -37,11 +37,11 @@ jobs:
           run apk add wget perl make gcc libc-dev linux-headers
 
           run wget https://www.openssl.org/source/openssl-${{ matrix.version }}.tar.gz
-          run tar vxf openssl-*.tar.gz --strip-components 1
+          run tar vxf openssl-${{ matrix.version }}.tar.gz --strip-components 1
           run ./config no-tests no-ssl3 no-ssl3-method no-zlib
-          run make --jobs=2
+          run make --jobs=2 build_libs
           EOF
 
       # https://github.com/multiarch/qemu-user-static
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - run: docker run -v "$PWD:/root" -w /root --name alpine riscv64/alpine:edge sh run.sh
+      - run: docker run -it -v "$PWD:/root" -w /root riscv64/alpine:edge sh run.sh
