@@ -39,6 +39,8 @@ jobs:
           run wget https://curl.haxx.se/download/curl-${{ matrix.version }}.tar.bz2
           run tar vxf curl-${{ matrix.version }}.tar.bz2 --strip-components 1
           sed -i '1a set -x' configure
+          sed -i 's|tst_links_getifaddrs="yes"|tst_links_getifaddrs="no"|' m4/curl-functions.m4
+          run autoreconf -ivf
           run ./configure --with-default-ssl-backend=openssl --with-openssl
           run make --jobs=3
           EOF
