@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [ '8.9.1' ]
+        version: [ '8.3.0' ]
 
     runs-on: ubuntu-latest
 
