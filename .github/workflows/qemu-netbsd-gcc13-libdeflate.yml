@@ -16,9 +16,12 @@ jobs:
         netbsd-version: ['10.0', '9.4', '9.3', '9.2']
 
     steps:
-      - run: curl -LO https://github.com/ebiggers/libdeflate/archive/refs/tags/v1.21.tar.gz
+      #- run: curl -LO https://github.com/ebiggers/libdeflate/archive/refs/tags/v1.21.tar.gz
+      #- run: tar vxf *.tar.gz --strip-components=1
+      - uses: actions/checkout@v4
+        with:
+          repository: ebiggers/libdeflate
 
-      - run: tar vxf *.tar.gz --strip-components=1
 
       - uses: cross-platform-actions/action@v0.25.0
         with:
