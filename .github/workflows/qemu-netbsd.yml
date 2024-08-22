@@ -35,10 +35,16 @@ jobs:
               eval "$@"
             }
 
-            run sudo pkgin -y install curl
+            run sudo pkgin -y install curl gcc13
 
             run export SSL_CERT_FILE="$PWD/cacert.pem"
 
             run curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/caf.yml
+
+            run ls /usr/pkg/gcc13/bin/
+
+            run command -v gcc
+            run command -v g++
+
 
       - run: ls
