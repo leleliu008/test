@@ -41,7 +41,7 @@ jobs:
             }
             EOF
 
-            /usr/pkg/gcc13/bin/gcc test.c
+            run /usr/pkg/gcc13/bin/gcc -Wall test.c
 
             exit 0
 
