@@ -40,7 +40,22 @@ jobs:
 
             run tar vxf ccache-4.10.2.tar.xz --strip-components=1
 
-            run cmake -S . -B build.d -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_COLOR_MAKEFILE=ON -DCMAKE_INSTALL_PREFIX=$PWD/out -DCMAKE_EXE_LINKER_FLAGS=-static
+            run cmake \
+                -S . \
+                -B build.d \
+                -DCMAKE_VERBOSE_MAKEFILE=ON \
+                -DCMAKE_COLOR_MAKEFILE=ON \
+                -DCMAKE_INSTALL_PREFIX=$PWD/out \
+                -DCMAKE_EXE_LINKER_FLAGS='-Wl,--as-needed -Wl,-z,muldefs -Wl,--allow-multiple-definition -flto -Wl,-s' \
+                -DCMAKE_CXX_FLAGS='-Os' \
+                -DCMAKE_C_FLAGS='-Os' \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DENABLE_COVERAGE=OFF \
+                -DENABLE_CPPCHECK=OFF \
+                -DENABLE_IPO=ON \
+                -DENABLE_TRACING=OFF \
+                -DWARNINGS_AS_ERRORS=OFF \
+                -DZSTD_FROM_INTERNET=OFF
 
             run cmake --build build.d
 
