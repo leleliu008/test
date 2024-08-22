@@ -37,7 +37,7 @@ jobs:
             #include <ctype.h>
             int main() {
               const char * str = "0x1";
-              return isxdigit(str[0]);
+              return isxdigit((int)str[0]);
             }
             EOF
 
