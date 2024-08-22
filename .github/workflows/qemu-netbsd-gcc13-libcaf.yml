@@ -18,7 +18,7 @@ jobs:
     steps:
       - run: curl -LO https://github.com/actor-framework/actor-framework/archive/refs/tags/1.0.1.tar.gz
 
-      - run: tar vxf 1.0.1.tar.xz --strip-components=1
+      - run: tar vxf *.tar.gz --strip-components=1
 
       - uses: cross-platform-actions/action@v0.25.0
         with:
