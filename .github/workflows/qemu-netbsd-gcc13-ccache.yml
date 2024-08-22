@@ -46,7 +46,7 @@ jobs:
                 -DCMAKE_VERBOSE_MAKEFILE=ON \
                 -DCMAKE_COLOR_MAKEFILE=ON \
                 -DCMAKE_INSTALL_PREFIX=$PWD/out \
-                -DCMAKE_EXE_LINKER_FLAGS='-Wl,--as-needed -Wl,-z,muldefs -Wl,--allow-multiple-definition -flto -Wl,-s' \
+                -DCMAKE_EXE_LINKER_FLAGS="'-Wl,--as-needed -Wl,-z,muldefs -Wl,--allow-multiple-definition -flto -Wl,-s'" \
                 -DCMAKE_CXX_FLAGS='-Os' \
                 -DCMAKE_C_FLAGS='-Os' \
                 -DCMAKE_BUILD_TYPE=Release \
