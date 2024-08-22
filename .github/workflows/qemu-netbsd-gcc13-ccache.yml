@@ -33,6 +33,18 @@ jobs:
 
             run export SSL_CERT_FILE="$PWD/cacert.pem"
 
+            cat > test.c <<EOF
+            #include <ctype.h>
+            int main() {
+              const char * str = "0x1";
+              return isxdigit(str[0]);
+            }
+            EOF
+
+            /usr/pkg/gcc13/bin/gcc test.c
+
+            exit 0
+
             export  CC='/usr/pkg/gcc13/bin/gcc'
             export CXX='/usr/pkg/gcc13/bin/g++'
 
