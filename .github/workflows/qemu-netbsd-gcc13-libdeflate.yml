@@ -34,7 +34,7 @@ jobs:
               eval "$@"
             }
 
-            run sudo pkgin -y install gcc13 cmake gmake
+            run sudo pkgin -y install gcc13 binutils cmake gmake
 
             run sudo ln -sf /usr/pkg/bin/gas /usr/bin/as
 
