@@ -36,7 +36,9 @@ jobs:
 
             run sudo pkgin -y install gcc13 binutils cmake gmake
 
-            run sudo ln -sf /usr/pkg/bin/gas /usr/bin/as
+            run ln -sf /usr/pkg/bin/gas "$HOME/as"
+
+            export GCC_EXEC_PREFIX="$HOME/"
 
             export  CC='/usr/pkg/gcc13/bin/gcc'
             export CXX='/usr/pkg/gcc13/bin/g++'
