@@ -36,7 +36,7 @@ jobs:
 
             run sudo pkgin -y install gcc13 cmake gmake
 
-            run ln -sf /usr/pkg/bin/gas /usr/bin/as
+            run sudo ln -sf /usr/pkg/bin/gas /usr/bin/as
 
             export  CC='/usr/pkg/gcc13/bin/gcc'
             export CXX='/usr/pkg/gcc13/bin/g++'
