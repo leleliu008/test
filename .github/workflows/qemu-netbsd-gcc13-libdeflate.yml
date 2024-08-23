@@ -36,6 +36,8 @@ jobs:
 
             run sudo pkgin -y install gcc13 cmake gmake
 
+            export  AS='/usr/pkg/bin/gas'
+
             export  CC='/usr/pkg/gcc13/bin/gcc'
             export CXX='/usr/pkg/gcc13/bin/g++'
 
@@ -45,7 +47,8 @@ jobs:
                 -DCMAKE_VERBOSE_MAKEFILE=ON \
                 -DCMAKE_COLOR_MAKEFILE=ON \
                 -DCMAKE_INSTALL_PREFIX=$PWD/out \
-                -DCMAKE_BUILD_TYPE=Release
+                -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_ASM_COMPILER='/usr/pkg/bin/gas'
 
             run cmake --build build.d
 
