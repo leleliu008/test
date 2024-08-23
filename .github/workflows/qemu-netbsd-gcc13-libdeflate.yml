@@ -40,6 +40,18 @@ jobs:
 
             export COMPILER_PATH="$HOME"
 
+            cat > test.c <<EOF
+            #include<stdio.h>
+            int main() {
+              puts("HELLO");
+              return 0;
+            }
+            EOF
+
+            run strace /usr/pkg/gcc13/bin/gcc test.c
+
+            exit 0
+
             export  CC='/usr/pkg/gcc13/bin/gcc'
             export CXX='/usr/pkg/gcc13/bin/g++'
 
