@@ -114,7 +114,7 @@ jobs:
 
             for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
             do
-              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed openbsd-${{ target-version }}-amd64/$item --prefix)"
+              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed openbsd-${{ matrix.target-version }}-amd64/$item --prefix)"
               run rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
             done
 
@@ -131,12 +131,12 @@ jobs:
             run chmod a+x xbuilder
             run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
-            run tar cvJf uctags-builder-openbsd-${{ target-version-version }}-amd64.tar.xz /opt/uctags-builder
+            run tar cvJf uctags-builder-openbsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uctags-builder-openbsd-${{ target-version }}-amd64.tar.xz
-          path: uctags-builder-openbsd-${{ target-version }}-amd64.tar.xz
+          name: uctags-builder-openbsd-${{ matrix.target-version }}-amd64.tar.xz
+          path: uctags-builder-openbsd-${{ matrix.target-version }}-amd64.tar.xz
 
   netbsd:
     needs: check
@@ -147,7 +147,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        netbsd-version: ['10.0', '9.4', '9.3', '9.2']
+        target-version: ['10.0', '9.4', '9.3', '9.2']
 
     steps:
       - uses: actions/checkout@v4
@@ -157,7 +157,7 @@ jobs:
       - uses: cross-platform-actions/action@v0.25.0
         with:
           operating_system: netbsd
-          version: ${{ matrix.netbsd-version }}
+          version: ${{ matrix.target-version }}
           shell: bash
           run: |
             run() {
@@ -177,7 +177,7 @@ jobs:
 
             for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
             do
-              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed netbsd-${{ target-version }}-amd64/$item --prefix)"
+              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed netbsd-${{ matrix.target-version }}-amd64/$item --prefix)"
               run rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
             done
 
@@ -194,12 +194,12 @@ jobs:
             run chmod a+x xbuilder
             run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
-            run tar cvJf uctags-builder-netbsd-${{ target-version-version }}-amd64.tar.xz /opt/uctags-builder
+            run tar cvJf uctags-builder-netbsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uctags-builder-netbsd-${{ target-version }}-amd64.tar.xz
-          path: uctags-builder-netbsd-${{ target-version }}-amd64.tar.xz
+          name: uctags-builder-netbsd-${{ matrix.target-version }}-amd64.tar.xz
+          path: uctags-builder-netbsd-${{ matrix.target-version }}-amd64.tar.xz
 
 
   macos:
