@@ -18,7 +18,7 @@ jobs:
     outputs:
       if-has-new-commit: ${{ steps.check-if-has-new-commit.outputs.HAS_NEW_COMMIT }}
 
-  bsd:
+  freebsd:
     needs: [check]
     if: needs.check.outputs.if-has-new-commit == 'yes'
 
@@ -27,46 +27,179 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # https://ftp.netbsd.org/pub/NetBSD/
-        # https://cdn.openbsd.org/pub/OpenBSD/
-        # https://archive.freebsd.org/old-releases/amd64/
-        target: ['netbsd-10.0-amd64', 'netbsd-9.4-amd64', 'netbsd-9.3-amd64', 'netbsd-9.2-amd64', 'openbsd-7.5-amd64', 'openbsd-7.4-amd64', 'openbsd-7.3-amd64', 'freebsd-14.1-amd64', 'freebsd-14.0-amd64', 'freebsd-13.3-amd64', 'freebsd-13.2-amd64', 'freebsd-13.1-amd64', 'freebsd-13.0-amd64']
+        target-version: ['14.1', '14.0', '13.3', '13.2']
 
     steps:
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
-      - run: chmod a+x ppkg
-      - run: ./ppkg setup
-      - run: ./ppkg update
-      - run: ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=${{ matrix.target }} --static
+      - uses: actions/checkout@v4
 
-      - run: |
-          install -d /opt/uctags-builder/
+      - uses: cross-platform-actions/action@v0.25.0
+        with:
+          operating_system: freebsd
+          version: ${{ matrix.target-version }}
+          shell: bash
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
 
-          for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
-          do
-            PACKAGE_INSTALLED_DIR="$(./ppkg info-installed ${{ matrix.target }}/$item --prefix)"
-            rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
-          done
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+            run chmod a+x ppkg
+            run ./ppkg setup
+            run ./ppkg update
+            run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
 
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
-      - run: chmod a+x xbuilder
-      - run: |
-          for item in ~/.ppkg/uppm/installed/*
-          do
-              if [ -d "$item/bin" ] ; then
-                  PATH="$item/bin:$PATH"
-              fi
-          done
+            install -d /opt/uctags-builder/
 
-          ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
-          
+            for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+            do
+              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed freebsd-${{ target-version }}-amd64/$item --prefix)"
+              run rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
+            done
 
-      - run: tar cvJf uctags-builder-${{ matrix.target }}.tar.xz /opt/uctags-builder
+            for item in ~/.ppkg/uppm/installed/*
+            do
+                if [ -d "$item/bin" ] ; then
+                    PATH="$item/bin:$PATH"
+                fi
+            done
+
+            export SSL_CERT_FILE="$HOME/.ppkg/core/cacert.pem"
+
+            run curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
+            run chmod a+x xbuilder
+
+            run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+
+            run tar cvJf uctags-builder-freebsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uctags-builder---${{ matrix.target }}.tar.xz
-          path: uctags-builder-*-${{ matrix.target }}.tar.xz
+          name: uctags-builder-freebsd-${{ matrix.target-version }}-amd64.tar.xz
+          path: uctags-builder-freebsd-${{ matrix.target-version }}-amd64.tar.xz
+
+
+  openbsd:
+    needs: check
+    if: needs.check.outputs.if-has-new-commit == 'yes'
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-version: ['7.5', '7.4', '7.3', '7.2']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cross-platform-actions/action@v0.25.0
+        with:
+          operating_system: openbsd
+          version: ${{ matrix.target-version }}
+          shell: bash
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
+
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+            run chmod a+x ppkg
+            run ./ppkg setup
+            run ./ppkg update
+            run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
+
+            install -d /opt/uctags-builder/
+
+            for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+            do
+              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed openbsd-${{ target-version }}-amd64/$item --prefix)"
+              run rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
+            done
+
+            for item in ~/.ppkg/uppm/installed/*
+            do
+                if [ -d "$item/bin" ] ; then
+                    PATH="$item/bin:$PATH"
+                fi
+            done
+
+            export SSL_CERT_FILE="$HOME/.ppkg/core/cacert.pem"
+
+            run curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
+            run chmod a+x xbuilder
+            run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+
+            run tar cvJf uctags-builder-openbsd-${{ target-version-version }}-amd64.tar.xz /opt/uctags-builder
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags-builder-openbsd-${{ target-version }}-amd64.tar.xz
+          path: uctags-builder-openbsd-${{ target-version }}-amd64.tar.xz
+
+  netbsd:
+    needs: check
+    if: needs.check.outputs.if-has-new-commit == 'yes'
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        netbsd-version: ['10.0', '9.4', '9.3', '9.2']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: curl -LO https://curl.se/ca/cacert.pem
+
+      - uses: cross-platform-actions/action@v0.25.0
+        with:
+          operating_system: netbsd
+          version: ${{ matrix.netbsd-version }}
+          shell: bash
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
+
+            run export SSL_CERT_FILE="$PWD/cacert.pem"
+
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+            run chmod a+x ppkg
+            run ./ppkg setup
+            run ./ppkg update
+            run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
+
+            install -d /opt/uctags-builder/
+
+            for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+            do
+              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed netbsd-${{ target-version }}-amd64/$item --prefix)"
+              run rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
+            done
+
+            for item in ~/.ppkg/uppm/installed/*
+            do
+                if [ -d "$item/bin" ] ; then
+                    PATH="$item/bin:$PATH"
+                fi
+            done
+
+            export SSL_CERT_FILE="$HOME/.ppkg/core/cacert.pem"
+
+            run curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
+            run chmod a+x xbuilder
+            run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+
+            run tar cvJf uctags-builder-netbsd-${{ target-version-version }}-amd64.tar.xz /opt/uctags-builder
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags-builder-netbsd-${{ target-version }}-amd64.tar.xz
+          path: uctags-builder-netbsd-${{ target-version }}-amd64.tar.xz
 
 
   macos:
@@ -148,12 +281,13 @@ jobs:
           run uname -a
 
           run apk update
-          run apk add g++ libc-dev linux-headers
+          run apk add g++ libc-dev linux-headers rsync
 
           run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           run chmod a+x ppkg
           run ./ppkg setup
           run ./ppkg update
+          run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
 
           install -d /opt/uctags-builder/
 
@@ -193,12 +327,12 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uctags-builder---linux-${{ matrix.target-arch }}.tar.xz
-          path: uctags-builder-*-linux-${{ matrix.target-arch }}.tar.xz
+          name: uctags-builder-linux-${{ matrix.target-arch }}.tar.xz
+          path: uctags-builder-linux-${{ matrix.target-arch }}.tar.xz
 
 
   publish:
-    needs: [check, bsd, macos, linux]
+    needs: [check, freebsd, openbsd, netbsd, macos, linux]
     if: needs.check.outputs.if-has-new-commit == 'yes'
 
     runs-on: ubuntu-latest
