@@ -48,6 +48,7 @@ jobs:
             run ./ppkg setup --syspm
             run ./ppkg update
             run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
+            run ./ppkg run uppm install rsync
 
             GID="$(id -g -n)"
             UID="$(id -u -n)"
@@ -112,6 +113,7 @@ jobs:
             run ./ppkg setup --syspm
             run ./ppkg update
             run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
+            run ./ppkg run uppm install rsync
 
             GID="$(id -g -n)"
             UID="$(id -u -n)"
@@ -178,6 +180,7 @@ jobs:
             run ./ppkg setup --syspm
             run ./ppkg update
             run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
+            run ./ppkg run uppm install rsync
 
             GID="$(id -g -n)"
             UID="$(id -u -n)"
@@ -300,6 +303,7 @@ jobs:
           run ./ppkg setup
           run ./ppkg update
           run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
+          run ./ppkg run uppm install rsync
 
           install -d /opt/uctags-builder/
 
