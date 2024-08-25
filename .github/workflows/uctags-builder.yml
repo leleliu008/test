@@ -1,0 +1,227 @@
+name: publish uctags-builder
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  check:
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: universal-ctags/ctags
+
+      - id:  check-if-has-new-commit
+        run: |
+          cat > QUERY <<EOF
+          {
+            repository(owner: "universal-ctags", name: "ctags-nightly-build") {
+                latestRelease {
+                  name
+                }
+            }
+          }
+          EOF
+
+          LATEST_RELEASE_GIT_SHA="$(gh api graphql -f "query=$(cat QUERY)" --jq .data.repository.latestRelease.name | cut -d+ -f2)"
+
+          printf 'LATEST_RELEASE_GIT_SHA=%s\n' "$LATEST_RELEASE_GIT_SHA"
+
+          CURRENT_SOURCE_GIT_SHA="$(git rev-parse HEAD)"
+
+          printf 'CURRENT_SOURCE_GIT_SHA=%s\n' "$CURRENT_SOURCE_GIT_SHA"
+
+          if [ "$LATEST_RELEASE_GIT_SHA" = "$CURRENT_SOURCE_GIT_SHA" ] ; then
+              printf 'HAS_NEW_COMMIT=no\n'        >> "$GITHUB_OUTPUT"
+          else
+              printf 'HAS_NEW_COMMIT=yes\n'       >> "$GITHUB_OUTPUT"
+          fi
+
+          printf 'GIT_SHA=%s\n' "$CURRENT_SOURCE_GIT_SHA" >> "$GITHUB_OUTPUT"
+
+    outputs:
+      if-has-new-commit: ${{ steps.check-if-has-new-commit.outputs.HAS_NEW_COMMIT }}
+      git-sha:           ${{ steps.check-if-has-new-commit.outputs.GIT_SHA }}
+
+  bsd:
+    needs: [check]
+    if: needs.check.outputs.if-has-new-commit == 'yes'
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # https://ftp.netbsd.org/pub/NetBSD/
+        # https://cdn.openbsd.org/pub/OpenBSD/
+        # https://archive.freebsd.org/old-releases/amd64/
+        target: ['netbsd-10.0-amd64', 'netbsd-9.4-amd64', 'netbsd-9.3-amd64', 'netbsd-9.2-amd64', 'openbsd-7.5-amd64', 'openbsd-7.4-amd64', 'openbsd-7.3-amd64', 'freebsd-14.1-amd64', 'freebsd-14.0-amd64', 'freebsd-13.3-amd64', 'freebsd-13.2-amd64', 'freebsd-13.1-amd64', 'freebsd-13.0-amd64']
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
+      - run: chmod a+x xbuilder
+      - run: ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
+      - run: ./ppkg setup
+      - run: ./ppkg update
+      - run: ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=${{ matrix.target }} --static
+
+      - run: |
+          for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+          do
+            PACKAGE_INSTALLED_DIR="$(./ppkg info-installed ${{ matrix.target }}/$item --prefix)"
+            rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
+          done
+
+      - run: tar cvJf uctags-builder-${{ matrix.target }}.tar.xz /opt/uctags-builder
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags-builder---${{ matrix.target }}.tar.xz
+          path: uctags-builder-*-${{ matrix.target }}.tar.xz
+
+
+  macos:
+    needs: check
+    if: needs.check.outputs.if-has-new-commit == 'yes'
+
+    runs-on: macos-14
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-version: ['10.15', '11.0', '12.0', '13.0', '14.0']
+        target-arch: [x86_64, arm64]
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
+      - run: chmod a+x xbuilder
+      - run: ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
+      - run: ./ppkg setup
+      - run: ./ppkg update
+      - run: ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=macos-${{ matrix.target-version }}-${{ matrix.target-arch }}
+      - run: |
+          for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+          do
+            PACKAGE_INSTALLED_DIR="$(./ppkg info-installed macos-${{ matrix.target-version }}/${{ matrix.target-arch }} --prefix)"
+            rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
+          done
+
+      - run: tar cvJf uctags-builder-macos-${{ matrix.target-version }}-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags-builder-macos-${{ matrix.target-version }}-${{ matrix.target-arch }}.tar.xz
+          path: uctags-builder-macos-${{ matrix.target-version }}-${{ matrix.target-arch }}.tar.xz
+
+
+  linux:
+    needs: [check]
+    if: needs.check.outputs.if-has-new-commit == 'yes'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-arch: [x86_64, aarch64]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          cat > run.sh <<EOF
+          set -e
+
+          COLOR_GREEN='\033[0;32m'        # Green
+          COLOR_PURPLE='\033[0;35m'       # Purple
+          COLOR_OFF='\033[0m'             # Reset
+
+          echo() {
+              printf '%b\n' "\$*"
+          }
+
+          run() {
+              echo "\${COLOR_PURPLE}==>\${COLOR_OFF} \${COLOR_GREEN}\$@\${COLOR_OFF}"
+              eval "\$*"
+          }
+
+          run uname -a
+
+          run apk update
+          run apk add g++ libc-dev linux-headers
+
+          run wget https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
+          run chmod a+x xbuilder
+          run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+
+          run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+          run chmod a+x ppkg
+          run ./ppkg setup
+          run ./ppkg update
+
+          for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+          do
+            PACKAGE_INSTALLED_DIR="$(./ppkg info-installed linux-musl-${{ matrix.target-arch }}/$item --prefix)"
+            run rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
+          done
+
+          run tar cvJf uctags-builder-linux-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
+          EOF
+
+          chmod +x run.sh
+
+      # https://github.com/multiarch/qemu-user-static
+      - if: matrix.target-arch != 'x86_64'
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+      - if: matrix.target-arch == 'x86_64'
+        run: docker run -v $PWD:$PWD -w $PWD --name alpine         alpine sh run.sh
+
+      - if: matrix.target-arch == 'aarch64'
+        run: docker run -v $PWD:$PWD -w $PWD --name alpine arm64v8/alpine sh run.sh
+
+      - run: ls
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags-builder---linux-${{ matrix.target-arch }}.tar.xz
+          path: uctags-builder-*-linux-${{ matrix.target-arch }}.tar.xz
+
+
+  publish:
+    needs: [check, bsd, macos, linux]
+    if: needs.check.outputs.if-has-new-commit == 'yes'
+
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '*'
+          path: .
+          merge-multiple: true
+
+      - run: ls -a
+
+      - run: |
+          printf 'sha256sum:\n```\n%s\n```\n' "$(sha256sum *.tar.xz)" > notes.md
+
+          # to avaid: failed to run git: fatal: not a git repository (or any of the parent directories): .git
+          git -c init.defaultBranch=master init
+          git remote add origin ${{ github.repositoryUrl }}
+
+          TAGNAME="$(date -u +%Y.%m.%d)"
+
+          gh release create "$TAGNAME" *.tar.xz --title "$TAGNAME" --notes-file notes.md
