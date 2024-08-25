@@ -33,10 +33,6 @@ jobs:
         target: ['netbsd-10.0-amd64', 'netbsd-9.4-amd64', 'netbsd-9.3-amd64', 'netbsd-9.2-amd64', 'openbsd-7.5-amd64', 'openbsd-7.4-amd64', 'openbsd-7.3-amd64', 'freebsd-14.1-amd64', 'freebsd-14.0-amd64', 'freebsd-13.3-amd64', 'freebsd-13.2-amd64', 'freebsd-13.1-amd64', 'freebsd-13.0-amd64']
 
     steps:
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
-      - run: chmod a+x xbuilder
-      - run: ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
-
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
       - run: ./ppkg setup
@@ -44,11 +40,26 @@ jobs:
       - run: ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=${{ matrix.target }} --static
 
       - run: |
+          install -d /opt/uctags-builder/
+
           for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
           do
             PACKAGE_INSTALLED_DIR="$(./ppkg info-installed ${{ matrix.target }}/$item --prefix)"
             rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
           done
+
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
+      - run: chmod a+x xbuilder
+      - run: |
+          for item in ~/.ppkg/uppm/installed/*
+          do
+              if [ -d "$item/bin" ] ; then
+                  PATH="$item/bin:$PATH"
+              fi
+          done
+
+          ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+          
 
       - run: tar cvJf uctags-builder-${{ matrix.target }}.tar.xz /opt/uctags-builder
 
@@ -71,21 +82,31 @@ jobs:
         target-arch: [x86_64, arm64]
 
     steps:
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
-      - run: chmod a+x xbuilder
-      - run: ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
-
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
       - run: ./ppkg setup
       - run: ./ppkg update
       - run: ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=macos-${{ matrix.target-version }}-${{ matrix.target-arch }}
       - run: |
+          install -d /opt/uctags-builder/
+
           for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
           do
             PACKAGE_INSTALLED_DIR="$(./ppkg info-installed macos-${{ matrix.target-version }}/${{ matrix.target-arch }} --prefix)"
             rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
           done
+
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
+      - run: chmod a+x xbuilder
+      - run: |
+          for item in ~/.ppkg/uppm/installed/*
+          do
+              if [ -d "$item/bin" ] ; then
+                  PATH="$item/bin:$PATH"
+              fi
+          done
+
+          ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
       - run: tar cvJf uctags-builder-macos-${{ matrix.target-version }}-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
 
@@ -129,20 +150,29 @@ jobs:
           run apk update
           run apk add g++ libc-dev linux-headers
 
-          run wget https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
-          run chmod a+x xbuilder
-          run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
-
           run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           run chmod a+x ppkg
           run ./ppkg setup
           run ./ppkg update
+
+          install -d /opt/uctags-builder/
 
           for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
           do
             PACKAGE_INSTALLED_DIR="$(./ppkg info-installed linux-musl-${{ matrix.target-arch }}/$item --prefix)"
             run rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
           done
+
+          for item in ~/.ppkg/uppm/installed/*
+          do
+              if [ -d "$item/bin" ] ; then
+                  PATH="$item/bin:$PATH"
+              fi
+          done
+
+          run wget https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
+          run chmod a+x xbuilder
+          run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
           run tar cvJf uctags-builder-linux-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
           EOF
