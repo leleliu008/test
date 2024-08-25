@@ -59,7 +59,7 @@ jobs:
               do
                 PACKAGE_INSTALLED_DIR="$(./ppkg info-installed freebsd-${{ matrix.target-version }}-amd64/$item --prefix)"
                 run cd "$PACKAGE_INSTALLED_DIR"
-                run mv * /opt/uctags-builder/
+                run cp -rf * /opt/uctags-builder/
                 run cd -
               done
             )
@@ -129,7 +129,7 @@ jobs:
               do
                 PACKAGE_INSTALLED_DIR="$(./ppkg info-installed openbsd-${{ matrix.target-version }}-amd64/$item --prefix)"
                 run cd "$PACKAGE_INSTALLED_DIR"
-                run mv * /opt/uctags-builder/
+                run cp -rf * /opt/uctags-builder/
                 run cd -
               done
             )
@@ -201,7 +201,7 @@ jobs:
               do
                 PACKAGE_INSTALLED_DIR="$(./ppkg info-installed netbsd-${{ matrix.target-version }}-amd64/$item --prefix)"
                 run cd "$PACKAGE_INSTALLED_DIR"
-                run mv * /opt/uctags-builder/
+                run cp -rf * /opt/uctags-builder/
                 run cd -
               done
             )
@@ -257,7 +257,7 @@ jobs:
           do
             PACKAGE_INSTALLED_DIR="$(./ppkg info-installed MacOSX-${{ matrix.target-version }}/${{ matrix.target-arch }} --prefix)"
             cd "$PACKAGE_INSTALLED_DIR"
-            mv * /opt/uctags-builder/
+            cp -rf * /opt/uctags-builder/
             cd -
           done
 
@@ -328,7 +328,7 @@ jobs:
             do
               PACKAGE_INSTALLED_DIR="$(./ppkg info-installed linux-musl-${{ matrix.target-arch }}/$item --prefix)"
               run cd "$PACKAGE_INSTALLED_DIR"
-              run mv * /opt/uctags-builder/
+              run cp -rf * /opt/uctags-builder/
               run cd -
             done
           )
