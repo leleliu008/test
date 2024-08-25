@@ -45,7 +45,7 @@ jobs:
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
             run chmod a+x ppkg
-            run ./ppkg setup
+            run ./ppkg setup --syspm
             run ./ppkg update
             run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
 
@@ -106,7 +106,7 @@ jobs:
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
             run chmod a+x ppkg
-            run ./ppkg setup
+            run ./ppkg setup --syspm
             run ./ppkg update
             run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
 
@@ -169,7 +169,7 @@ jobs:
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
             run chmod a+x ppkg
-            run ./ppkg setup
+            run ./ppkg setup --syspm
             run ./ppkg update
             run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
 
@@ -215,17 +215,17 @@ jobs:
         target-arch: [x86_64, arm64]
 
     steps:
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
-      - run: chmod a+x ppkg
-      - run: ./ppkg setup
-      - run: ./ppkg update
-      - run: ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=macos-${{ matrix.target-version }}-${{ matrix.target-arch }}
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
+      - run: chmod a+x xcpkg
+      - run: ./xcpkg setup
+      - run: ./xcpkg update
+      - run: ./xcpkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}
       - run: |
           install -d /opt/uctags-builder/
 
           for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
           do
-            PACKAGE_INSTALLED_DIR="$(./ppkg info-installed macos-${{ matrix.target-version }}/${{ matrix.target-arch }} --prefix)"
+            PACKAGE_INSTALLED_DIR="$(./ppkg info-installed MacOSX-${{ matrix.target-version }}/${{ matrix.target-arch }} --prefix)"
             rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
           done
 
