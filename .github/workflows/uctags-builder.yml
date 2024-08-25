@@ -53,7 +53,7 @@ jobs:
 
             for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
             do
-              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed freebsd-${{ target-version }}-amd64/$item --prefix)"
+              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed freebsd-${{ matrix.target-version }}-amd64/$item --prefix)"
               run rsync -a "$PACKAGE_INSTALLED_DIR/" /opt/uctags-builder/
             done
 
