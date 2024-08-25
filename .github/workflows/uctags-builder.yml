@@ -50,10 +50,10 @@ jobs:
             run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
             run ./ppkg run uppm install rsync
 
-            GID="$(id -g -n)"
-            UID="$(id -u -n)"
+            [ -z "$GID" ] && GID="$(id -g -n)"
+            [ -z "$UID" ] && UID="$(id -u -n)"
 
-            run sudo install -d -g "$GID" -u "$UID" /opt/uctags-builder/
+            run sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
 
             for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
             do
@@ -115,10 +115,10 @@ jobs:
             run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
             run ./ppkg run uppm install rsync
 
-            GID="$(id -g -n)"
-            UID="$(id -u -n)"
+            [ -z "$GID" ] && GID="$(id -g -n)"
+            [ -z "$UID" ] && UID="$(id -u -n)"
 
-            run sudo install -d -g "$GID" -u "$UID" /opt/uctags-builder/
+            run sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
 
             for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
             do
@@ -182,10 +182,10 @@ jobs:
             run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
             run ./ppkg run uppm install rsync
 
-            GID="$(id -g -n)"
-            UID="$(id -u -n)"
+            [ -z "$GID" ] && GID="$(id -g -n)"
+            [ -z "$UID" ] && UID="$(id -u -n)"
 
-            run sudo install -d -g "$GID" -u "$UID" /opt/uctags-builder/
+            run sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
 
             for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
             do
@@ -233,10 +233,10 @@ jobs:
       - run: ./xcpkg update
       - run: ./xcpkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}
       - run: |
-          GID="$(id -g -n)"
-          UID="$(id -u -n)"
+          [ -z "$GID" ] && GID="$(id -g -n)"
+          [ -z "$UID" ] && UID="$(id -u -n)"
 
-          run sudo install -d -g "$GID" -u "$UID" /opt/uctags-builder/
+          run sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
 
           for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
           do
