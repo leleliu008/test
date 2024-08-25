@@ -57,7 +57,7 @@ jobs:
             (
               for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
               do
-                PACKAGE_INSTALLED_DIR="$(./ppkg info-installed freebsd-${{ matrix.target-version }}-amd64/$item --prefix)"
+                PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $item --prefix)"
                 run cd "$PACKAGE_INSTALLED_DIR"
                 run cp -rf * /opt/uctags-builder/
                 run cd -
@@ -127,7 +127,7 @@ jobs:
             (
               for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
               do
-                PACKAGE_INSTALLED_DIR="$(./ppkg info-installed openbsd-${{ matrix.target-version }}-amd64/$item --prefix)"
+                PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $item --prefix)"
                 run cd "$PACKAGE_INSTALLED_DIR"
                 run cp -rf * /opt/uctags-builder/
                 run cd -
@@ -199,7 +199,7 @@ jobs:
             (
               for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
               do
-                PACKAGE_INSTALLED_DIR="$(./ppkg info-installed netbsd-${{ matrix.target-version }}-amd64/$item --prefix)"
+                PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $item --prefix)"
                 run cd "$PACKAGE_INSTALLED_DIR"
                 run cp -rf * /opt/uctags-builder/
                 run cd -
@@ -255,7 +255,7 @@ jobs:
 
           for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
           do
-            PACKAGE_INSTALLED_DIR="$(./ppkg info-installed MacOSX-${{ matrix.target-version }}/${{ matrix.target-arch }} --prefix)"
+            PACKAGE_INSTALLED_DIR="$(./xcpkg info-installed MacOSX-${{ matrix.target-version }}/${{ matrix.target-arch }} --prefix)"
             cd "$PACKAGE_INSTALLED_DIR"
             cp -rf * /opt/uctags-builder/
             cd -
@@ -326,7 +326,7 @@ jobs:
           (
             for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
             do
-              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed linux-musl-${{ matrix.target-arch }}/$item --prefix)"
+              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $item --prefix)"
               run cd "$PACKAGE_INSTALLED_DIR"
               run cp -rf * /opt/uctags-builder/
               run cd -
