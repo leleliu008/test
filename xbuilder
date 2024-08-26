@@ -848,7 +848,7 @@ install_the_given_package() {
 
     #########################################################################################
 
-    if [ -f "$PACKAGE_INSTALL_DIR/$1.receipt.txt" ] ; then
+    if [ -f "$PACKAGE_INSTALL_DIR/$1.yml" ] ; then
         note "package '$1' already has been installed, skipped."
         return 0
     fi
@@ -874,7 +874,9 @@ install_the_given_package() {
 
     #########################################################################################
 
-    run tar xf "$PACKAGE_SRC_FILEPATH" --strip-components=1 --no-same-owner
+    TAR="$(command -v bsdtar || command -v gtar || command -v tar)" || abort 1 "command not found: gtar"
+
+    run "$TAR" xf "$PACKAGE_SRC_FILEPATH" --strip-components=1 --no-same-owner
 
     #########################################################################################
 
@@ -971,7 +973,7 @@ install_the_given_package() {
 
     PACKAGE_INSTALL_UTS="$(date -u --rfc-3339=seconds)"
 
-    cat > "$PACKAGE_INSTALL_DIR/receipt.txt" <<EOF
+    cat > "$PACKAGE_INSTALL_DIR/$1.yml" <<EOF
 src-url: $PACKAGE_SRC_URL
 src-uri: $PACKAGE_SRC_URI
 src-sha: $PACKAGE_SRC_SHA
@@ -1279,7 +1281,7 @@ case $1 in
         ;;
     install)
         if [ -z "$GMAKE" ] ; then
-            GMAKE="$(command -v gmake)" || abort 1 "command not found: gmake"
+            GMAKE="$(command -v gmake || command -v make)" || abort 1 "command not found: gmake"
         fi
 
         shift
@@ -1319,36 +1321,25 @@ case $1 in
             PACKAGE_INSTALL_ROOT="$HOME/.xbuilder/installed"
         fi
 
-        PACKAGE_NAMES="$(cd "$PACKAGE_INSTALL_ROOT" && find . -maxdepth 1 -mindepth 1 -type l -printf '%P\n')"
+        if [ -d  "$PACKAGE_INSTALL_ROOT/include" ] ; then
+            CPPFLAGS="-I$PACKAGE_INSTALL_ROOT/include $CPPFLAGS"
+        fi
 
-        for PACKAGE_NAME in $PACKAGE_NAMES
-        do
-            PACKAGE_INSTALLED_DIR="$PACKAGE_INSTALL_ROOT/$PACKAGE_NAME"
+        if [ -d  "$PACKAGE_INSTALL_ROOT/lib" ] ; then
+            LDFLAGS="-L$PACKAGE_INSTALL_ROOT/lib -Wl,-rpath,$PACKAGE_INSTALL_ROOT/lib $LDFLAGS"
+        fi
 
-            if [ ! -f "$PACKAGE_INSTALLED_DIR/receipt.txt" ] ; then
-                continue
-            fi
+        if [ -d  "$PACKAGE_INSTALL_ROOT/bin" ] ; then
+            PATH="$PACKAGE_INSTALL_ROOT/bin:$PATH"
+        fi
 
-            if [ -d  "$PACKAGE_INSTALLED_DIR/include" ] ; then
-                CPPFLAGS="-I$PACKAGE_INSTALLED_DIR/include $CPPFLAGS"
-            fi
+        if [ -d  "$PACKAGE_INSTALL_ROOT/sbin" ] ; then
+            PATH="$PACKAGE_INSTALL_ROOT/sbin:$PATH"
+        fi
 
-            if [ -d  "$PACKAGE_INSTALLED_DIR/lib" ] ; then
-                LDFLAGS="-L$PACKAGE_INSTALLED_DIR/lib -Wl,-rpath,$PACKAGE_INSTALLED_DIR/lib $LDFLAGS"
-            fi
-
-            if [ -d  "$PACKAGE_INSTALLED_DIR/bin" ] ; then
-                PATH="$PACKAGE_INSTALLED_DIR/bin:$PATH"
-            fi
-
-            if [ -d  "$PACKAGE_INSTALLED_DIR/sbin" ] ; then
-                PATH="$PACKAGE_INSTALLED_DIR/sbin:$PATH"
-            fi
-
-            if [ -d          "$PACKAGE_INSTALLED_DIR/share/aclocal" ] ; then
-                ACLOCAL_PATH="$PACKAGE_INSTALLED_DIR/share/aclocal:$ACLOCAL_PATH"
-            fi
-        done
+        if [ -d          "$PACKAGE_INSTALL_ROOT/share/aclocal" ] ; then
+            ACLOCAL_PATH="$PACKAGE_INSTALL_ROOT/share/aclocal:$ACLOCAL_PATH"
+        fi
 
         export CPPFLAGS
         export LDFLAGS
