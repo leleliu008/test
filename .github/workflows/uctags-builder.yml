@@ -149,7 +149,7 @@ jobs:
             run chmod a+x xbuilder
             run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
-            run tar cvJf uctags-builder-openbsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
+            run bsdtar cvaf uctags-builder-openbsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
 
       - uses: actions/upload-artifact@v4
         with:
@@ -251,7 +251,7 @@ jobs:
           [ -z "$GID" ] && GID="$(id -g -n)"
           [ -z "$UID" ] && UID="$(id -u -n)"
 
-          run sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
+          sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
 
           for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
           do
@@ -326,7 +326,7 @@ jobs:
           (
             for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
             do
-              PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $item --prefix)"
+              PACKAGE_INSTALLED_DIR="$HOME/.ppkg/installed/linux-musl-${{ matrix.target-arch }}/$item"
               run cd "$PACKAGE_INSTALLED_DIR"
               run cp -rf * /opt/uctags-builder/
               run cd -
