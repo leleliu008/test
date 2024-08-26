@@ -347,7 +347,7 @@ jobs:
           run chmod a+x xbuilder
           run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
-          run tar cvJPf uctags-builder-linux-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
+          run bsdtar cvJPf uctags-builder-linux-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
           EOF
 
           chmod +x run.sh
