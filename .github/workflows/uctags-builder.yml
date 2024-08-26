@@ -73,7 +73,7 @@ jobs:
 
             run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
-            run tar cvJf uctags-builder-freebsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
+            run tar cvJPf uctags-builder-freebsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
 
       - uses: actions/upload-artifact@v4
         with:
@@ -135,7 +135,7 @@ jobs:
             run chmod a+x xbuilder
             run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
-            run bsdtar cvaf uctags-builder-openbsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
+            run bsdtar cvaPf uctags-builder-openbsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
 
       - uses: actions/upload-artifact@v4
         with:
@@ -200,7 +200,7 @@ jobs:
             run chmod a+x xbuilder
             run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
-            run tar cvJf uctags-builder-netbsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
+            run tar cvJPf uctags-builder-netbsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
 
       - uses: actions/upload-artifact@v4
         with:
@@ -243,7 +243,7 @@ jobs:
       - run: chmod a+x xbuilder
       - run: ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
-      - run: tar cvJf uctags-builder-macos-${{ matrix.target-version }}-arm64.tar.xz /opt/uctags-builder
+      - run: tar cvJPf uctags-builder-macos-${{ matrix.target-version }}-arm64.tar.xz /opt/uctags-builder
 
       - uses: actions/upload-artifact@v4
         with:
@@ -286,7 +286,7 @@ jobs:
       - run: chmod a+x xbuilder
       - run: ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
-      - run: tar cvJf uctags-builder-macos-${{ matrix.target-version }}-x86_64.tar.xz /opt/uctags-builder
+      - run: tar cvJPf uctags-builder-macos-${{ matrix.target-version }}-x86_64.tar.xz /opt/uctags-builder
 
       - uses: actions/upload-artifact@v4
         with:
@@ -330,7 +330,7 @@ jobs:
 
           run ./ppkg setup --syspm
           run ./ppkg update
-          run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
+          run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils libz --static
 
           install -d /opt/uctags-builder/
 
@@ -347,7 +347,7 @@ jobs:
           run chmod a+x xbuilder
           run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
-          run tar cvJf uctags-builder-linux-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
+          run tar cvJPf uctags-builder-linux-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
           EOF
 
           chmod +x run.sh
