@@ -255,7 +255,7 @@ jobs:
 
           for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
           do
-            PACKAGE_INSTALLED_DIR="$(./xcpkg info-installed MacOSX-${{ matrix.target-version }}/${{ matrix.target-arch }} --prefix)"
+            PACKAGE_INSTALLED_DIR="$(./xcpkg info-installed MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }} --prefix)"
             cd "$PACKAGE_INSTALLED_DIR"
             cp -rf * /opt/uctags-builder/
             cd -
