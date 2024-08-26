@@ -64,13 +64,6 @@ jobs:
               done
             )
 
-            for item in ~/.ppkg/uppm/installed/*
-            do
-                if [ -d "$item/bin" ] ; then
-                    PATH="$item/bin:$PATH"
-                fi
-            done
-
             export PATH="$HOME/.ppkg/core/bin:$PATH"
 
             export SSL_CERT_FILE="$HOME/.ppkg/core/cacert.pem"
@@ -133,13 +126,6 @@ jobs:
                 run cd -
               done
             )
-
-            for item in ~/.ppkg/uppm/installed/*
-            do
-                if [ -d "$item/bin" ] ; then
-                    PATH="$item/bin:$PATH"
-                fi
-            done
 
             export PATH="$HOME/.ppkg/core/bin:$PATH"
 
@@ -206,13 +192,6 @@ jobs:
               done
             )
 
-            for item in ~/.ppkg/uppm/installed/*
-            do
-                if [ -d "$item/bin" ] ; then
-                    PATH="$item/bin:$PATH"
-                fi
-            done
-
             export PATH="$HOME/.ppkg/core/bin:$PATH"
 
             export SSL_CERT_FILE="$HOME/.ppkg/core/cacert.pem"
@@ -262,15 +241,7 @@ jobs:
 
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
       - run: chmod a+x xbuilder
-      - run: |
-          for item in ~/.ppkg/uppm/installed/*
-          do
-              if [ -d "$item/bin" ] ; then
-                  PATH="$item/bin:$PATH"
-              fi
-          done
-
-          ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+      - run: ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
       - run: tar cvJf uctags-builder-macos-${{ matrix.target-version }}-arm64.tar.xz /opt/uctags-builder
 
@@ -313,15 +284,7 @@ jobs:
 
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
       - run: chmod a+x xbuilder
-      - run: |
-          for item in ~/.ppkg/uppm/installed/*
-          do
-              if [ -d "$item/bin" ] ; then
-                  PATH="$item/bin:$PATH"
-              fi
-          done
-
-          ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+      - run: ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
       - run: tar cvJf uctags-builder-macos-${{ matrix.target-version }}-x86_64.tar.xz /opt/uctags-builder
 
@@ -362,12 +325,10 @@ jobs:
 
           run uname -a
 
-          run apk update
-          run apk add g++ libc-dev linux-headers
-
           run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           run chmod a+x ppkg
-          run ./ppkg setup
+
+          run ./ppkg setup --syspm
           run ./ppkg update
           run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
 
@@ -381,13 +342,6 @@ jobs:
               run cd -
             done
           )
-
-          for d in ~/.ppkg/uppm/installed/*
-          do
-              if [ -d "\$d/bin" ] ; then
-                  PATH="\$d/bin:\$PATH"
-              fi
-          done
 
           run wget https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
           run chmod a+x xbuilder
