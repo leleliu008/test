@@ -325,8 +325,6 @@ inspect_install_arguments() {
     unset DEBUG_XMAKE
     unset DEBUG_PKG_CONFIG
 
-    unset LAYOUT_FLAT
-
     while [ -n "$1" ]
     do
         case $1 in
@@ -404,9 +402,6 @@ inspect_install_arguments() {
                     no|all|debug|unneeded) ;;
                     *)  abort 1 "--strip=<VALUE>, VALUE must be one of no, all, debug, unneeded"
                 esac
-                ;;
-            --flat)
-                LAYOUT_FLAT=1
                 ;;
             --profile=*)
                 PROFILE="${1#*=}"
@@ -837,40 +832,25 @@ install_the_given_package() {
 
     #########################################################################################
 
-    if [ "$LAYOUT_FLAT" = 1 ] ; then
-        RECEIPT_FILEPATH="$PACKAGE_INSTALL_ROOT/$1.receipt.txt"
+    case $1 in
+        libtool)    PACKAGE_TYPE=2 ;;
+        lib*)       PACKAGE_TYPE=1 ;;
+        *)          PACKAGE_TYPE=2 ;;
+    esac
+
+    #########################################################################################
+
+    if [ "$PACKAGE_TYPE" = 1 ] ; then
+        PACKAGE_INSTALL_DIR="$SESSION_DIR/3rdroot"
     else
-        RECEIPT_FILEPATH="$PACKAGE_INSTALL_ROOT/$1/receipt.txt"
+        PACKAGE_INSTALL_DIR="$PACKAGE_INSTALL_ROOT"
     fi
 
-    if [ -f "$RECEIPT_FILEPATH" ] ; then
+    #########################################################################################
+
+    if [ -f "$PACKAGE_INSTALL_DIR/$1.receipt.txt" ] ; then
         note "package '$1' already has been installed, skipped."
         return 0
-    fi
-
-    #########################################################################################
-
-    unset PACKAGE_INSTALL_UTS
-    unset PACKAGE_INSTALL_SHA
-
-    #########################################################################################
-
-    PACKAGE_INSTALL_UTS="$(date +%s)"
-
-    #########################################################################################
-
-    if [ "$LAYOUT_FLAT" = 1 ] ; then
-        PACKAGE_INSTALL_DIR="$PACKAGE_INSTALL_ROOT"
-    else
-        PACKAGE_INSTALL_SHA=
-        PACKAGE_INSTALL_SHA="$(
-{
-    sha256sum <<EOF
-$1:$PACKAGE_SRC_URL:$$:$PACKAGE_INSTALL_UTS
-EOF
-} | cut -d ' ' -f1)"
-
-        PACKAGE_INSTALL_DIR="$PACKAGE_INSTALL_ROOT/$PACKAGE_INSTALL_SHA"
     fi
 
     #########################################################################################
@@ -879,113 +859,22 @@ EOF
     PACKAGE_SRC_FILENAME="$PACKAGE_SRC_SHA$PACKAGE_SRC_FILETYPE"
     PACKAGE_SRC_FILEPATH="$DOWNLOAD_DIR/$PACKAGE_SRC_FILENAME"
 
-    PACKAGE_WORKING_DIR="$SESSION_DIR/$1"
-
-    #########################################################################################
-
-    # override the default search directory (usually /usr/lib/pkgconfig:/usr/share/pkgconfig)
-    # because we only want to use our own
-    export PKG_CONFIG_LIBDIR="$PACKAGE_WORKING_DIR/lib/pkgconfig"
-    export PKG_CONFIG_PATH="$PACKAGE_WORKING_DIR/lib/pkgconfig"
-    export ACLOCAL_PATH="$PACKAGE_WORKING_DIR/share/aclocal"
-    export CPPFLAGS="-I$PACKAGE_WORKING_DIR/include $CPPFLAGS"
-    export LDFLAGS="-L$PACKAGE_WORKING_DIR/lib -Wl,-rpath,$PACKAGE_INSTALL_DIR/lib $LDFLAGS"
-
-    if [ "$LAYOUT_FLAT" = 1 ] ; then
-            DEPENDENT_PACKAGE_INSTALLED_DIR="$PACKAGE_INSTALL_ROOT"
-
-            if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/include" ] ; then
-                CPPFLAGS="-I$DEPENDENT_PACKAGE_INSTALLED_DIR/include $CPPFLAGS"
-            fi
-
-            if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/lib" ] ; then
-                LDFLAGS="-L$DEPENDENT_PACKAGE_INSTALLED_DIR/lib -Wl,-rpath,$DEPENDENT_PACKAGE_INSTALLED_DIR/lib $LDFLAGS"
-            fi
-
-            if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/bin" ] ; then
-                PATH="$DEPENDENT_PACKAGE_INSTALLED_DIR/bin:$PATH"
-            fi
-
-            if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/sbin" ] ; then
-                PATH="$DEPENDENT_PACKAGE_INSTALLED_DIR/sbin:$PATH"
-            fi
-
-            if [ -d          "$DEPENDENT_PACKAGE_INSTALLED_DIR/share/aclocal" ] ; then
-                ACLOCAL_PATH="$DEPENDENT_PACKAGE_INSTALLED_DIR/share/aclocal:$ACLOCAL_PATH"
-            fi
-
-            for d in lib share
-            do
-                DEPENDENT_PACKAGE_PKGCONF_DIR="$DEPENDENT_PACKAGE_INSTALLED_DIR/$d/pkgconfig"
-
-                if [ -d "$DEPENDENT_PACKAGE_PKGCONF_DIR" ] ; then
-                    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$DEPENDENT_PACKAGE_PKGCONF_DIR"
-                fi
-            done
-    else
-        for DEPENDENT_PACKAGE_NAME in $PACKAGE_DEP_PKG
-        do
-            DEPENDENT_PACKAGE_INSTALLED_DIR="$PACKAGE_INSTALL_ROOT/$DEPENDENT_PACKAGE_NAME"
-
-            if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/include" ] ; then
-                CPPFLAGS="-I$DEPENDENT_PACKAGE_INSTALLED_DIR/include $CPPFLAGS"
-            fi
-
-            if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/lib" ] ; then
-                LDFLAGS="-L$DEPENDENT_PACKAGE_INSTALLED_DIR/lib -Wl,-rpath,$DEPENDENT_PACKAGE_INSTALLED_DIR/lib $LDFLAGS"
-            fi
-
-            if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/bin" ] ; then
-                PATH="$DEPENDENT_PACKAGE_INSTALLED_DIR/bin:$PATH"
-            fi
-
-            if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/sbin" ] ; then
-                PATH="$DEPENDENT_PACKAGE_INSTALLED_DIR/sbin:$PATH"
-            fi
-
-            if [ -d          "$DEPENDENT_PACKAGE_INSTALLED_DIR/share/aclocal" ] ; then
-                ACLOCAL_PATH="$DEPENDENT_PACKAGE_INSTALLED_DIR/share/aclocal:$ACLOCAL_PATH"
-            fi
-
-            for d in lib share
-            do
-                DEPENDENT_PACKAGE_PKGCONF_DIR="$DEPENDENT_PACKAGE_INSTALLED_DIR/$d/pkgconfig"
-
-                if [ -d "$DEPENDENT_PACKAGE_PKGCONF_DIR" ] ; then
-                    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$DEPENDENT_PACKAGE_PKGCONF_DIR"
-                fi
-            done
-        done
-    fi
-
-    #########################################################################################
-
-    run install -d "$PACKAGE_WORKING_DIR/src"
-    run cd         "$PACKAGE_WORKING_DIR"
-
-    #########################################################################################
-
-    cat > receipt.txt <<EOF
-src-url: $PACKAGE_SRC_URL
-src-uri: $PACKAGE_SRC_URI
-src-sha: $PACKAGE_SRC_SHA
-dep-pkg: $PACKAGE_DEP_PKG
-install: $PACKAGE_INSTALL
-builtat: $PACKAGE_INSTALL_UTS
-builtby: xbuilder-$RUNTIME_BUILDER_VERSION
-EOF
-
     #########################################################################################
 
     wfetch "$PACKAGE_SRC_URL" --uri="$PACKAGE_SRC_URI" --sha256="$PACKAGE_SRC_SHA" -o "$PACKAGE_SRC_FILEPATH"
 
     #########################################################################################
 
-    run bsdtar xf "$PACKAGE_SRC_FILEPATH" --strip-components=1 --no-same-owner -C src
+    PACKAGE_WORKING_DIR="$SESSION_DIR/$1"
 
     #########################################################################################
 
-    run cd src
+    run install -d "$PACKAGE_WORKING_DIR/src"
+    run cd         "$PACKAGE_WORKING_DIR/src"
+
+    #########################################################################################
+
+    run tar xf "$PACKAGE_SRC_FILEPATH" --strip-components=1 --no-same-owner
 
     #########################################################################################
 
@@ -1010,9 +899,45 @@ EOF
 
     #########################################################################################
 
-    if [ -z "$GMAKE" ] ; then
-        GMAKE="$(command -v gmake)" || abort 1 "command not found: gmake"
-    fi
+    # override the default search directory (usually /usr/lib/pkgconfig:/usr/share/pkgconfig)
+    # because we only want to use our own
+    export PKG_CONFIG_LIBDIR="$PACKAGE_WORKING_DIR/lib/pkgconfig"
+    export PKG_CONFIG_PATH="$PACKAGE_WORKING_DIR/lib/pkgconfig"
+    export ACLOCAL_PATH="$PACKAGE_WORKING_DIR/share/aclocal"
+    export CPPFLAGS="-I$PACKAGE_WORKING_DIR/include $CPPFLAGS"
+    export LDFLAGS="-L$PACKAGE_WORKING_DIR/lib -Wl,-rpath,$PACKAGE_INSTALL_DIR/lib $LDFLAGS"
+
+    for DEPENDENT_PACKAGE_INSTALLED_DIR in "$SESSION_DIR/3rdroot" "$PACKAGE_INSTALL_ROOT"
+    do
+        if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/include" ] ; then
+            CPPFLAGS="-I$DEPENDENT_PACKAGE_INSTALLED_DIR/include $CPPFLAGS"
+        fi
+
+        if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/lib" ] ; then
+            LDFLAGS="-L$DEPENDENT_PACKAGE_INSTALLED_DIR/lib -Wl,-rpath,$DEPENDENT_PACKAGE_INSTALLED_DIR/lib $LDFLAGS"
+        fi
+
+        if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/bin" ] ; then
+            PATH="$DEPENDENT_PACKAGE_INSTALLED_DIR/bin:$PATH"
+        fi
+
+        if [ -d  "$DEPENDENT_PACKAGE_INSTALLED_DIR/sbin" ] ; then
+            PATH="$DEPENDENT_PACKAGE_INSTALLED_DIR/sbin:$PATH"
+        fi
+
+        if [ -d          "$DEPENDENT_PACKAGE_INSTALLED_DIR/share/aclocal" ] ; then
+            ACLOCAL_PATH="$DEPENDENT_PACKAGE_INSTALLED_DIR/share/aclocal:$ACLOCAL_PATH"
+        fi
+
+        for d in lib share
+        do
+            DEPENDENT_PACKAGE_PKGCONF_DIR="$DEPENDENT_PACKAGE_INSTALLED_DIR/$d/pkgconfig"
+
+            if [ -d "$DEPENDENT_PACKAGE_PKGCONF_DIR" ] ; then
+                PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$DEPENDENT_PACKAGE_PKGCONF_DIR"
+            fi
+        done
+    done
 
     #########################################################################################
 
@@ -1044,14 +969,17 @@ EOF
 
     #########################################################################################
 
-    if [ "$LAYOUT_FLAT" = 1 ] ; then
-        run mv "$PACKAGE_WORKING_DIR/receipt.txt" "$1.receipt.txt"
-    else
-        run mv "$PACKAGE_WORKING_DIR/receipt.txt" .
+    PACKAGE_INSTALL_UTS="$(date -u --rfc-3339=seconds)"
 
-        run cd "$PACKAGE_INSTALL_ROOT"
-        run ln -s -r -f -T "$PACKAGE_INSTALL_SHA" "$1"
-    fi
+    cat > "$PACKAGE_INSTALL_DIR/receipt.txt" <<EOF
+src-url: $PACKAGE_SRC_URL
+src-uri: $PACKAGE_SRC_URI
+src-sha: $PACKAGE_SRC_SHA
+dep-pkg: $PACKAGE_DEP_PKG
+install: $PACKAGE_INSTALL
+builtat: $PACKAGE_INSTALL_UTS
+builtby: xbuilder-$RUNTIME_BUILDER_VERSION
+EOF
 }
 
 package_info_libz() {
@@ -1079,19 +1007,50 @@ package_info_libexpat() {
     PACKAGE_INSTALL='cmakew -DEXPAT_BUILD_DOCS=OFF -DEXPAT_BUILD_TESTS=OFF -DEXPAT_BUILD_FUZZERS=OFF -DEXPAT_BUILD_EXAMPLES=OFF -DEXPAT_BUILD_TOOLS=OFF'
 }
 
-package_info_perl() {
-    PACKAGE_SRC_URL='https://cpan.metacpan.org/authors/id/P/PE/PEVANS/perl-5.38.2.tar.xz'
-    PACKAGE_SRC_URI='https://distfiles.macports.org/perl5.38/perl-5.38.2.tar.xz'
-    PACKAGE_SRC_SHA='d91115e90b896520e83d4de6b52f8254ef2b70a8d545ffab33200ea9f1cf29e8'
-    PACKAGE_INSTALL='Configure -Dman1dir=none -Dman3dir=none -des -Dmake=gmake -Duselargefiles -Duseshrplib -Dusethreads -Dusenm=false -Dusedl=true'
+package_info_liblzma() {
+    PACKAGE_SRC_URL='https://mirrors.aliyun.com/macports/distfiles/xz/xz-5.4.6.tar.bz2'
+    PACKAGE_SRC_SHA='913851b274e8e1d31781ec949f1c23e8dbcf0ecf6e73a2436dc21769dd3e6f49'
+    PACKAGE_INSTALL='configure --disable-dependency-tracking --enable-static --disable-shared --disable-nls --enable-largefile --disable-xz --disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-lzma-links --disable-scripts --disable-doc'
 }
 
-package_info_openssl() {
+package_info_libgdbm() {
+    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/gdbm/gdbm-1.23.tar.gz'
+    PACKAGE_SRC_SHA='74b1081d21fff13ae4bd7c16e5d6e504a4c26f7cde1dca0d963a484174bbcacd'
+    PACKAGE_INSTALL='configure --disable-dependency-tracking --enable-static --disable-shared --disable-nls --enable-largefile --enable-libgdbm-compat --without-readline'
+}
+
+package_info_libsqlite3() {
+    PACKAGE_SRC_URL='https://www.sqlite.org/2024/sqlite-autoconf-3460000.tar.gz'
+    PACKAGE_SRC_SHA='6f8e6a7b335273748816f9b3b62bbdc372a889de8782d7f048c653a447417a7d'
+    PACKAGE_DEP_PKG='libz'
+    PACKAGE_INSTALL='configure --disable-dependency-tracking --enable-static --disable-shared --enable-largefile --disable-editline --disable-readline'
+}
+
+package_info_libffi() {
+    PACKAGE_SRC_URL='https://github.com/libffi/libffi/releases/download/v3.4.6/libffi-3.4.6.tar.gz'
+    PACKAGE_SRC_SHA='b0dea9df23c863a7a50e825440f3ebffabd65df1497108e5d437747843895a4e'
+    PACKAGE_INSTALL='configure --disable-dependency-tracking --enable-static --disable-shared --disable-docs --disable-symvers'
+}
+
+package_info_libyaml() {
+    PACKAGE_SRC_URL='https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz'
+    PACKAGE_SRC_SHA='c642ae9b75fee120b2d96c712538bd2cf283228d2337df2cf2988e3c02678ef4'
+    PACKAGE_INSTALL='configure --disable-dependency-tracking --enable-static --disable-shared --enable-largefile'
+}
+
+package_info_libopenssl() {
     PACKAGE_SRC_URL='https://www.openssl.org/source/openssl-3.3.1.tar.gz'
     PACKAGE_SRC_SHA='777cd596284c883375a2a7a11bf5d2786fc5413255efab20c50d6ffe6d020b7e'
     PACKAGE_DEP_PKG='perl'
     PACKAGE_INSTALL='config no-tests no-ssl3 no-ssl3-method no-zlib --libdir=lib --openssldir=etc/ssl'
     # https://github.com/openssl/openssl/blob/master/INSTALL.md
+}
+
+package_info_perl() {
+    PACKAGE_SRC_URL='https://cpan.metacpan.org/authors/id/P/PE/PEVANS/perl-5.38.2.tar.xz'
+    PACKAGE_SRC_URI='https://distfiles.macports.org/perl5.38/perl-5.38.2.tar.xz'
+    PACKAGE_SRC_SHA='d91115e90b896520e83d4de6b52f8254ef2b70a8d545ffab33200ea9f1cf29e8'
+    PACKAGE_INSTALL='Configure -Dman1dir=none -Dman3dir=none -des -Dmake=gmake -Duselargefiles -Duseshrplib -Dusethreads -Dusenm=false -Dusedl=true'
 }
 
 package_info_texinfo() {
@@ -1116,12 +1075,6 @@ package_info_intltool() {
     PACKAGE_INSTALL='configure'
 }
 
-package_info_libtool() {
-    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/libtool/libtool-2.4.7.tar.xz'
-    PACKAGE_SRC_SHA='4f7f217f057ce655ff22559ad221a0fd8ef84ad1fc5fcb6990cecc333aa1635d'
-    PACKAGE_INSTALL='configure --enable-ltdl-install'
-}
-
 package_info_autoconf() {
     PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz'
     PACKAGE_SRC_SHA='431075ad0bf529ef13cb41e9042c542381103e80015686222b8a9d4abef42a1c'
@@ -1136,35 +1089,17 @@ package_info_automake() {
     PACKAGE_INSTALL='configure'
 }
 
-package_info_liblzma() {
-    PACKAGE_SRC_URL='https://mirrors.aliyun.com/macports/distfiles/xz/xz-5.4.6.tar.bz2'
-    PACKAGE_SRC_SHA='913851b274e8e1d31781ec949f1c23e8dbcf0ecf6e73a2436dc21769dd3e6f49'
-    PACKAGE_INSTALL='configure --disable-dependency-tracking --enable-static --disable-shared --disable-nls --enable-largefile --disable-xz --disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-lzma-links --disable-scripts --disable-doc'
+package_info_perl_XML_Parser() {
+    PACKAGE_SRC_URL='https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-2.47.tar.gz'
+    PACKAGE_SRC_SHA='ad4aae643ec784f489b956abe952432871a622d4e2b5c619e8855accbfc4d1d8'
+    PACKAGE_DEP_PKG='perl libexpat'
+    PACKAGE_INSTALL="Makefile_PL EXPATLIBPATH=$PACKAGE_INSTALL_ROOT/libexpat/lib EXPATINCPATH=$PACKAGE_INSTALL_ROOT/libexpat/include"
 }
 
-package_info_libgdbm() {
-    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/gdbm/gdbm-1.23.tar.gz'
-    PACKAGE_SRC_SHA='74b1081d21fff13ae4bd7c16e5d6e504a4c26f7cde1dca0d963a484174bbcacd'
-    PACKAGE_INSTALL='configure --disable-dependency-tracking --enable-static --disable-shared --disable-nls --enable-largefile --enable-libgdbm-compat --without-readline'
-}
-
-package_info_sqlite3() {
-    PACKAGE_SRC_URL='https://www.sqlite.org/2024/sqlite-autoconf-3460000.tar.gz'
-    PACKAGE_SRC_SHA='6f8e6a7b335273748816f9b3b62bbdc372a889de8782d7f048c653a447417a7d'
-    PACKAGE_DEP_PKG='libz'
-    PACKAGE_INSTALL='configure --disable-dependency-tracking --enable-static --disable-shared --enable-largefile --disable-editline --disable-readline'
-}
-
-package_info_libffi() {
-    PACKAGE_SRC_URL='https://github.com/libffi/libffi/releases/download/v3.4.6/libffi-3.4.6.tar.gz'
-    PACKAGE_SRC_SHA='b0dea9df23c863a7a50e825440f3ebffabd65df1497108e5d437747843895a4e'
-    PACKAGE_INSTALL='configure --disable-dependency-tracking --enable-static --disable-shared --disable-docs --disable-symvers'
-}
-
-package_info_libyaml() {
-    PACKAGE_SRC_URL='https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz'
-    PACKAGE_SRC_SHA='c642ae9b75fee120b2d96c712538bd2cf283228d2337df2cf2988e3c02678ef4'
-    PACKAGE_INSTALL='configure --disable-dependency-tracking --enable-static --disable-shared --enable-largefile'
+package_info_libtool() {
+    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/libtool/libtool-2.4.7.tar.xz'
+    PACKAGE_SRC_SHA='4f7f217f057ce655ff22559ad221a0fd8ef84ad1fc5fcb6990cecc333aa1635d'
+    PACKAGE_INSTALL='configure --enable-ltdl-install'
 }
 
 package_info_ruby() {
@@ -1177,8 +1112,8 @@ package_info_ruby() {
 package_info_python3() {
     PACKAGE_SRC_URL='https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz'
     PACKAGE_SRC_SHA='e7de3240a8bc2b1e1ba5c81bf943f06861ff494b69fda990ce2722a504c6153d'
-    PACKAGE_DEP_PKG='libz libbz2 liblzma libgdbm libexpat sqlite3 libffi openssl perl'
-    PACKAGE_INSTALL="configure --with-system-expat --with-system-ffi --with-openssl=$PACKAGE_INSTALL_ROOT/openssl --with-ensurepip=yes --with-lto --enable-ipv6 --enable-shared --enable-largefile --disable-option-checking --disable-nls --disable-debug --disable-loadable-sqlite-extensions --disable-profiling"
+    PACKAGE_DEP_PKG='libz libbz2 liblzma libgdbm libexpat libsqlite3 libffi libopenssl perl'
+    PACKAGE_INSTALL="configure --with-system-expat --with-system-ffi --with-openssl=$PACKAGE_INSTALL_ROOT/libopenssl --with-ensurepip=yes --with-lto --enable-ipv6 --enable-shared --enable-largefile --disable-option-checking --disable-nls --disable-debug --disable-loadable-sqlite-extensions --disable-profiling"
     PACKAGE_DOPATCH='
 unset PYTHONHOME
 unset PYTHONPATH
@@ -1192,20 +1127,13 @@ export BZIP2_LIBS="-L$PACKAGE_INSTALL_ROOT/libbz2/lib -lbz2"
 export LIBLZMA_CFLAGS="-I$PACKAGE_INSTALL_ROOT/liblzma/include"
 export LIBLZMA_LIBS="-L$PACKAGE_INSTALL_ROOT/liblzma/lib -llzma"
 
-export LIBSQLITE3_CFLAGS="-I$PACKAGE_INSTALL_ROOT/sqlite3/include"
-export LIBSQLITE3_LIBS="-L$PACKAGE_INSTALL_ROOT/sqlite3/lib -lsqlite3"
+export LIBSQLITE3_CFLAGS="-I$PACKAGE_INSTALL_ROOT/libsqlite3/include"
+export LIBSQLITE3_LIBS="-L$PACKAGE_INSTALL_ROOT/libsqlite3/lib -lsqlite3"
 
 export GDBM_CFLAGS="-I$PACKAGE_INSTALL_ROOT/libgdbm/include"
 export GDBM_LIBS="-L$PACKAGE_INSTALL_ROOT/libgdbm/lib -lgdbm -lgdbm_compat"
 
 export LIBS=-lm'
-}
-
-package_info_perl_XML_Parser() {
-    PACKAGE_SRC_URL='https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-2.47.tar.gz'
-    PACKAGE_SRC_SHA='ad4aae643ec784f489b956abe952432871a622d4e2b5c619e8855accbfc4d1d8'
-    PACKAGE_DEP_PKG='perl libexpat'
-    PACKAGE_INSTALL="Makefile_PL EXPATLIBPATH=$PACKAGE_INSTALL_ROOT/libexpat/lib EXPATINCPATH=$PACKAGE_INSTALL_ROOT/libexpat/include"
 }
 
 package_info_swig() {
@@ -1239,7 +1167,7 @@ ${COLOR_GREEN}xbuilder ls-available [-v]${COLOR_OFF}
 ${COLOR_GREEN}xbuilder install <PACKAGE-NAME>... [OPTIONS]${COLOR_OFF}
     install the specified packages.
 
-    Influential environment variables: CC, CXX, CFLAGS, CXXFLAGS, CPPFLAGS, LDFLAGS, AS, LD, AR, RANLIB
+    Influential environment variables: GMAKE, CC, CXX, AS, LD, AR, RANLIB, CFLAGS, CXXFLAGS, CPPFLAGS, LDFLAGS
 
     OPTIONS:
         ${COLOR_BLUE}--prefix=<DIR>${COLOR_OFF}
@@ -1327,7 +1255,7 @@ case $1 in
         printf '%s\n' "$RUNTIME_BUILDER_VERSION"
         ;;
     ls-available)
-        PACKAGE_NAMES='libz libbz2 liblzma libpcre2 libexpat libgdbm libffi libyaml ruby perl python3 sqlite3 openssl texinfo help2man intltool libtool autoconf automake swig ghc perl-XML-Parser'
+        PACKAGE_NAMES='libz libbz2 liblzma libpcre2 libsqlite3 libopenssl libexpat libgdbm libffi libyaml ruby perl python3 texinfo help2man intltool libtool autoconf automake swig ghc perl-XML-Parser'
 
         if [ "$2" = -v ] ; then
             for PACKAGE_NAME in $PACKAGE_NAMES
@@ -1350,6 +1278,10 @@ case $1 in
         fi
         ;;
     install)
+        if [ -z "$GMAKE" ] ; then
+            GMAKE="$(command -v gmake)" || abort 1 "command not found: gmake"
+        fi
+
         shift
 
         inspect_install_arguments "$@"

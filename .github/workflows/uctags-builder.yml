@@ -71,7 +71,7 @@ jobs:
             run curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
             run chmod a+x xbuilder
 
-            run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+            run ./xbuilder install autoconf automake libtool perl python3 --prefix=/opt/uctags-builder
 
             run tar cvJPf uctags-builder-freebsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
 
@@ -133,7 +133,7 @@ jobs:
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
             run chmod a+x xbuilder
-            run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+            run ./xbuilder install autoconf automake libtool perl python3 --prefix=/opt/uctags-builder
 
             run bsdtar cvaPf uctags-builder-openbsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
 
@@ -198,7 +198,7 @@ jobs:
 
             run curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
             run chmod a+x xbuilder
-            run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+            run ./xbuilder install autoconf automake libtool perl python3 --prefix=/opt/uctags-builder
 
             run tar cvJPf uctags-builder-netbsd-${{ matrix.target-version }}-amd64.tar.xz /opt/uctags-builder
 
@@ -241,7 +241,7 @@ jobs:
 
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
       - run: chmod a+x xbuilder
-      - run: ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+      - run: ./xbuilder install autoconf automake libtool perl python3 --prefix=/opt/uctags-builder
 
       - run: tar cvJPf uctags-builder-macos-${{ matrix.target-version }}-arm64.tar.xz /opt/uctags-builder
 
@@ -284,7 +284,7 @@ jobs:
 
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
       - run: chmod a+x xbuilder
-      - run: ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+      - run: ./xbuilder install autoconf automake libtool perl python3 --prefix=/opt/uctags-builder
 
       - run: tar cvJPf uctags-builder-macos-${{ matrix.target-version }}-x86_64.tar.xz /opt/uctags-builder
 
@@ -345,7 +345,7 @@ jobs:
 
           run wget https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
           run chmod a+x xbuilder
-          run ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+          run ./xbuilder install autoconf automake libtool perl python3 --prefix=/opt/uctags-builder
 
           run bsdtar cvJPf uctags-builder-linux-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
           EOF
