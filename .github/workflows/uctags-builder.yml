@@ -229,7 +229,7 @@ jobs:
           path: uctags-builder-netbsd-${{ matrix.target-version }}-amd64.tar.xz
 
 
-  macos:
+  macos-arm64:
     needs: check
     if: needs.check.outputs.if-has-new-commit == 'yes'
 
@@ -239,14 +239,13 @@ jobs:
       fail-fast: false
       matrix:
         target-version: ['10.15', '11.0', '12.0', '13.0', '14.0']
-        target-arch: [x86_64, arm64]
 
     steps:
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
       - run: chmod a+x xcpkg
       - run: ./xcpkg setup
       - run: ./xcpkg update
-      - run: ./xcpkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}
+      - run: ./xcpkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=MacOSX-${{ matrix.target-version }}-arm64
       - run: |
           [ -z "$GID" ] && GID="$(id -g -n)"
           [ -z "$UID" ] && UID="$(id -u -n)"
@@ -255,7 +254,7 @@ jobs:
 
           for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
           do
-            PACKAGE_INSTALLED_DIR="$(./xcpkg info-installed MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}/$item --prefix)"
+            PACKAGE_INSTALLED_DIR="$(./xcpkg info-installed MacOSX-${{ matrix.target-version }}-arm64/$item --prefix)"
             cd "$PACKAGE_INSTALLED_DIR"
             cp -rf * /opt/uctags-builder/
             cd -
@@ -273,12 +272,63 @@ jobs:
 
           ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
 
-      - run: tar cvJf uctags-builder-macos-${{ matrix.target-version }}-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
+      - run: tar cvJf uctags-builder-macos-${{ matrix.target-version }}-arm64.tar.xz /opt/uctags-builder
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uctags-builder-macos-${{ matrix.target-version }}-${{ matrix.target-arch }}.tar.xz
-          path: uctags-builder-macos-${{ matrix.target-version }}-${{ matrix.target-arch }}.tar.xz
+          name: uctags-builder-macos-${{ matrix.target-version }}-arm64.tar.xz
+          path: uctags-builder-macos-${{ matrix.target-version }}-arm64.tar.xz
+
+
+  macos-x86_64:
+    needs: check
+    if: needs.check.outputs.if-has-new-commit == 'yes'
+
+    runs-on: macos-13
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-version: ['10.15', '11.0', '12.0', '13.0', '14.0']
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
+      - run: chmod a+x xcpkg
+      - run: ./xcpkg setup
+      - run: ./xcpkg update
+      - run: ./xcpkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=MacOSX-${{ matrix.target-version }}-x86_64
+      - run: |
+          [ -z "$GID" ] && GID="$(id -g -n)"
+          [ -z "$UID" ] && UID="$(id -u -n)"
+
+          sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
+
+          for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+          do
+            PACKAGE_INSTALLED_DIR="$(./xcpkg info-installed MacOSX-${{ matrix.target-version }}-x86_64/$item --prefix)"
+            cd "$PACKAGE_INSTALLED_DIR"
+            cp -rf * /opt/uctags-builder/
+            cd -
+          done
+
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
+      - run: chmod a+x xbuilder
+      - run: |
+          for item in ~/.ppkg/uppm/installed/*
+          do
+              if [ -d "$item/bin" ] ; then
+                  PATH="$item/bin:$PATH"
+              fi
+          done
+
+          ./xbuilder install autoconf automake libtool perl python3 --flat --prefix=/opt/uctags-builder
+
+      - run: tar cvJf uctags-builder-macos-${{ matrix.target-version }}-x86_64.tar.xz /opt/uctags-builder
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags-builder-macos-${{ matrix.target-version }}-x86_64.tar.xz
+          path: uctags-builder-macos-${{ matrix.target-version }}-x86_64.tar.xz
 
 
   linux:
@@ -332,10 +382,10 @@ jobs:
             done
           )
 
-          for item in ~/.ppkg/uppm/installed/*
+          for d in ~/.ppkg/uppm/installed/*
           do
-              if [ -d "\$item/bin" ] ; then
-                  PATH="$item/bin:$PATH"
+              if [ -d "\$d/bin" ] ; then
+                  PATH="\$d/bin:\$PATH"
               fi
           done
 
@@ -367,7 +417,7 @@ jobs:
 
 
   publish:
-    needs: [check, freebsd, openbsd, netbsd, macos, linux]
+    needs: [check, freebsd, openbsd, netbsd, macos-arm64, macos-x86_64, linux]
     if: needs.check.outputs.if-has-new-commit == 'yes'
 
     runs-on: ubuntu-latest
