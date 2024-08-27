@@ -306,8 +306,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - run: install -d /basetools
+
       - run: |
-          cat > run.sh <<EOF
+          cat > /basetools/run.sh <<EOF
           set -e
 
           COLOR_GREEN='\033[0;32m'        # Green
@@ -332,18 +334,12 @@ jobs:
           run ./ppkg update
           run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
 
-          install -d ~/basetools
-
-          (
-            for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
-            do
-              run cd "\$HOME/.ppkg/installed/linux-musl-${{ matrix.target-arch }}/\$item"
-              run cp -rf * ~/basetools
-              run cd -
-            done
-          )
-
-          run tar cvJf basetools-linux-${{ matrix.target-arch }}.tar.xz ~/basetools/*
+          for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+          do
+            run cd "\$HOME/.ppkg/installed/linux-musl-${{ matrix.target-arch }}/\$item"
+            run cp -rf * /basetools/
+            run cd -
+          done
           EOF
 
           chmod +x run.sh
@@ -353,21 +349,23 @@ jobs:
         run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - if: matrix.target-arch == 'x86_64'
-        run: docker run -v $PWD:$PWD -w $PWD --name alpine         alpine sh run.sh
+        run: docker run -v /basetools:/basetools --name alpine         alpine sh /basetools/run.sh
 
       - if: matrix.target-arch == 'aarch64'
-        run: docker run -v $PWD:$PWD -w $PWD --name alpine arm64v8/alpine sh run.sh
+        run: docker run -v /basetools//basetools --name alpine arm64v8/alpine sh /basetools/run.sh
 
       - if: matrix.target-arch == 'ppc64le'
-        run: docker run -v $PWD:$PWD -w $PWD --name alpine ppc64le/alpine sh run.sh
+        run: docker run -v /basetools:/basetools --name alpine ppc64le/alpine sh /basetools/run.sh
 
       - if: matrix.target-arch == 'riscv64'
-        run: docker run -v $PWD:$PWD -w $PWD --name alpine riscv64/alpine sh run.sh
+        run: docker run -v /basetools:/basetools --name alpine riscv64/alpine sh /basetools/run.sh
 
       - if: matrix.target-arch == 's390x'
-        run: docker run -v $PWD:$PWD -w $PWD --name alpine s390x/alpine sh run.sh
+        run: docker run -v /basetools:/basetools --name alpine s390x/alpine   sh /basetools/run.sh
 
-      - run: ls
+      - run: ls /basetools
+
+      - run: tar cvJf basetools-linux-${{ matrix.target-arch }}.tar.xz /basetools/*
 
       - uses: actions/upload-artifact@v4
         with:
