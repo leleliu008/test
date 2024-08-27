@@ -365,7 +365,7 @@ jobs:
 
       - run: ls basetools
 
-      - run: tar cvJf basetools-linux-${{ matrix.target-arch }}.tar.xz basetools/*
+      - run: cd basetools && tar cvJf ../basetools-linux-${{ matrix.target-arch }}.tar.xz *
 
       - uses: actions/upload-artifact@v4
         with:
