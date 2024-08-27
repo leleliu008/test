@@ -294,7 +294,7 @@ jobs:
           path: uctags-builder-macos-${{ matrix.target-version }}-x86_64.tar.xz
 
 
-  linux:
+  linux-base:
     needs: [check]
     if: needs.check.outputs.if-has-new-commit == 'yes'
 
@@ -330,24 +330,20 @@ jobs:
 
           run ./ppkg setup --syspm
           run ./ppkg update
-          run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils libz --static
+          run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
 
-          install -d /opt/uctags-builder/
+          install -d ~/basetools
 
           (
             for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
             do
               run cd "\$HOME/.ppkg/installed/linux-musl-${{ matrix.target-arch }}/\$item"
-              run cp -rf * /opt/uctags-builder/
+              run cp -rf * ~/basetools
               run cd -
             done
           )
 
-          run wget https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
-          run chmod a+x xbuilder
-          run ./xbuilder install autoconf automake libtool perl python3 --prefix=/opt/uctags-builder
-
-          run bsdtar cvJPf uctags-builder-linux-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
+          run tar cvJf basetools-linux-${{ matrix.target-arch }}.tar.xz ~/basetools/*
           EOF
 
           chmod +x run.sh
@@ -375,12 +371,87 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uctags-builder-linux-${{ matrix.target-arch }}.tar.xz
-          path: uctags-builder-linux-${{ matrix.target-arch }}.tar.xz
+          name: basetools-linux-${{ matrix.target-arch }}.tar.xz
+          path: basetools-linux-${{ matrix.target-arch }}.tar.xz
+
+
+  linux-musl:
+    needs: [check, linux-base]
+    if: needs.check.outputs.if-has-new-commit == 'yes'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-arch: [x86_64, aarch64, ppc64le, riscv64, s390x]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: basetools-linux-${{ matrix.target-arch }}.tar.xz
+          path: /opt/uctags-builder/
+
+      - run: ls /opt/uctags-builder/
+
+      - run: |
+          cat > run.sh <<EOF
+          set -e
+
+          COLOR_GREEN='\033[0;32m'        # Green
+          COLOR_PURPLE='\033[0;35m'       # Purple
+          COLOR_OFF='\033[0m'             # Reset
+
+          echo() {
+              printf '%b\n' "\$*"
+          }
+
+          run() {
+              echo "\${COLOR_PURPLE}==>\${COLOR_OFF} \${COLOR_GREEN}\$@\${COLOR_OFF}"
+              eval "\$*"
+          }
+
+          run uname -a
+
+          run apk update
+          run apk add cmake make pkgconf g++ libc-dev linux-headers
+
+          run wget https://raw.githubusercontent.com/leleliu008/test/master/xbuilder
+          run chmod a+x xbuilder
+          run ./xbuilder install autoconf automake libtool perl python3 --prefix=/opt/uctags-builder
+          EOF
+
+          chmod +x run.sh
+
+      # https://github.com/multiarch/qemu-user-static
+      - if: matrix.target-arch != 'x86_64'
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+      - if: matrix.target-arch == 'x86_64'
+        run: docker run -v /opt/uctags-builder:/opt/uctags-builder --name alpine         alpine sh run.sh
+
+      - if: matrix.target-arch == 'aarch64'
+        run: docker run -v /opt/uctags-builder:/opt/uctags-builder --name alpine arm64v8/alpine sh run.sh
+
+      - if: matrix.target-arch == 'ppc64le'
+        run: docker run -v /opt/uctags-builder:/opt/uctags-builder --name alpine ppc64le/alpine sh run.sh
+
+      - if: matrix.target-arch == 'riscv64'
+        run: docker run -v /opt/uctags-builder:/opt/uctags-builder --name alpine riscv64/alpine sh run.sh
+
+      - if: matrix.target-arch == 's390x'
+        run: docker run -v /opt/uctags-builder:/opt/uctags-builder --name alpine s390x/alpine sh run.sh
+
+      - run: run tar cvJPf uctags-builder-linux-musl-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags-builder-linux-musl-${{ matrix.target-arch }}.tar.xz
+          path: uctags-builder-linux-musl-${{ matrix.target-arch }}.tar.xz
 
 
   publish:
-    needs: [check, freebsd, openbsd, netbsd, macos-arm64, macos-x86_64, linux]
+    needs: [check, freebsd, openbsd, netbsd, macos-arm64, macos-x86_64, linux-musl]
     if: needs.check.outputs.if-has-new-commit == 'yes'
 
     runs-on: ubuntu-latest
