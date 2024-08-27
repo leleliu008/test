@@ -1115,7 +1115,7 @@ package_info_python3() {
     PACKAGE_SRC_URL='https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz'
     PACKAGE_SRC_SHA='e7de3240a8bc2b1e1ba5c81bf943f06861ff494b69fda990ce2722a504c6153d'
     PACKAGE_DEP_PKG='libz libbz2 liblzma libgdbm libexpat libsqlite3 libffi libopenssl perl'
-    PACKAGE_INSTALL="configure --with-system-expat --with-system-ffi --with-openssl=$PACKAGE_INSTALL_ROOT/libopenssl --with-ensurepip=yes --with-lto --enable-ipv6 --enable-shared --enable-largefile --disable-option-checking --disable-nls --disable-debug --disable-loadable-sqlite-extensions --disable-profiling"
+    PACKAGE_INSTALL="configure --with-system-expat --with-system-ffi --with-openssl=$PACKAGE_INSTALL_ROOT/libopenssl --with-ensurepip=yes --with-lto --enable-ipv6 --enable-shared --enable-largefile --disable-option-checking --disable-nls --disable-debug --enable-loadable-sqlite-extensions --disable-profiling"
     PACKAGE_DOPATCH='
 unset PYTHONHOME
 unset PYTHONPATH
@@ -1149,6 +1149,18 @@ package_info_ghc() {
     PACKAGE_SRC_URL='https://downloads.haskell.org/~ghc/9.6.3/ghc-9.6.3-aarch64-apple-darwin.tar.xz'
     PACKAGE_SRC_SHA='e1cdf458926b2eaf52d2a8287d99a965040ff9051171f5c3b7467049cf0eb213'
     PACKAGE_INSTALL='configure'
+}
+
+package_info_make() {
+    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz'
+    PACKAGE_SRC_SHA='e1cdf458926b2eaf52d2a8287d99a965040ff9051171f5c3b7467049cf0eb213'
+    PACKAGE_INSTALL='configure --disable-dependency-tracking --without-guile --without-dmalloc'
+}
+
+package_info_patch() {
+    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/patch/patch-2.7.6.tar.xz'
+    PACKAGE_SRC_SHA='ac610bda97abe0d9f6b7c963255a11dcb196c25e337c61f94e4778d632f1d8fd'
+    PACKAGE_INSTALL='configure --disable-dependency-tracking --disable-gcc-warnings'
 }
 
 help() {
