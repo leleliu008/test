@@ -332,6 +332,8 @@ jobs:
           run ./ppkg update
           run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
 
+          install -d /root/basetools/
+
           for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
           do
             run cd "\$HOME/.ppkg/installed/linux-musl-${{ matrix.target-arch }}/\$item"
