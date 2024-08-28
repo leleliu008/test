@@ -31,7 +31,7 @@ jobs:
               eval "$@"
             }
 
-            run sudo pkgin -y install automake autoconf pkg-config gmake
+            run sudo pkgin -y install automake autoconf gmake pkg-config jansson libyaml libxml2 libiconv
 
             run cc --version
 
