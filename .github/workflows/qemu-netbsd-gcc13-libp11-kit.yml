@@ -37,6 +37,7 @@ jobs:
             export  CC='/usr/pkg/gcc13/bin/gcc'
             export CXX='/usr/pkg/gcc13/bin/g++'
 
+            export CPPFLAGS='-D_NETBSD_SOURCE=1'
             export CFLAGS='-v'
             
             run meson setup --prefix=$PWD/out --buildtype=release --backend=ninja -Dlibdir=lib -Ddefault_library=both -Dsystemd=disabled build.d .
