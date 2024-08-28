@@ -103,7 +103,7 @@ jobs:
             do
               PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $item --prefix)"
               run cd "$PACKAGE_INSTALLED_DIR"
-              run cp -rf * ${{ github.workspace }}/basetools/
+              run cp -a * ${{ github.workspace }}/basetools/
               run cd -
             done
 
