@@ -59,7 +59,8 @@ jobs:
               run cd -
             done
 
-            run tar cvPf basetools-freebsd-${{ matrix.target-version }}-amd64.tar.xz basetools
+            run mv basetools basetools-freebsd-${{ matrix.target-version }}-amd64
+            run tar cvJf     basetools-freebsd-${{ matrix.target-version }}-amd64.tar.xz basetools-freebsd-${{ matrix.target-version }}-amd64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -106,7 +107,8 @@ jobs:
               run cd -
             done
 
-            run bsdtar cvaf basetools-openbsd-${{ matrix.target-version }}-amd64.tar.xz basetools
+            run mv basetools basetools-openbsd-${{ matrix.target-version }}-amd64
+            run bsdtar cvaf  basetools-openbsd-${{ matrix.target-version }}-amd64.tar.xz basetools-openbsd-${{ matrix.target-version }}-amd64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -158,7 +160,8 @@ jobs:
               run cd -
             done
 
-            run tar cvJf basetools-netbsd-${{ matrix.target-version }}-amd64.tar.xz basetools
+            run mv basetools basetools-netbsd-${{ matrix.target-version }}-amd64
+            run tar cvJf     basetools-netbsd-${{ matrix.target-version }}-amd64.tar.xz basetools-netbsd-${{ matrix.target-version }}-amd64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -194,7 +197,8 @@ jobs:
             cd -
           done
 
-      - run: tar cvJf basetools-macos-${{ matrix.target-version }}-arm64.tar.xz ${{ github.workspace }}/basetools
+      - run: mv basetools basetools-macos-${{ matrix.target-version }}-arm64
+      - run: tar cvJf     basetools-macos-${{ matrix.target-version }}-arm64.tar.xz basetools-macos-${{ matrix.target-version }}-arm64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -230,7 +234,8 @@ jobs:
             cd -
           done
 
-      - run: tar cvJf basetools-macos-${{ matrix.target-version }}-x86_64.tar.xz basetools
+      - run: mv basetools basetools-macos-${{ matrix.target-version }}-x86_64
+      - run: tar cvJf     basetools-macos-${{ matrix.target-version }}-x86_64.tar.xz basetools-macos-${{ matrix.target-version }}-x86_64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -309,7 +314,8 @@ jobs:
 
       - run: ls basetools
 
-      - run: tar cvJf basetools-linux-${{ matrix.target-arch }}.tar.xz basetools
+      - run: mv basetools basetools-linux-${{ matrix.target-arch }}
+      - run: tar cvJf     basetools-linux-${{ matrix.target-arch }}.tar.xz basetools-linux-${{ matrix.target-arch }}
 
       - uses: actions/upload-artifact@v4
         with:
