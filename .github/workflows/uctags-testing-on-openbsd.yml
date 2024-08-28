@@ -17,6 +17,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          repository: universal-ctags/ctags
 
       - uses: cross-platform-actions/action@v0.25.0
         with:
