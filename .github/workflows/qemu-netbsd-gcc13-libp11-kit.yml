@@ -1,0 +1,49 @@
+name: build libp11-kit with gcc13 on QEMU/NetBSD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        netbsd-version: ['10.0', '9.4', '9.3', '9.2']
+
+    steps:
+      - run: curl -LO https://github.com/p11-glue/p11-kit/releases/download/0.25.5/p11-kit-0.25.5.tar.xz
+      - run: tar vxf *.tar.xz --strip-components=1
+
+      - uses: cross-platform-actions/action@v0.25.0
+        with:
+          operating_system: netbsd
+          version: ${{ matrix.netbsd-version }}
+          shell: bash
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
+
+            run sudo pkgin -y install gcc13 binutils ninja-build python311
+
+            run sudo pip3 install meson
+
+            run sudo ln -sf /usr/pkg/bin/gas /usr/bin/as
+
+            export  CC='/usr/pkg/gcc13/bin/gcc'
+            export CXX='/usr/pkg/gcc13/bin/g++'
+
+            export CFLAGS='-v'
+            
+            run meson setup --prefix=$PWD/out --buildtype=release --backend=ninja -Dlibdir=lib -Ddefault_library=both -Dsystemd=disabled build.d .
+
+            run ls  build.d
+            run cat build.d/config.h
+
+            run meson compile -C build.d -j 2
