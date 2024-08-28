@@ -385,10 +385,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - run: install -d /opt/uctags-builder/
+
       - uses: actions/download-artifact@v4
         with:
           name: basetools-linux-${{ matrix.target-arch }}.tar.xz
-          path: /opt/uctags-builder/
+          path: .
+
+      - run: tar vxf basetools-linux-${{ matrix.target-arch }}.tar.xz -C /opt/uctags-builder
 
       - run: ls /opt/uctags-builder/
 
@@ -426,19 +430,19 @@ jobs:
         run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - if: matrix.target-arch == 'x86_64'
-        run: docker run -v /opt/uctags-builder:/opt/uctags-builder --name alpine         alpine sh run.sh
+        run: docker run -v /opt/uctags-builder:/opt/uctags-builder -v $PWD:/root -w /root --name alpine         alpine sh run.sh
 
       - if: matrix.target-arch == 'aarch64'
-        run: docker run -v /opt/uctags-builder:/opt/uctags-builder --name alpine arm64v8/alpine sh run.sh
+        run: docker run -v /opt/uctags-builder:/opt/uctags-builder -v $PWD:/root -w /root --name alpine arm64v8/alpine sh run.sh
 
       - if: matrix.target-arch == 'ppc64le'
-        run: docker run -v /opt/uctags-builder:/opt/uctags-builder --name alpine ppc64le/alpine sh run.sh
+        run: docker run -v /opt/uctags-builder:/opt/uctags-builder -v $PWD:/root -w /root --name alpine ppc64le/alpine sh run.sh
 
       - if: matrix.target-arch == 'riscv64'
-        run: docker run -v /opt/uctags-builder:/opt/uctags-builder --name alpine riscv64/alpine sh run.sh
+        run: docker run -v /opt/uctags-builder:/opt/uctags-builder -v $PWD:/root -w /root --name alpine riscv64/alpine sh run.sh
 
       - if: matrix.target-arch == 's390x'
-        run: docker run -v /opt/uctags-builder:/opt/uctags-builder --name alpine s390x/alpine sh run.sh
+        run: docker run -v /opt/uctags-builder:/opt/uctags-builder -v $PWD:/root -w /root --name alpine   s390x/alpine sh run.sh
 
       - run: run tar cvJPf uctags-builder-linux-musl-${{ matrix.target-arch }}.tar.xz /opt/uctags-builder
 
