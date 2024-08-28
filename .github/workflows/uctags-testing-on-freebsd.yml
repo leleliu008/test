@@ -31,7 +31,7 @@ jobs:
               eval "$@"
             }
 
-            run sudo pkg install -y automake gmake pkgconf jansson libyaml libxml2 libiconv
+            run sudo pkg install -y automake gmake pkgconf jansson libyaml libxml2 libiconv python3
 
             run freebsd-version
             run cc --version
