@@ -30,9 +30,7 @@ jobs:
               eval "$@"
             }
 
-            run sudo pkgin -y install gcc13 binutils ninja-build python311
-
-            run sudo pip3 install meson
+            run sudo pkgin -y install gcc13 binutils meson
 
             run sudo ln -sf /usr/pkg/bin/gas /usr/bin/as
 
