@@ -47,7 +47,7 @@ jobs:
             run chmod a+x ppkg
             run ./ppkg setup --syspm
             run ./ppkg update
-            run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
+            run ./ppkg install grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils --static
 
             [ -z "$GID" ] && GID="$(id -g -n)"
             [ -z "$UID" ] && UID="$(id -u -n)"
@@ -55,7 +55,7 @@ jobs:
             run sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
 
             (
-              for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+              for item in grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils
               do
                 PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $item --prefix)"
                 run cd "$PACKAGE_INSTALLED_DIR"
@@ -110,7 +110,7 @@ jobs:
             run chmod a+x ppkg
             run ./ppkg setup --syspm
             run ./ppkg update
-            run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
+            run ./ppkg install grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils --static
 
             [ -z "$GID" ] && GID="$(id -g -n)"
             [ -z "$UID" ] && UID="$(id -u -n)"
@@ -118,7 +118,7 @@ jobs:
             run sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
 
             (
-              for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+              for item in grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils
               do
                 PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $item --prefix)"
                 run cd "$PACKAGE_INSTALLED_DIR"
@@ -175,7 +175,7 @@ jobs:
             run chmod a+x ppkg
             run ./ppkg setup --syspm
             run ./ppkg update
-            run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
+            run ./ppkg install grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils --static
 
             [ -z "$GID" ] && GID="$(id -g -n)"
             [ -z "$UID" ] && UID="$(id -u -n)"
@@ -183,7 +183,7 @@ jobs:
             run sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
 
             (
-              for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+              for item in grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils
               do
                 PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $item --prefix)"
                 run cd "$PACKAGE_INSTALLED_DIR"
@@ -224,14 +224,14 @@ jobs:
       - run: chmod a+x xcpkg
       - run: ./xcpkg setup
       - run: ./xcpkg update
-      - run: ./xcpkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=MacOSX-${{ matrix.target-version }}-arm64
+      - run: ./xcpkg install grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils --target=MacOSX-${{ matrix.target-version }}-arm64
       - run: |
           [ -z "$GID" ] && GID="$(id -g -n)"
           [ -z "$UID" ] && UID="$(id -u -n)"
 
           sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
 
-          for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+          for item in grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils
           do
             PACKAGE_INSTALLED_DIR="$(./xcpkg info-installed MacOSX-${{ matrix.target-version }}-arm64/$item --prefix)"
             cd "$PACKAGE_INSTALLED_DIR"
@@ -267,14 +267,14 @@ jobs:
       - run: chmod a+x xcpkg
       - run: ./xcpkg setup
       - run: ./xcpkg update
-      - run: ./xcpkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --target=MacOSX-${{ matrix.target-version }}-x86_64
+      - run: ./xcpkg install grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils --target=MacOSX-${{ matrix.target-version }}-x86_64
       - run: |
           [ -z "$GID" ] && GID="$(id -g -n)"
           [ -z "$UID" ] && UID="$(id -u -n)"
 
           sudo install -d -g "$GID" -o "$UID" /opt/uctags-builder/
 
-          for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+          for item in grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils
           do
             PACKAGE_INSTALLED_DIR="$(./xcpkg info-installed MacOSX-${{ matrix.target-version }}-x86_64/$item --prefix)"
             cd "$PACKAGE_INSTALLED_DIR"
@@ -330,11 +330,11 @@ jobs:
 
           run ./ppkg setup --syspm
           run ./ppkg update
-          run ./ppkg install grep gsed gawk gmake pkg-config coreutils findutils diffutils --static
+          run ./ppkg install grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils --static
 
           install -d /root/basetools/
 
-          for item in grep gsed gawk gmake pkg-config coreutils findutils diffutils
+          for item in grep gsed gawk gmake gm4 pkg-config coreutils findutils diffutils
           do
             run cd "\$HOME/.ppkg/installed/linux-musl-${{ matrix.target-arch }}/\$item"
             run cp -rf * /root/basetools/
