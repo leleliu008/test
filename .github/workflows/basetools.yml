@@ -49,7 +49,7 @@ jobs:
             run ./ppkg update
             run ./ppkg install grep gsed gawk gmake gm4 flex bison nasm pkg-config coreutils findutils diffutils --static
 
-            run sudo install -d basetools/
+            run install -d basetools/
 
             for item in grep gsed gawk gmake gm4 flex bison nasm pkg-config coreutils findutils diffutils
             do
@@ -148,7 +148,7 @@ jobs:
             run ./ppkg update
             run ./ppkg install grep gsed gawk gmake gm4 flex bison nasm pkg-config coreutils findutils diffutils --static
 
-            run sudo install -d basetools/
+            run install -d basetools/
 
             for item in grep gsed gawk gmake gm4 flex bison nasm pkg-config coreutils findutils diffutils
             do
@@ -184,7 +184,7 @@ jobs:
       - run: ./xcpkg update
       - run: ./xcpkg install grep gsed gawk gmake gm4 flex bison nasm pkg-config coreutils findutils diffutils --target=MacOSX-${{ matrix.target-version }}-arm64
       - run: |
-          sudo install -d basetools/
+          install -d basetools/
 
           for item in grep gsed gawk gmake gm4 flex bison nasm pkg-config coreutils findutils diffutils
           do
@@ -220,7 +220,7 @@ jobs:
       - run: ./xcpkg update
       - run: ./xcpkg install grep gsed gawk gmake gm4 flex bison nasm pkg-config coreutils findutils diffutils --target=MacOSX-${{ matrix.target-version }}-x86_64
       - run: |
-          sudo install -d basetools/
+          install -d basetools/
 
           for item in grep gsed gawk gmake gm4 flex bison nasm pkg-config coreutils findutils diffutils
           do
