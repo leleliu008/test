@@ -17,13 +17,10 @@ jobs:
         x: [A, B]
 
     steps:
-      #- run: curl -LO https://github.com/ebiggers/libdeflate/archive/refs/tags/v1.21.tar.gz
-      #- run: tar vxf *.tar.gz --strip-components=1
-      - uses: actions/checkout@v4
-        with:
-          repository: ebiggers/libdeflate
-          ref: origin/pull/389
-
+      - run: git -c init.defaultBranch=master init
+      - run: git remote add origin https://github.com/ebiggers/libdeflate
+      - run: git -c protocol.version=2 fetch --progress origin +refs/pull/389/head:refs/remotes/origin/master
+      - run: git checkout --progress --force -B master refs/remotes/origin/master
 
       - uses: cross-platform-actions/action@v0.25.0
         with:
