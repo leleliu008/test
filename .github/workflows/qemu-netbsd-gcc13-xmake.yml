@@ -38,5 +38,5 @@ jobs:
             run cd xmake-2.9.4
             run ./configure
             run gmake
-            run gmake install PREFIX=/usr/local
+            run sudo gmake install PREFIX=/usr/local
             run xmake --version
