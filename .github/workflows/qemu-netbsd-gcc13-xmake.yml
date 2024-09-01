@@ -34,7 +34,8 @@ jobs:
             export CXX='/usr/pkg/gcc13/bin/g++'
 
             run curl -LO https://ftp.gnu.org/gnu/ncurses/ncurses-6.4.tar.gz
-            run tar xf ncurses-6.4
+            run tar xf ncurses-6.4.tar.gz
+            run cd     ncurses-6.4
             run ./configure
             run gmake
             run sudo gmake install PREFIX=/usr
@@ -43,7 +44,7 @@ jobs:
 
             run curl -LO https://github.com/xmake-io/xmake/releases/download/v2.9.4/xmake-v2.9.4.tar.gz
             run tar xf xmake-v2.9.4.tar.gz
-            run cd xmake-2.9.4
+            run cd     xmake-2.9.4
             run ./configure
             run gmake
             run sudo gmake install PREFIX=/usr
