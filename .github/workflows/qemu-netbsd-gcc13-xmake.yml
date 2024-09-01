@@ -51,3 +51,11 @@ jobs:
             run xmake --version
 
             run cd -
+
+            run curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+            run chmod +x ppkg
+
+            run ./ppkg about
+            run ./ppkg setup --syspm
+            run ./ppkg update
+            run ./ppkg install tbox xmake
