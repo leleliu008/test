@@ -1,10 +1,7 @@
 name: build libdeflate with gcc13 on QEMU/NetBSD
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   testing:

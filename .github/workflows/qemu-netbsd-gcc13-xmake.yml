@@ -1,0 +1,42 @@
+name: build xmake with gcc13 on QEMU/NetBSD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        netbsd-version: ['10.0', '9.4', '9.3', '9.2']
+
+    steps:
+      - run: curl -LO https://curl.se/ca/cacert.pem
+
+      - uses: cross-platform-actions/action@v0.25.0
+        with:
+          operating_system: netbsd
+          version: ${{ matrix.netbsd-version }}
+          shell: bash
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
+
+            run sudo pkgin -y install curl gcc13 gmake
+
+            run export SSL_CERT_FILE="$PWD/cacert.pem"
+
+            export  CC='/usr/pkg/gcc13/bin/gcc'
+            export CXX='/usr/pkg/gcc13/bin/g++'
+
+            run curl -LO https://github.com/xmake-io/xmake/releases/download/v2.9.4/xmake-v2.9.4.tar.gz
+            run tar xf xmake-v2.9.4.tar.gz
+            run cd xmake-v2.9.4
+            run ./configure
+            run gmake
+            run gmake install PREFIX=/usr/local
+            run xmake --version
