@@ -35,7 +35,7 @@ jobs:
 
             run curl -LO https://github.com/xmake-io/xmake/releases/download/v2.9.4/xmake-v2.9.4.tar.gz
             run tar xf xmake-v2.9.4.tar.gz
-            run cd xmake-v2.9.4
+            run cd xmake-2.9.4
             run ./configure
             run gmake
             run gmake install PREFIX=/usr/local
