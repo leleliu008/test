@@ -30,7 +30,7 @@ jobs:
             run sudo pkgin -y install curl ca-certificates
 
             # https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/security/ca-certificates/index.html
-            run sudo update-ca-certificates -v --etccertsdir /etc/openssl/certs
+            run sudo /usr/pkg/sbin/update-ca-certificates -v --etccertsdir /etc/openssl/certs
 
             #export SSL_CERT_FILE='/etc/openssl/certs/ca-certificates.crt'
 
