@@ -20,14 +20,7 @@ jobs:
           cat > download.cmake <<EOF
           cmake_minimum_required(VERSION 3.15)
 
-          message(STATUS "TRY 1")
-          file(DOWNLOAD "https://raw.githubusercontent.com/cpp-pm/hunter-cache/master/8fd7dea/GTest/1.14.0/2b28c2a/297e0ef/4830b34/e5fa44f/basic-deps.DONE" "${CMAKE_CURRENT_BINARY_DIR}/basic-deps.DONE" TLS_VERIFY ON STATUS status LOG log)
-          message("STATUS: ${status}")
-          message("LOG: ${log}")
-
-
-          message(STATUS "TRY 2")
-          file(DOWNLOAD "https://raw.githubusercontent.com/cpp-pm/hunter-cache/master/8fd7dea/GTest/1.14.0/2b28c2a/297e0ef/4830b34/e5fa44f/basic-deps.DONE" "${CMAKE_CURRENT_BINARY_DIR}/basic-deps.DONE.2" TLS_VERIFY ON STATUS status LOG log)
+          file(DOWNLOAD "https://github.com/leleliu008/test/releases/download/2023.10.08/caf.yml" TLS_VERIFY ON STATUS status LOG log)
           message("STATUS: ${status}")
           message("LOG: ${log}")
           EOF
