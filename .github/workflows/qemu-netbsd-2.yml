@@ -1,0 +1,37 @@
+name: QEMU/NetBSD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        netbsd-version: ['10.0', '9.4', '9.3', '9.2']
+
+    steps:
+      - uses: cross-platform-actions/action@v0.25.0
+        with:
+          operating_system: netbsd
+          version: ${{ matrix.netbsd-version }}
+          shell: bash
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
+
+            run sudo pkgin -y install curl ca-certificates
+
+            # https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/security/ca-certificates/index.html
+            run sudo update-ca-certificates -v --etccertsdir /etc/openssl/certs
+
+            #export SSL_CERT_FILE='/etc/openssl/certs/ca-certificates.crt'
+
+            run curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/caf.yml
