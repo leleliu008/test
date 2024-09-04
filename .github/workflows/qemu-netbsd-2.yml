@@ -36,7 +36,9 @@ jobs:
               eval "$@"
             }
 
-            run sudo pkgin -y install cmake curl ca-certificates
+            run sudo pkgin -y install cmake curl ca-certificates gettext-tools
+
+            run ls /usr/pkg/bin
 
             # https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/security/ca-certificates/index.html
             run sudo /usr/pkg/sbin/update-ca-certificates -v --etccertsdir /etc/openssl/certs
