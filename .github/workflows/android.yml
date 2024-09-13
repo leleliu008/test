@@ -1,0 +1,36 @@
+name: build for android
+
+on:
+  push:
+    branches: [ master,dev ]
+  pull_request:
+    branches: [ master,dev ]
+
+jobs:
+  ubuntu:
+
+    strategy:
+
+      fail-fast: false
+
+      matrix:
+        pkg: [curl, wget]
+
+    runs-on: ubuntu-latest
+
+    container: fpliu/ndk-pkg
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/dev/ndk-pkg
+      - run: chmod +x ndk-pkg
+
+      - run: ./ndk-pkg about
+      - run: ./ndk-pkg setup
+      - run: ./ndk-pkg update
+      - run: ./ndk-pkg install ${{ matrix.pkg }} --target=android-31-arm64-v8a --profile=debug
+      - run: ./ndk-pkg pack android-31-arm64-v8a/${{ matrix.pkg }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.pkg }}---android-31-arm64-v8a.tar.xz
+          path: ${{ matrix.pkg }}-*-android-31-arm64-v8a.tar.xz
