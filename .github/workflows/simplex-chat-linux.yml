@@ -17,7 +17,7 @@ jobs:
           DOCKER_BUILDKIT=1 docker build --output . .
 
   build2:
-
+    if: false
     runs-on: ubuntu-latest
 
     steps:
@@ -28,3 +28,31 @@ jobs:
           cd simplex-chat-6.0.4
           DOCKER_BUILDKIT=1 docker build --output . .
 
+  build3:
+    runs-on: ubuntu-latest
+    container: alpine
+
+    steps:
+      - run: apk update
+      - run: apk add curl git tar xz grep ghc-dev gmp-dev zlib-static zlib-dev openssl-libs-static openssl-dev alpine-sdk
+
+      - run: ln -s /usr/lib/libncursesw.so.6 /usr/lib/libtinfow.so.6
+
+      - run: curl -LO https://github.com/simplex-chat/simplex-chat/archive/refs/tags/v6.0.4.tar.gz
+      - run: tar vxf v6.0.4.tar.gz --strip-components=1
+
+      - run: curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 sh
+
+      - run: |
+          cat >> $GITHUB_PATH <<EOF
+          /root/.cabal/bin
+          /root/.ghcup/bin
+          EOF
+
+      - run: ghcup set ghc 9.6.3
+      - run: ghcup set cabal 3.10.1.0
+
+      - run: cabal update
+      - run: cabal build -j exe:simplex-chat
+
+      - run: ls
