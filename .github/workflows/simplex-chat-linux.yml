@@ -4,8 +4,8 @@ on:
   workflow_dispatch
 
 jobs:
-  build:
-
+  build1:
+    if: false
     runs-on: ubuntu-latest
 
     steps:
@@ -14,5 +14,17 @@ jobs:
           git clone https://github.com/simplex-chat/simplex-chat
           cd simplex-chat
           git checkout stable
+          DOCKER_BUILDKIT=1 docker build --output . .
+
+  build2:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          set -ex
+          curl -LO https://github.com/simplex-chat/simplex-chat/archive/refs/tags/v6.0.4.tar.gz
+          tar vxf v6.0.4.tar.gz
+          cd simplex-chat-6.0.4
           DOCKER_BUILDKIT=1 docker build --output . .
 
