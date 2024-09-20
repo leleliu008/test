@@ -54,7 +54,10 @@ jobs:
           $HOME/.ghcup/bin
           EOF
 
-      - run: cabal update
-      - run: cabal build -j exe:simplex-chat
+      - run: mv scripts/cabal.project.local.linux cabal.project.local
 
-      - run: ls
+      - run: cabal update
+      - run: cabal v2-install --enable-executable-static --jobs=3 --install-method=copy --installdir=$PWD/out exe:simplex-chat
+
+      - run: ls out/
+      - run: readelf -d out/bin/*
