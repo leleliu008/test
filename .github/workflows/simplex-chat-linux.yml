@@ -60,4 +60,4 @@ jobs:
       - run: cabal v2-install --enable-executable-static --jobs=3 --install-method=copy --installdir=$PWD/out exe:simplex-chat
 
       - run: ls out/
-      - run: readelf -d out/bin/*
+      - run: readelf -d out/*
