@@ -63,7 +63,7 @@ jobs:
       - run: hpack
 
       - run: cabal update
-      - run: cabal v2-install --disable-shared --enable-static --enable-executable-static --ghc-options=-static --jobs=3 --install-method=copy --installdir=$PWD/out exe:simplex-chat
+      - run: cabal v2-install --jobs=3 --install-method=copy --installdir=$PWD/out exe:simplex-chat
 
       - run: ls out/
       - run: readelf -d out/*
