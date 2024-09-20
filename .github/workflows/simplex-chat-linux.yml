@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: git clone git@github.com:simplex-chat/simplex-chat.git
+      - run: git clone https://github.com/simplex-chat/simplex-chat
       - run: cd simplex-chat
       - run: git checkout stable
       - run: DOCKER_BUILDKIT=1 docker build --output . .
