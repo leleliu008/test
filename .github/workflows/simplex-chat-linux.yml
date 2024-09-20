@@ -45,8 +45,8 @@ jobs:
 
       - run: |
           cat >> $GITHUB_PATH <<EOF
-          /root/.cabal/bin
-          /root/.ghcup/bin
+          $HOME/.cabal/bin
+          $HOME/.ghcup/bin
           EOF
 
       - run: ghcup set ghc 9.6.3
