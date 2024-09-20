@@ -59,6 +59,9 @@ jobs:
       - run: |
           sed -i '/- -Wunused-type-patterns/a\  - -O2\n\  - -split-sections\n\  - -with-rtsopts=-N\n\  - -static\n\cc-options: -static\n\ld-options: -static -pthread' package.yaml
 
+      - run: cabal install --install-method=copy --installdir=/usr/local/bin hpack-0.36.0
+      - run: hpack
+
       - run: cabal update
       - run: cabal v2-install --disable-shared --enable-static --enable-executable-static --ghc-options=-static --jobs=3 --install-method=copy --installdir=$PWD/out exe:simplex-chat
 
