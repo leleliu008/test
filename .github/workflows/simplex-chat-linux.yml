@@ -32,6 +32,11 @@ jobs:
     runs-on: ubuntu-latest
     container: alpine
 
+    env:
+      BOOTSTRAP_HASKELL_GHC_VERSION: 9.6.3
+      BOOTSTRAP_HASKELL_CABAL_VERSION: 3.10.1.0
+      BOOTSTRAP_HASKELL_NONINTERACTIVE: 1
+
     steps:
       - run: apk update
       - run: apk add curl git tar xz grep ghc-dev gmp-dev zlib-static zlib-dev openssl-libs-static openssl-dev alpine-sdk
@@ -41,16 +46,13 @@ jobs:
       - run: curl -LO https://github.com/simplex-chat/simplex-chat/archive/refs/tags/v6.0.4.tar.gz
       - run: tar vxf v6.0.4.tar.gz --strip-components=1
 
-      - run: curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 sh
+      - run: curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 
       - run: |
           cat >> $GITHUB_PATH <<EOF
           $HOME/.cabal/bin
           $HOME/.ghcup/bin
           EOF
-
-      - run: ghcup set ghc 9.6.3
-      - run: ghcup set cabal 3.10.1.0
 
       - run: cabal update
       - run: cabal build -j exe:simplex-chat
