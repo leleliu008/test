@@ -16,7 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        msystem: [MSYS, MINGW32, MINGW64]
+        #msystem: [MSYS, MINGW32, MINGW64, CLANG32, CLANG64]
+        msystem: [CLANG32]
 
     defaults:
       run:
@@ -29,12 +30,4 @@ jobs:
         update: true
         install: git
 
-    - run: git config --global core.autocrlf input
-      shell: bash
-
-    - uses: actions/checkout@v2
-
-    - run: |
-        ls -a .
-        cp -r . ..
-        ls -a ..
+    - run: pacman -S mingw-w64-i686-jansson
