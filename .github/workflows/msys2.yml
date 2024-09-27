@@ -31,4 +31,6 @@ jobs:
         install: git
         pacboy: toolchain:p python-sphinx:p libxml2:p libyaml:p pcre2:p
 
-    - run: pacman -S --noconfirm mingw-w64-i686-jansson
+    - run: pacboy jansson:p
+
+      #- run: pacman -S --noconfirm mingw-w64-i686-jansson
