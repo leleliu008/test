@@ -29,6 +29,6 @@ jobs:
         msystem: ${{ matrix.msystem }}
         update: true
         install: git
-        pacboy: toolchain:p python-sphinx:p jansson:p libxml2:p libyaml:p pcre2:p
+        pacboy: toolchain:p python-sphinx:p libxml2:p libyaml:p pcre2:p
 
     - run: pacman -S --noconfirm mingw-w64-i686-jansson
