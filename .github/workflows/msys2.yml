@@ -30,4 +30,4 @@ jobs:
         update: true
         install: git
 
-    - run: pacman -S mingw-w64-i686-jansson
+    - run: pacman -S --noconfirm mingw-w64-i686-jansson
