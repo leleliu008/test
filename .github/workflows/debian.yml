@@ -28,6 +28,4 @@ jobs:
 
       - run: ls /bin
       - run: ls /usr/bin
-      - run: command -v perl
-      - run: command -v python
-      - run: command -v python3
+      - run: perl -MLWP::Simple -e 'print ok'
