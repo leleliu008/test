@@ -117,8 +117,7 @@ jobs:
           version: ${{ matrix.target-version }}
           shell: bash
           run: |
-            run export SSL_CERT_FILE="$PWD/cacert.pem"
-
+            export SSL_CERT_FILE="$PWD/cacert.pem"
             ./pack.sh autotools-${{ needs.check.outputs.release-version }}-netbsd-${{ matrix.target-version }}-amd64
 
       - uses: actions/upload-artifact@v4

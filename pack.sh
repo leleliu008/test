@@ -71,7 +71,7 @@ __setup_linux() {
     case $ID in
         ubuntu)
             run apt-get -y update
-            run apt-get -y cmake make pkg-config g++ linux-headers-generic
+            run apt-get -y install cmake make pkg-config g++ linux-headers-generic
             ;;
         alpine)
             run apk update
@@ -88,7 +88,7 @@ PREFIX="/opt/$1"
 
 unset sudo
 
-[ "$UID" -eq 0 ] || sudo=sudo
+[ "$(id -u -n)" -eq 0 ] || sudo=sudo
 
 TARGET_OS_KIND="$(printf '%s\n' "$1" | cut -d- -f3)"
 
