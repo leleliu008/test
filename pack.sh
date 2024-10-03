@@ -90,6 +90,10 @@ unset sudo
 
 [ "$UID" -eq 0 ] || sudo=sudo
 
+TARGET_OS_KIND="$(printf '%s\n' "$1" | cut -d- -f3)"
+
+__setup_$TARGET_OS_KIND
+
 run $sudo install -d -g "$GID" -o "$UID" "$PREFIX"
 
 run ./xbuilder install automake libtool gmake --prefix="$PREFIX"
