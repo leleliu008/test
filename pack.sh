@@ -77,7 +77,7 @@ __setup_linux() {
             ;;
         alpine)
             run apk update
-            run apk add cmake make pkgconf g++ linux-headers
+            run apk add cmake make pkgconf g++ linux-headers libarchive-tools
     esac
 }
 
