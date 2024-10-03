@@ -46,6 +46,8 @@ jobs:
             run sudo pkg update
             run sudo pkg install -y coreutils cmake gmake gcc pkgconf gsed
 
+            run sudo ln -sf /usr/local/bin/gnproc /usr/bin/nproc
+
             [ -z "$GID" ] && GID="$(id -g -n)"
             [ -z "$UID" ] && UID="$(id -u -n)"
 
@@ -87,6 +89,8 @@ jobs:
             }
 
             run sudo pkg_add coreutils cmake gmake gcc%11 pkgconf gsed libarchive
+
+            run sudo ln -sf /usr/local/bin/gnproc /usr/bin/nproc
 
             [ -z "$GID" ] && GID="$(id -g -n)"
             [ -z "$UID" ] && UID="$(id -u -n)"
@@ -131,6 +135,9 @@ jobs:
 
             run sudo pkgin -y update
             run sudo pkgin -y install coreutils cmake gmake pkg-config gsed bsdtar
+
+            run sudo ln -sf /usr/pkg/bin/gnproc /usr/bin/nproc
+
             run export SSL_CERT_FILE="$PWD/cacert.pem"
 
             [ -z "$GID" ] && GID="$(id -g -n)"
@@ -162,7 +169,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: brew install coreutils
+      - run: brew install coreutils gmake
 
       - run: |
           [ -z "$GID" ] && GID="$(id -g -n)"
@@ -194,7 +201,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: brew install coreutils
+      - run: brew install coreutils gmake
 
       - run: |
           [ -z "$GID" ] && GID="$(id -g -n)"
