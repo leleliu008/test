@@ -71,7 +71,7 @@ __setup_linux() {
     case $ID in
         ubuntu)
             run apt-get -y update
-            run apt-get -y install cmake make pkg-config g++ linux-headers-generic
+            run apt-get -y install curl cmake make pkg-config g++ linux-headers-generic
             ;;
         alpine)
             run apk update
