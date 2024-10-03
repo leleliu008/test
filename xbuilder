@@ -833,7 +833,7 @@ install_the_given_package() {
                 run chmod a+x "$FILEPATH"
 
                 if [ "$FILENAME" = 'config.sub' ] ; then
-                    gsed -i 's/arm64-*/arm64-*|arm64e-*/g' "$FILEPATH"
+                    sed -i.bak 's/arm64-*/arm64-*|arm64e-*/g' "$FILEPATH"
                 fi
             }
 
@@ -929,7 +929,7 @@ EOF
 package_info_libz() {
     PACKAGE_SRC_URL='https://zlib.net/fossils/zlib-1.3.1.tar.gz'
     PACKAGE_SRC_SHA='9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23'
-    PACKAGE_DOPATCH='gsed -i "s|/share/pkgconfig|/lib/pkgconfig|" CMakeLists.txt'
+    PACKAGE_DOPATCH='sed -i.bak "s|/share/pkgconfig|/lib/pkgconfig|" CMakeLists.txt'
     PACKAGE_INSTALL='cmakew'
 }
 
@@ -1001,7 +1001,7 @@ package_info_texinfo() {
     PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/texinfo/texinfo-7.1.tar.xz'
     PACKAGE_SRC_SHA='deeec9f19f159e046fdf8ad22231981806dac332cc372f1c763504ad82b30953'
     PACKAGE_DEP_PKG='perl'
-    PACKAGE_DOPATCH='gsed -i "/libintl/d" tp/Texinfo/XS/parsetexi/api.c'
+    PACKAGE_DOPATCH='sed -i.bak "/libintl/d" tp/Texinfo/XS/parsetexi/api.c'
     PACKAGE_INSTALL='configure --with-included-regex --enable-threads=posix --disable-nls'
 }
 

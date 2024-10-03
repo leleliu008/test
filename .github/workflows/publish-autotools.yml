@@ -44,10 +44,9 @@ jobs:
             }
 
             run sudo pkg update
-            run sudo pkg install -y coreutils cmake gmake gcc pkgconf gsed
+            run sudo pkg install -y coreutils cmake gmake gcc pkgconf
 
             run sudo ln -sf /usr/local/bin/gln        /usr/bin/ln
-            run sudo ln -sf /usr/local/bin/gsed       /usr/bin/sed
             run sudo ln -sf /usr/local/bin/gmake      /usr/bin/make
             run sudo ln -sf /usr/local/bin/gstat      /usr/bin/stat
             run sudo ln -sf /usr/local/bin/gdate      /usr/bin/date
@@ -98,10 +97,9 @@ jobs:
               eval "$@"
             }
 
-            run sudo pkg_add coreutils cmake gmake gcc%11 pkgconf gsed libarchive
+            run sudo pkg_add coreutils cmake gmake gcc%11 pkgconf libarchive
 
             run sudo ln -sf /usr/local/bin/gln        /usr/bin/ln
-            run sudo ln -sf /usr/local/bin/gsed       /usr/bin/sed
             run sudo ln -sf /usr/local/bin/gmake      /usr/bin/make
             run sudo ln -sf /usr/local/bin/gstat      /usr/bin/stat
             run sudo ln -sf /usr/local/bin/gdate      /usr/bin/date
@@ -154,10 +152,9 @@ jobs:
             }
 
             run sudo pkgin -y update
-            run sudo pkgin -y install coreutils cmake gmake pkg-config gsed bsdtar
+            run sudo pkgin -y install coreutils cmake gmake pkg-config bsdtar
 
             run sudo ln -sf /usr/pkg/bin/gln        /usr/bin/ln
-            run sudo ln -sf /usr/pkg/bin/gsed       /usr/bin/sed
             run sudo ln -sf /usr/pkg/bin/gmake      /usr/bin/make
             run sudo ln -sf /usr/pkg/bin/gstat      /usr/bin/stat
             run sudo ln -sf /usr/pkg/bin/gdate      /usr/bin/date
