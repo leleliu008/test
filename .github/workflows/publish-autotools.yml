@@ -307,7 +307,7 @@ jobs:
       - if: matrix.target-arch == 's390x'
         run: docker run -v /opt/non-relocatable-binary-packages/autotools:/opt/non-relocatable-binary-packages/autotools -v $PWD:/root -w /root --name alpine   s390x/alpine sh run.sh
 
-      - run: run tar cvJPf autotools-linux-musl-${{ matrix.target-arch }}.tar.xz /opt/non-relocatable-binary-packages/autotools
+      - run: tar cvJPf autotools-linux-musl-${{ matrix.target-arch }}.tar.xz /opt/non-relocatable-binary-packages/autotools
 
       - uses: actions/upload-artifact@v4
         with:
