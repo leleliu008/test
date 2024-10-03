@@ -905,10 +905,8 @@ install_the_given_package() {
 
     # TO FIX: glibtoolize: command not found
     if [ "$1" = 'libtool' ] ; then
-        run cd bin
-        run ln -s -r libtool    glibtool
-        run ln -s -r libtoolize glibtoolize
-        run cd -
+        run ln -s libtool    bin/glibtool
+        run ln -s libtoolize bin/glibtoolize
     fi
 
     #########################################################################################
