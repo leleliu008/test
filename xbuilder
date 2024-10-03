@@ -913,7 +913,7 @@ install_the_given_package() {
 
     #########################################################################################
 
-    PACKAGE_INSTALL_UTS="$(date -u --rfc-3339=seconds)"
+    PACKAGE_INSTALL_UTS="$(date -u)"
 
     cat > "$PACKAGE_INSTALL_DIR/$1.yml" <<EOF
 src-url: $PACKAGE_SRC_URL
