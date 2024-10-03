@@ -1018,8 +1018,8 @@ package_info_intltool() {
 }
 
 package_info_gmake() {
-    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/make/make-4.4.1.tar.lz'
-    PACKAGE_SRC_SHA='8814ba072182b605d156d7589c19a43b89fc58ea479b9355146160946f8cf6e9'
+    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz'
+    PACKAGE_SRC_SHA='dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3'
     PACKAGE_INSTALL='configure --program-prefix=g --without-guile --without-dmalloc'
 }
 
