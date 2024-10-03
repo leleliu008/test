@@ -752,6 +752,7 @@ install_the_given_package() {
     unset PACKAGE_DEP_PKG
     unset PACKAGE_DOPATCH
     unset PACKAGE_INSTALL
+    unset PACKAGE_DOTWEAK
 
     if [ "$1" = 'perl-XML-Parser' ] ; then
         package_info_perl_XML_Parser
@@ -903,10 +904,8 @@ install_the_given_package() {
 
     #########################################################################################
 
-    # TO FIX: glibtoolize: command not found
-    if [ "$1" = 'libtool' ] ; then
-        run ln -s libtool    bin/glibtool
-        run ln -s libtoolize bin/glibtoolize
+    if [ -n  "$PACKAGE_DOTWEAK" ] ; then
+        eval "$PACKAGE_DOTWEAK"
     fi
 
     #########################################################################################
@@ -1021,6 +1020,7 @@ package_info_gmake() {
     PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz'
     PACKAGE_SRC_SHA='dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3'
     PACKAGE_INSTALL='configure --program-prefix=g --without-guile --without-dmalloc'
+    PACKAGE_DOTWEAK='run ln -s gmake bin/make'
 }
 
 package_info_patch() {
@@ -1060,6 +1060,10 @@ package_info_libtool() {
     PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/libtool/libtool-2.4.7.tar.xz'
     PACKAGE_SRC_SHA='4f7f217f057ce655ff22559ad221a0fd8ef84ad1fc5fcb6990cecc333aa1635d'
     PACKAGE_INSTALL='configure --enable-ltdl-install'
+    PACKAGE_DOTWEAK='
+run ln -s libtool    bin/glibtool
+run ln -s libtoolize bin/glibtoolize
+'
 }
 
 package_info_ruby() {
@@ -1218,6 +1222,7 @@ case $1 in
                 unset PACKAGE_DEP_PKG
                 unset PACKAGE_DOPATCH
                 unset PACKAGE_INSTALL
+                unset PACKAGE_DOTWEAK
 
                 if [ "$PACKAGE_NAME" = 'perl-XML-Parser' ] ; then
                     package_info_perl_XML_Parser
