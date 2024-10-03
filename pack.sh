@@ -72,6 +72,8 @@ __setup_linux() {
         ubuntu)
             run apt-get -y update
             run apt-get -y install curl cmake make pkg-config g++ linux-headers-generic
+
+            run ln -s /usr/bin/make /usr/bin/gmake
             ;;
         alpine)
             run apk update
@@ -98,4 +100,8 @@ run $sudo install -d -g "$GID" -o "$UID" "$PREFIX"
 
 run ./xbuilder install automake libtool gmake --prefix="$PREFIX"
 
-run tar cvJPf "$1.tar.xz" "$PREFIX"
+if command -v bsdtar > /dev/null ; then
+    run bsdtar cvaPf "$1.tar.xz" "$PREFIX"
+else
+    run    tar cvJPf "$1.tar.xz" "$PREFIX"
+fi
