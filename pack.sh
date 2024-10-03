@@ -88,7 +88,7 @@ PREFIX="/opt/$1"
 
 unset sudo
 
-[ "$(id -u -n)" -eq 0 ] || sudo=sudo
+[ "$(id -u)" -eq 0 ] || sudo=sudo
 
 TARGET_OS_KIND="$(printf '%s\n' "$1" | cut -d- -f3)"
 
