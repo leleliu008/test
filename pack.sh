@@ -73,7 +73,7 @@ __setup_linux() {
             run apt-get -y update
             run apt-get -y install curl cmake make pkg-config g++ linux-headers-generic
 
-            run ln -s /usr/bin/make /usr/bin/gmake
+            run ln -sf /usr/bin/make /usr/bin/gmake
             ;;
         alpine)
             run apk update
