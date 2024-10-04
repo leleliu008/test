@@ -98,7 +98,7 @@ __setup_$TARGET_OS_KIND
 
 run $sudo install -d -g "$GID" -o "$UID" "$PREFIX"
 
-run ./xbuilder install automake libtool gmake --prefix="$PREFIX"
+run ./xbuilder install automake libtool pkgconf gmake --prefix="$PREFIX"
 
 if command -v bsdtar > /dev/null ; then
     run bsdtar cvaPf "$1.tar.xz" "$PREFIX"
