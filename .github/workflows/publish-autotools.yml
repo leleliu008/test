@@ -281,7 +281,29 @@ jobs:
       - run: ls -a
 
       - run: |
-          printf 'sha256sum:\n```\n%s\n```\n' "$(sha256sum *.tar.xz)" > notes.md
+          tar xf autotools-${{ needs.check.outputs.release-version }}-linux-glibc-x86_64.tar.xz
+
+          printf '```yaml\n' > notes.md
+
+          for f in opt/autotools-${{ needs.check.outputs.release-version }}-linux-glibc-x86_64/*.yml
+          do
+              PKGNAME=${f##*/}
+              PKGNAME=${PKGNAME%.yml}
+
+              SRC_URL="$(sed -n '/^src-url: /p' "$f")"
+              SRC_SHA="$(sed -n '/^src-sha: /p' "$f")"
+
+              cat >> notes.md <<EOF
+
+$PKGNAME:
+    $SRC_URL
+    $SRC_SHA
+EOF
+          done
+
+          printf '```\n' >> notes.md
+
+          printf 'sha256sum:\n```\n%s\n```\n' "$(sha256sum *.tar.xz)" >> notes.md
 
           # to avaid: failed to run git: fatal: not a git repository (or any of the parent directories): .git
           git -c init.defaultBranch=master init
