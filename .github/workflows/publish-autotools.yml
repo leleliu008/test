@@ -285,20 +285,20 @@ jobs:
 
           printf '```yaml\n' > notes.md
 
-          for f in opt/autotools-${{ needs.check.outputs.release-version }}-linux-glibc-x86_64/*.yml
+          for fp in opt/autotools-${{ needs.check.outputs.release-version }}-linux-glibc-x86_64/*.yml
           do
-              PKGNAME=${f##*/}
-              PKGNAME=${PKGNAME%.yml}
+              fn=${fp##*/}
+              PKGNAME=${fn%.yml}
 
-              SRC_URL="$(sed -n '/^src-url: /p' "$f")"
-              SRC_SHA="$(sed -n '/^src-sha: /p' "$f")"
+              SRC_URL="$(sed -n '/^src-url: /p' "$fp")"
+              SRC_SHA="$(sed -n '/^src-sha: /p' "$fp")"
 
               cat >> notes.md <<EOF
 
-$PKGNAME:
-    $SRC_URL
-    $SRC_SHA
-EOF
+          $PKGNAME:
+              $SRC_URL
+              $SRC_SHA
+          EOF
           done
 
           printf '```\n' >> notes.md
