@@ -1220,7 +1220,7 @@ case $1 in
         printf '%s\n' "$RUNTIME_BUILDER_VERSION"
         ;;
     ls-available)
-        PACKAGE_NAMES='libz libbz2 liblzma libpcre2 libsqlite3 libopenssl libexpat libgdbm libffi libyaml ruby perl python3 texinfo help2man intltool libtool autoconf automake swig perl-XML-Parser'
+        PACKAGE_NAMES='libz libbz2 liblzma libpcre2 libsqlite3 libopenssl libexpat libgdbm libffi libyaml ruby perl python3 texinfo help2man intltool libtool autoconf automake swig perl-XML-Parser pkgconf patch gmake gm4'
 
         if [ "$2" = -v ] ; then
             for PACKAGE_NAME in $PACKAGE_NAMES

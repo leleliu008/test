@@ -61,7 +61,7 @@ jobs:
           operating_system: freebsd
           version: ${{ matrix.target-version }}
           shell: bash
-          run: ./pack.sh autotools-${{ needs.check.outputs.release-version }}-freebsd-${{ matrix.target-version }}-amd64
+          run: ./autotools.sh autotools-${{ needs.check.outputs.release-version }}-freebsd-${{ matrix.target-version }}-amd64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -88,7 +88,7 @@ jobs:
           operating_system: openbsd
           version: ${{ matrix.target-version }}
           shell: bash
-          run: ./pack.sh autotools-${{ needs.check.outputs.release-version }}-openbsd-${{ matrix.target-version }}-amd64
+          run: ./autotools.sh autotools-${{ needs.check.outputs.release-version }}-openbsd-${{ matrix.target-version }}-amd64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -116,9 +116,7 @@ jobs:
           operating_system: netbsd
           version: ${{ matrix.target-version }}
           shell: bash
-          run: |
-            export SSL_CERT_FILE="$PWD/cacert.pem"
-            ./pack.sh autotools-${{ needs.check.outputs.release-version }}-netbsd-${{ matrix.target-version }}-amd64
+          run: ./autotools.sh autotools-${{ needs.check.outputs.release-version }}-netbsd-${{ matrix.target-version }}-amd64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -140,7 +138,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: ./pack.sh autotools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-arm64
+      - run: ./autotools.sh autotools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-arm64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -162,7 +160,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: ./pack.sh autotools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-x86_64
+      - run: ./autotools.sh autotools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-x86_64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -186,7 +184,7 @@ jobs:
 
       - run: |
           cat > run.sh <<EOF
-          ./pack.sh autotools-${{ needs.check.outputs.release-version }}-linux-glibc-${{ matrix.target-arch }}
+          ./autotools.sh autotools-${{ needs.check.outputs.release-version }}-linux-glibc-${{ matrix.target-arch }}
           EOF
 
           chmod +x run.sh
@@ -232,7 +230,7 @@ jobs:
 
       - run: |
           cat > run.sh <<EOF
-          ./pack.sh autotools-${{ needs.check.outputs.release-version }}-linux-musl-${{ matrix.target-arch }}
+          ./autotools.sh autotools-${{ needs.check.outputs.release-version }}-linux-musl-${{ matrix.target-arch }}
           EOF
 
           chmod +x run.sh
@@ -281,9 +279,20 @@ jobs:
       - run: ls -a
 
       - run: |
-          tar xf autotools-${{ needs.check.outputs.release-version }}-linux-glibc-x86_64.tar.xz
+          cat > notes.md <<EOF
+          ## how to install
 
-          printf '```yaml\n' > notes.md
+          \`\`\`bash
+          sudo install -d -g \`id -g\` -o \`id -u\` /opt/autotools-2024.10.04-linux-glibc-x86_64
+          tar xPf autotools-2024.10.04-linux-glibc-x86_64.tar.xz
+          \`\`\`
+
+          ## included softwares
+
+          \`\`\`yaml
+          EOF
+
+          tar xf autotools-${{ needs.check.outputs.release-version }}-linux-glibc-x86_64.tar.xz
 
           for fp in opt/autotools-${{ needs.check.outputs.release-version }}-linux-glibc-x86_64/*.yml
           do
@@ -301,9 +310,14 @@ jobs:
           EOF
           done
 
-          printf '```\n' >> notes.md
+          cat >> notes.md <<EOF
 
-          printf 'sha256sum:\n```\n%s\n```\n' "$(sha256sum *.tar.xz)" >> notes.md
+          ## sha256sum
+
+          \`\`\`
+          $(sha256sum *.tar.xz)
+          \`\`\`
+          EOF
 
           # to avaid: failed to run git: fatal: not a git repository (or any of the parent directories): .git
           git -c init.defaultBranch=master init
