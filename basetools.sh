@@ -33,17 +33,17 @@ case $TARGET_OS_KIND in
     macos)
         X="${1#*-}"
         Y="${X#*-}"
-        PPKG_ARGS="--target=$Y" ;;
-    *)  PPKG_ARGS='--static'
+        PPKG_INSTALL_ARGS="--target=$Y" PPKG_SETUP_ARGS='' ;;
+    *)  PPKG_INSTALL_ARGS='--static'    PPKG_SETUP_ARGS='--syspm' ;
 esac
 
 PPKG_PKGS='coreutils findutils diffutils grep gsed gawk'
 
 run chmod a+x ppkg
 
-run ./ppkg setup --syspm
+run ./ppkg setup "$PPKG_SETUP_ARGS"
 run ./ppkg update
-run ./ppkg install "$PPKG_PKGS" "$PPKG_ARGS"
+run ./ppkg install "$PPKG_PKGS" "$PPKG_INSTALL_ARGS"
 
 run install -d "$1"
 

@@ -1016,32 +1016,6 @@ package_info_intltool() {
     PACKAGE_INSTALL='configure'
 }
 
-package_info_pkgconf() {
-    PACKAGE_SRC_URL='https://distfiles.ariadne.space/pkgconf/pkgconf-2.3.0.tar.xz'
-    PACKAGE_SRC_SHA='3a9080ac51d03615e7c1910a0a2a8df08424892b5f13b0628a204d3fcce0ea8b'
-    PACKAGE_INSTALL='configure'
-    PACKAGE_DOTWEAK='run ln -s pkgconf bin/pkg-config'
-}
-
-package_info_gmake() {
-    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz'
-    PACKAGE_SRC_SHA='dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3'
-    PACKAGE_INSTALL='configure --program-prefix=g --without-guile --without-dmalloc'
-    PACKAGE_DOTWEAK='run ln -s gmake bin/make'
-}
-
-package_info_patch() {
-    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/patch/patch-2.7.6.tar.xz'
-    PACKAGE_SRC_SHA='ac610bda97abe0d9f6b7c963255a11dcb196c25e337c61f94e4778d632f1d8fd'
-    PACKAGE_INSTALL='configure --disable-dependency-tracking --disable-gcc-warnings'
-}
-
-package_info_gm4() {
-    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz'
-    PACKAGE_SRC_SHA='63aede5c6d33b6d9b13511cd0be2cac046f2e70fd0a07aa9573a04a82783af96'
-    PACKAGE_INSTALL='configure'
-}
-
 package_info_autoconf() {
     PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz'
     PACKAGE_SRC_SHA='431075ad0bf529ef13cb41e9042c542381103e80015686222b8a9d4abef42a1c'
@@ -1113,6 +1087,46 @@ package_info_swig() {
     PACKAGE_DEP_PKG='libpcre2'
     PACKAGE_INSTALL='configure --enable-ccache --enable-cpp11-testing --with-popen --with-pcre --without-boost --without-android --without-java --without-javascript --without-python --without-perl5 --without-ruby --without-php --without-tcl --without-guile --without-octave --without-scilab --without-ocaml --without-mzscheme --without-csharp --without-lua --without-r --without-d --without-go'
 }
+
+
+package_info_gm4() {
+    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz'
+    PACKAGE_SRC_SHA='63aede5c6d33b6d9b13511cd0be2cac046f2e70fd0a07aa9573a04a82783af96'
+    PACKAGE_INSTALL='configure'
+}
+
+package_info_gmake() {
+    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz'
+    PACKAGE_SRC_SHA='dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3'
+    PACKAGE_INSTALL='configure --program-prefix=g --without-guile --without-dmalloc'
+    PACKAGE_DOTWEAK='run ln -s gmake bin/make'
+}
+
+package_info_patch() {
+    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/patch/patch-2.7.6.tar.xz'
+    PACKAGE_SRC_SHA='ac610bda97abe0d9f6b7c963255a11dcb196c25e337c61f94e4778d632f1d8fd'
+    PACKAGE_INSTALL='configure --disable-dependency-tracking --disable-gcc-warnings'
+}
+
+package_info_pkgconf() {
+    PACKAGE_SRC_URL='https://distfiles.ariadne.space/pkgconf/pkgconf-2.3.0.tar.xz'
+    PACKAGE_SRC_SHA='3a9080ac51d03615e7c1910a0a2a8df08424892b5f13b0628a204d3fcce0ea8b'
+    PACKAGE_INSTALL='configure'
+    PACKAGE_DOTWEAK='run ln -s pkgconf bin/pkg-config'
+}
+
+package_info_findutils() {
+    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/findutils/findutils-4.9.0.tar.xz'
+    PACKAGE_SRC_SHA='a2bfb8c09d436770edc59f50fa483e785b161a3b7b9d547573cb08065fd462fe'
+    PACKAGE_INSTALL='configure --disable-assert --without-selinux --with-included-regex'
+}
+
+package_info_diffutils() {
+    PACKAGE_SRC_URL='https://ftp.gnu.org/gnu/diffutils/diffutils-3.10.tar.xz'
+    PACKAGE_SRC_SHA='90e5e93cc724e4ebe12ede80df1634063c7a855692685919bfe60b556c9bd09e'
+    PACKAGE_INSTALL='configure --with-included-regex --disable-gcc-warnings'
+}
+
 
 help() {
     printf '%b\n' "\
