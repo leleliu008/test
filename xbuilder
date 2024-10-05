@@ -711,7 +711,7 @@ cmakew() {
         CMAKE="$(command -v cmake)" || abort 1 "command not found: cmake"
     fi
 
-    STR="$("$CMAKE" --help | gsed -n '/-S /p')"
+    STR="$("$CMAKE" --help | sed -n '/-S /p')"
 
     # https://stackoverflow.com/questions/11143062/getting-cmake-to-build-out-of-source-without-wrapping-scripts
     if [ -z "$STR" ] ; then
