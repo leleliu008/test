@@ -83,7 +83,8 @@ __setup_linux() {
 
 unset IFS
 
-PREFIX="/opt/$1"
+X="uctags-build-tools-$1-$2"
+PREFIX="/opt/$X"
 
 [ -z "$GID" ] && GID="$(id -g -n)"
 [ -z "$UID" ] && UID="$(id -u -n)"
@@ -92,9 +93,7 @@ unset sudo
 
 [ "$(id -u)" -eq 0 ] || sudo=sudo
 
-TARGET_OS_KIND="$(printf '%s\n' "$1" | cut -d- -f3)"
-
-__setup_$TARGET_OS_KIND
+__setup_${2%%-*}
 
 run $sudo install -d -g "$GID" -o "$UID" "$PREFIX"
 
@@ -103,7 +102,7 @@ run $sudo install -d -g "$GID" -o "$UID" "$PREFIX"
 run ./xbuilder install automake libtool pkgconf gmake findutils diffutils python3 --prefix="$PREFIX"
 
 if command -v bsdtar > /dev/null ; then
-    run bsdtar cvaPf "$1.tar.xz" "$PREFIX"
+    run bsdtar cvaPf "$X.tar.xz" "$PREFIX"
 else
-    run    tar cvJPf "$1.tar.xz" "$PREFIX"
+    run    tar cvJPf "$X.tar.xz" "$PREFIX"
 fi
