@@ -1,4 +1,4 @@
-name: publish basetools
+name: publish uctags-build-tools
 
 on:
   workflow_dispatch:
@@ -61,12 +61,12 @@ jobs:
           operating_system: freebsd
           version: ${{ matrix.target-version }}
           shell: bash
-          run: ./basetools.sh basetools-${{ needs.check.outputs.release-version }}-freebsd-${{ matrix.target-version }}-amd64
+          run: ./uctags-build-tools.sh uctags-build-tools-${{ needs.check.outputs.release-version }}-freebsd-${{ matrix.target-version }}-amd64
 
       - uses: actions/upload-artifact@v4
         with:
-          name: basetools-${{ needs.check.outputs.release-version }}-freebsd-${{ matrix.target-version }}-amd64.tar.xz
-          path: basetools-${{ needs.check.outputs.release-version }}-freebsd-${{ matrix.target-version }}-amd64.tar.xz
+          name: uctags-build-tools-${{ needs.check.outputs.release-version }}-freebsd-${{ matrix.target-version }}-amd64.tar.xz
+          path: uctags-build-tools-${{ needs.check.outputs.release-version }}-freebsd-${{ matrix.target-version }}-amd64.tar.xz
 
 
   openbsd:
@@ -88,12 +88,12 @@ jobs:
           operating_system: openbsd
           version: ${{ matrix.target-version }}
           shell: bash
-          run: ./basetools.sh basetools-${{ needs.check.outputs.release-version }}-openbsd-${{ matrix.target-version }}-amd64
+          run: ./uctags-build-tools.sh uctags-build-tools-${{ needs.check.outputs.release-version }}-openbsd-${{ matrix.target-version }}-amd64
 
       - uses: actions/upload-artifact@v4
         with:
-          name: basetools-${{ needs.check.outputs.release-version }}-openbsd-${{ matrix.target-version }}-amd64.tar.xz
-          path: basetools-${{ needs.check.outputs.release-version }}-openbsd-${{ matrix.target-version }}-amd64.tar.xz
+          name: uctags-build-tools-${{ needs.check.outputs.release-version }}-openbsd-${{ matrix.target-version }}-amd64.tar.xz
+          path: uctags-build-tools-${{ needs.check.outputs.release-version }}-openbsd-${{ matrix.target-version }}-amd64.tar.xz
 
   netbsd:
     needs: check
@@ -116,12 +116,12 @@ jobs:
           operating_system: netbsd
           version: ${{ matrix.target-version }}
           shell: bash
-          run: ./basetools.sh basetools-${{ needs.check.outputs.release-version }}-netbsd-${{ matrix.target-version }}-amd64
+          run: ./uctags-build-tools.sh uctags-build-tools-${{ needs.check.outputs.release-version }}-netbsd-${{ matrix.target-version }}-amd64
 
       - uses: actions/upload-artifact@v4
         with:
-          name: basetools-${{ needs.check.outputs.release-version }}-netbsd-${{ matrix.target-version }}-amd64.tar.xz
-          path: basetools-${{ needs.check.outputs.release-version }}-netbsd-${{ matrix.target-version }}-amd64.tar.xz
+          name: uctags-build-tools-${{ needs.check.outputs.release-version }}-netbsd-${{ matrix.target-version }}-amd64.tar.xz
+          path: uctags-build-tools-${{ needs.check.outputs.release-version }}-netbsd-${{ matrix.target-version }}-amd64.tar.xz
 
 
   macos-arm64:
@@ -138,12 +138,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: ./basetools.sh basetools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-arm64
+      - run: ./uctags-build-tools.sh uctags-build-tools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-arm64
 
       - uses: actions/upload-artifact@v4
         with:
-          name: basetools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-arm64.tar.xz
-          path: basetools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-arm64.tar.xz
+          name: uctags-build-tools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-arm64.tar.xz
+          path: uctags-build-tools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-arm64.tar.xz
 
 
   macos-x86_64:
@@ -160,15 +160,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: ./basetools.sh basetools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-x86_64
+      - run: ./uctags-build-tools.sh uctags-build-tools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-x86_64
 
       - uses: actions/upload-artifact@v4
         with:
-          name: basetools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-x86_64.tar.xz
-          path: basetools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-x86_64.tar.xz
+          name: uctags-build-tools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-x86_64.tar.xz
+          path: uctags-build-tools-${{ needs.check.outputs.release-version }}-macos-${{ matrix.target-version }}-x86_64.tar.xz
 
 
-  linux:
+  linux-glibc:
     needs: check
     if: needs.check.outputs.if-new-release == 'yes'
 
@@ -184,7 +184,53 @@ jobs:
 
       - run: |
           cat > run.sh <<EOF
-          ./basetools.sh basetools-${{ needs.check.outputs.release-version }}-linux-${{ matrix.target-arch }}
+          ./uctags-build-tools.sh uctags-build-tools-${{ needs.check.outputs.release-version }}-linux-glibc-${{ matrix.target-arch }}
+          EOF
+
+          chmod +x run.sh
+
+      # https://github.com/multiarch/qemu-user-static
+      - if: matrix.target-arch != 'x86_64'
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+      - if: matrix.target-arch == 'x86_64'
+        run: docker run -v $PWD:/root -w /root --name ubuntu         ubuntu:18.04 sh run.sh
+
+      - if: matrix.target-arch == 'aarch64'
+        run: docker run -v $PWD:/root -w /root --name ubuntu arm64v8/ubuntu:18.04 sh run.sh
+
+      - if: matrix.target-arch == 'ppc64le'
+        run: docker run -v $PWD:/root -w /root --name ubuntu ppc64le/ubuntu:18.04 sh run.sh
+
+      - if: matrix.target-arch == 'riscv64'
+        run: docker run -v $PWD:/root -w /root --name ubuntu riscv64/ubuntu sh run.sh
+
+      - if: matrix.target-arch == 's390x'
+        run: docker run -v $PWD:/root -w /root --name ubuntu   s390x/ubuntu:18.04 sh run.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags-build-tools-${{ needs.check.outputs.release-version }}-linux-glibc-${{ matrix.target-arch }}.tar.xz
+          path: uctags-build-tools-${{ needs.check.outputs.release-version }}-linux-glibc-${{ matrix.target-arch }}.tar.xz
+
+
+  linux-musl:
+    needs: check
+    if: needs.check.outputs.if-new-release == 'yes'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-arch: [x86_64, aarch64, ppc64le, riscv64, s390x]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          cat > run.sh <<EOF
+          ./uctags-build-tools.sh uctags-build-tools-${{ needs.check.outputs.release-version }}-linux-musl-${{ matrix.target-arch }}
           EOF
 
           chmod +x run.sh
@@ -210,12 +256,12 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: basetools-${{ needs.check.outputs.release-version }}-linux-${{ matrix.target-arch }}.tar.xz
-          path: basetools-${{ needs.check.outputs.release-version }}-linux-${{ matrix.target-arch }}.tar.xz
+          name: uctags-build-tools-${{ needs.check.outputs.release-version }}-linux-musl-${{ matrix.target-arch }}.tar.xz
+          path: uctags-build-tools-${{ needs.check.outputs.release-version }}-linux-musl-${{ matrix.target-arch }}.tar.xz
 
 
   publish:
-    needs: [check, freebsd, openbsd, netbsd, macos-arm64, macos-x86_64, linux]
+    needs: [check, freebsd, openbsd, netbsd, macos-arm64, macos-x86_64, linux-glibc, linux-musl]
     if: needs.check.outputs.if-new-release == 'yes'
 
     runs-on: ubuntu-latest
@@ -233,11 +279,22 @@ jobs:
       - run: ls -a
 
       - run: |
-          tar xf basetools-${{ needs.check.outputs.release-version }}-linux-x86_64.tar.xz
+          cat > notes.md <<EOF
+          ## how to install
 
-          printf '```yaml\n' > notes.md
+          \`\`\`bash
+          sudo install -d -g \`id -g\` -o \`id -u\` /opt/uctags-build-tools-2024.10.04-linux-glibc-x86_64
+          tar xPf uctags-build-tools-2024.10.04-linux-glibc-x86_64.tar.xz
+          \`\`\`
 
-          for fp in opt/basetools-${{ needs.check.outputs.release-version }}-linux-x86_64/*.yml
+          ## included softwares
+
+          \`\`\`yaml
+          EOF
+
+          tar xf uctags-build-tools-${{ needs.check.outputs.release-version }}-linux-glibc-x86_64.tar.xz
+
+          for fp in opt/uctags-build-tools-${{ needs.check.outputs.release-version }}-linux-glibc-x86_64/*.yml
           do
               fn=${fp##*/}
               PKGNAME=${fn%.yml}
@@ -253,9 +310,14 @@ jobs:
           EOF
           done
 
-          printf '```\n' >> notes.md
+          cat >> notes.md <<EOF
 
-          printf 'sha256sum:\n```\n%s\n```\n' "$(sha256sum *.tar.xz)" >> notes.md
+          ## sha256sum
+
+          \`\`\`
+          $(sha256sum *.tar.xz)
+          \`\`\`
+          EOF
 
           # to avaid: failed to run git: fatal: not a git repository (or any of the parent directories): .git
           git -c init.defaultBranch=master init
