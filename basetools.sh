@@ -27,14 +27,20 @@ run() {
     fi
 }
 
+unset PPKG_SETUP_ARGS
+
+unset TARGET
+
 TARGET_OS_KIND="$(printf '%s\n' "$1" | cut -d- -f3)"
 
 case $TARGET_OS_KIND in
     macos)
         X="${1#*-}"
         Y="${X#*-}"
-        PPKG_INSTALL_ARGS="--target=$Y" PPKG_SETUP_ARGS='' ;;
-    *)  PPKG_INSTALL_ARGS='--static'    PPKG_SETUP_ARGS='--syspm' ;
+        TARGET="$Y"
+        PPKG_INSTALL_ARGS="--target=$TARGET" ;;
+    *)  PPKG_INSTALL_ARGS='--static'
+        PPKG_SETUP_ARGS='--syspm'
 esac
 
 PPKG_PKGS='coreutils findutils diffutils grep gsed gawk'
@@ -51,7 +57,13 @@ DEST="$PWD/$1/"
 
 for PKGNAME in $PPKG_PKGS
 do
-    PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $PKGNAME --prefix)"
+    if [ -z "$TARGET" ] ; then
+        PKGSPEC="$PKGNAME"
+    else
+        PKGSPEC="$TARGET/$PKGNAME"
+    fi
+
+    PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $PKGSPEC --prefix)"
     run cd "$PACKAGE_INSTALLED_DIR"
     run cp -rf * "$DEST"
     run cd -
