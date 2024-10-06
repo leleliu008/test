@@ -71,7 +71,7 @@ __setup_linux() {
     case $ID in
         ubuntu)
             run apt-get -y update
-            run apt-get -y install curl xz-utils bzip2 cmake make pkg-config g++ linux-headers-generic
+            run apt-get -y install curl libarchive-tools cmake make pkg-config g++ linux-headers-generic
 
             run ln -sf /usr/bin/make /usr/bin/gmake
             ;;
