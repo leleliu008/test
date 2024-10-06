@@ -945,8 +945,8 @@ package_info_libz() {
 }
 
 package_info_libbz2() {
-    PACKAGE_SRC_URL='https://github.com/leleliu008/bzip2/archive/refs/tags/1.0.8.tar.gz'
-    PACKAGE_SRC_SHA='fb36d769189faaf841390fae88639fb02c79b87b0691a340fbbfc32b4f82b789'
+    PACKAGE_SRC_URL='https://github.com/leleliu008/bzip2/archive/refs/tags/1.0.8@2.tar.gz'
+    PACKAGE_SRC_SHA='13337d86c271b8e6f9cf4ea0b6fd6a1cd06b9b75c31fb4781ffbfcc6982c1bf0'
     PACKAGE_INSTALL='cmakew -DINSTALL_EXECUTABLES=OFF -DINSTALL_LIBRARIES=ON -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=OFF'
 }
 
