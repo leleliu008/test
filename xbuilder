@@ -1025,7 +1025,7 @@ package_info_perl_XML_Parser() {
 run install -d "$PACKAGE_INSTALL_DIR/lib/"
 run cp -L $SESSION_DIR/3rdroot/lib/libexpat.* $PACKAGE_INSTALL_DIR/lib/
 run export EXPATLIBPATH="$PACKAGE_INSTALL_DIR/lib"
-run export EXPATINCPATH=$SESSION_DIR/3rdroot/include"
+run export EXPATINCPATH="$SESSION_DIR/3rdroot/include"
 '
     PACKAGE_INSTALL='run perl Makefile.PL && run "$GMAKE" "--jobs=$BUILD_NJOBS" && run "$GMAKE" install'
 }
