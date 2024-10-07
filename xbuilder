@@ -1041,10 +1041,10 @@ run ln -s libtoolize bin/glibtoolize
 }
 
 package_info_ruby() {
-    PACKAGE_SRC_URL='https://cache.ruby-lang.org/pub/ruby/3.2/ruby-3.2.2.tar.gz'
-    PACKAGE_SRC_SHA='96c57558871a6748de5bc9f274e93f4b5aad06cd8f37befa0e8d94e7b8a423bc'
-    PACKAGE_DEP_PKG='libz libyaml libffi'
-    PACKAGE_INSTALL='configure --disable-dependency-tracking --enable-static --enable-shared --disable-docs'
+    PACKAGE_SRC_URL='https://cache.ruby-lang.org/pub/ruby/3.3/ruby-3.3.5.tar.gz'
+    PACKAGE_SRC_SHA='3781a3504222c2f26cb4b9eb9c1a12dbf4944d366ce24a9ff8cf99ecbce75196'
+    PACKAGE_DEP_PKG='libz libyaml libffi libopenssl'
+    PACKAGE_INSTALL='configure --disable-dependency-tracking'
 }
 
 package_info_python3() {
