@@ -99,7 +99,7 @@ run $sudo install -d -g "$GID" -o "$UID" "$PREFIX"
 
 [ -f cacert.pem ] && run export SSL_CERT_FILE="$PWD/cacert.pem"
 
-run ./xbuilder install automake libtool texinfo help2man intltool swig ruby python3 --prefix="$PREFIX"
+run ./xbuilder install automake libtool texinfo help2man intltool swig python3 --prefix="$PREFIX"
 
 if command -v bsdtar > /dev/null ; then
     run bsdtar cvaPf "$X.tar.xz" "$PREFIX"

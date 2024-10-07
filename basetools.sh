@@ -43,7 +43,7 @@ case $TARGET_OS_KIND in
         PPKG_SETUP_ARGS='--syspm'
 esac
 
-PPKG_PKGS='coreutils findutils diffutils grep gsed gawk'
+PPKG_PKGS='coreutils findutils diffutils grep gsed gawk xxd'
 
 run chmod a+x ppkg
 
