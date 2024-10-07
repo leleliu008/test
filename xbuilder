@@ -1023,9 +1023,9 @@ package_info_perl_XML_Parser() {
     PACKAGE_DEP_PKG='perl libexpat'
     PACKAGE_DOPATCH='
 run install -d "$PACKAGE_INSTALL_DIR/lib/"
-run cp -L $SESSION_DIR/3rdroot/libexpat/lib/libexpat.* $PACKAGE_INSTALL_DIR/lib/
+run cp -L $SESSION_DIR/3rdroot/lib/libexpat.* $PACKAGE_INSTALL_DIR/lib/
 run export EXPATLIBPATH="$PACKAGE_INSTALL_DIR/lib"
-run export EXPATINCPATH=$SESSION_DIR/3rdroot/libexpat/include"
+run export EXPATINCPATH=$SESSION_DIR/3rdroot/include"
 '
     PACKAGE_INSTALL='run perl Makefile.PL && run "$GMAKE" "--jobs=$BUILD_NJOBS" && run "$GMAKE" install'
 }
@@ -1051,7 +1051,7 @@ package_info_python3() {
     PACKAGE_SRC_URL='https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz'
     PACKAGE_SRC_SHA='e7de3240a8bc2b1e1ba5c81bf943f06861ff494b69fda990ce2722a504c6153d'
     PACKAGE_DEP_PKG='libz libbz2 liblzma libgdbm libexpat libsqlite3 libffi libopenssl perl'
-    PACKAGE_INSTALL='configure --with-system-expat --with-system-ffi --with-openssl=$SESSION_DIR/3rdroot/libopenssl --with-ensurepip=yes --with-lto --enable-ipv6 --enable-shared --enable-largefile --disable-option-checking --disable-nls --disable-debug --enable-loadable-sqlite-extensions --disable-profiling'
+    PACKAGE_INSTALL='configure --with-system-expat --with-system-ffi --with-openssl=$SESSION_DIR/3rdroot --with-ensurepip=yes --with-lto --enable-ipv6 --enable-shared --enable-largefile --disable-option-checking --disable-nls --disable-debug --enable-loadable-sqlite-extensions --disable-profiling'
     PACKAGE_DOPATCH='
 unset PYTHONHOME
 unset PYTHONPATH
