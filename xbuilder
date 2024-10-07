@@ -1049,6 +1049,7 @@ package_info_perl_XML_Parser() {
     PACKAGE_SRC_SHA='ad4aae643ec784f489b956abe952432871a622d4e2b5c619e8855accbfc4d1d8'
     PACKAGE_DEP_PKG='perl libexpat'
     PACKAGE_INSTALL="Makefile_PL EXPATLIBPATH=$SESSION_DIR/3rdroot/libexpat/lib EXPATINCPATH=$SESSION_DIR/3rdroot/libexpat/include"
+    PACKAGE_DOPATCH='export   LD_LIBRARY_PATH=$SESSION_DIR/3rdroot/libexpat/lib'
 }
 
 package_info_libtool() {
