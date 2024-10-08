@@ -756,7 +756,9 @@ configure() {
 install_the_given_package() {
     [ -z "$1" ] && abort 1 "install_the_given_package <PACKAGE-NAME> , <PACKAGE-NAME> is unspecified."
 
+    unset PACKAGE_SRC_URL
     unset PACKAGE_SRC_URI
+    unset PACKAGE_SRC_SHA
     unset PACKAGE_DEP_PKG
     unset PACKAGE_DOPATCH
     unset PACKAGE_INSTALL
@@ -1232,7 +1234,9 @@ case $1 in
         if [ "$2" = -v ] ; then
             for PACKAGE_NAME in $PACKAGE_NAMES
             do
+                unset PACKAGE_SRC_URL
                 unset PACKAGE_SRC_URI
+                unset PACKAGE_SRC_SHA
                 unset PACKAGE_DEP_PKG
                 unset PACKAGE_DOPATCH
                 unset PACKAGE_INSTALL
@@ -1244,7 +1248,12 @@ case $1 in
                     package_info_$PACKAGE_NAME
                 fi
 
-                printf '%-10s: %s\n' "$PACKAGE_NAME" "$PACKAGE_SRC_URL"
+                cat <<EOF
+$PACKAGE_NAME:
+    src-url: $PACKAGE_SRC_URL
+    src-sha: $PACKAGE_SRC_SHA
+
+EOF
             done
         else
             printf '%s\n' $PACKAGE_NAMES

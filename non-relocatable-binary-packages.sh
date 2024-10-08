@@ -81,13 +81,15 @@ __setup_linux() {
     esac
 }
 
+__build_and_pack() {
+    run $sudo install -d -g `id -g -n` -o `id -u -n` "$1"
+
+    run ./xbuilder install automake libtool texinfo help2man intltool swig $PKG --prefix="$1"
+
+    run bsdtar cvaPf "${1##*/}.tar.xz" "$1"
+}
+
 unset IFS
-
-X="non-relocatable-binary-packages-$1-$2"
-PREFIX="/opt/$X"
-
-[ -z "$GID" ] && GID="$(id -g -n)"
-[ -z "$UID" ] && UID="$(id -u -n)"
 
 unset sudo
 
@@ -95,14 +97,13 @@ unset sudo
 
 __setup_${2%%-*}
 
-run $sudo install -d -g "$GID" -o "$UID" "$PREFIX"
-
 [ -f cacert.pem ] && run export SSL_CERT_FILE="$PWD/cacert.pem"
 
-run ./xbuilder install automake libtool texinfo help2man intltool swig python3 --prefix="$PREFIX"
+case $2 in
+    openbsd-7.[0-4]-amd64)
+        PKG=
+        ;;
+    *)  PKG=python3
+esac
 
-if command -v bsdtar > /dev/null ; then
-    run bsdtar cvaPf "$X.tar.xz" "$PREFIX"
-else
-    run    tar cvJPf "$X.tar.xz" "$PREFIX"
-fi
+__build_and_pack "/opt/non-relocatable-binary-packages-$1-$2"
