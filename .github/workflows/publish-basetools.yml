@@ -237,7 +237,7 @@ jobs:
 
           printf '```yaml\n' > notes.md
 
-          for fp in opt/basetools-${{ needs.check.outputs.release-version }}-linux-x86_64/*.yml
+          for fp in basetools-${{ needs.check.outputs.release-version }}-linux-x86_64/*.yml
           do
               fn=${fp##*/}
               PKGNAME=${fn%.yml}

@@ -65,6 +65,7 @@ do
 
     PACKAGE_INSTALLED_DIR="$(./ppkg info-installed $PKGSPEC --prefix)"
     run cd "$PACKAGE_INSTALLED_DIR"
+    run cp .ppkg/RECEIPT.yml "$DEST/$PKGNAME.yml"
     run cp -rf * "$DEST"
     run cd -
 done
