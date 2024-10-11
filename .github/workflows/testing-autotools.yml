@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - run: dnf -y update
-      - run: dnf -y install git xz pkgconf
+      - run: dnf -y install git xz gcc
 
       - uses: actions/download-artifact@v4
         with:
