@@ -70,10 +70,10 @@ __setup_linux() {
 
     case $ID in
         ubuntu)
-            run apt-get -y update
-            run apt-get -y install curl libarchive-tools make g++ patchelf
+            run $sudo apt-get -y update
+            run $sudo apt-get -y install curl libarchive-tools make g++ patchelf
 
-            run ln -sf /usr/bin/make /usr/bin/gmake
+            run $sudo ln -sf /usr/bin/make /usr/bin/gmake
             ;;
         alpine)
             run apk update
