@@ -12,12 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: ./autotools.sh autotools-2014.10.12-linux-glibc-x86_64
+      - run: ./autotools.sh autotools-2024.10.12-linux-glibc-x86_64
 
       - uses: actions/upload-artifact@v4
         with:
-          name: autotools-2014.10.12-linux-glibc-x86_64.tar.xz
-          path: autotools-2014.10.12-linux-glibc-x86_64.tar.xz
+          name: autotools-2024.10.12-linux-glibc-x86_64.tar.xz
+          path: autotools-2024.10.12-linux-glibc-x86_64.tar.xz
 
   fedora:
     needs: ubuntu
