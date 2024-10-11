@@ -1,0 +1,45 @@
+name: testing autotools
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  ubuntu:
+
+    runs-on: ubuntu-latest
+
+    container: ubuntu:18.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: ./autotools.sh autotools-2014.10.12-linux-glibc-x86_64
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: autotools-2014.10.12-linux-glibc-x86_64.tar.xz
+          path: autotools-2014.10.12-linux-glibc-x86_64.tar.xz
+
+  fedora:
+    needs: ubuntu
+
+    runs-on: ubuntu-latest
+
+    container: fedora
+
+    steps:
+      - run: dnf -y update
+      - run: dnf -y install xz
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '*'
+          path: .
+          merge-multiple: true
+
+      - run: ls -a
+
+      - run: tar xPf autotools-2024.10.12-linux-glibc-x86_64.tar.xz
+
+      - run: /opt/autotools-2024.10.12-linux-glibc-x86_64/bin/perl --version

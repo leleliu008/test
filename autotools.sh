@@ -16,7 +16,7 @@ run() {
 }
 
 __setup_freebsd() {
-    run sudo pkg install -y coreutils cmake gmake gcc pkgconf
+    run sudo pkg install -y coreutils gmake gcc
 
     run sudo ln -sf /usr/local/bin/gln        /usr/bin/ln
     run sudo ln -sf /usr/local/bin/gmake      /usr/bin/make
@@ -31,7 +31,7 @@ __setup_freebsd() {
 }
 
 __setup_openbsd() {
-    run sudo pkg_add coreutils cmake gmake gcc%11 pkgconf libarchive
+    run sudo pkg_add coreutils gmake gcc%11 libarchive
 
     run sudo ln -sf /usr/local/bin/gln        /usr/bin/ln
     run sudo ln -sf /usr/local/bin/gmake      /usr/bin/make
@@ -47,7 +47,7 @@ __setup_openbsd() {
 
 __setup_netbsd() {
     run sudo pkgin -y update
-    run sudo pkgin -y install coreutils cmake gmake pkg-config bsdtar
+    run sudo pkgin -y install coreutils gmake bsdtar
 
     run sudo ln -sf /usr/pkg/bin/gln        /usr/bin/ln
     run sudo ln -sf /usr/pkg/bin/gmake      /usr/bin/make
@@ -71,22 +71,17 @@ __setup_linux() {
     case $ID in
         ubuntu)
             run apt-get -y update
-            run apt-get -y install curl xz-utils cmake make pkg-config g++ linux-headers-generic
+            run apt-get -y install curl libarchive-tools make g++ patchelf
 
             run ln -sf /usr/bin/make /usr/bin/gmake
             ;;
         alpine)
             run apk update
-            run apk add cmake make pkgconf g++ linux-headers libarchive-tools
+            run apk add libarchive-tools make g++
     esac
 }
 
 unset IFS
-
-PREFIX="/opt/$1"
-
-[ -z "$GID" ] && GID="$(id -g -n)"
-[ -z "$UID" ] && UID="$(id -u -n)"
 
 unset sudo
 
@@ -96,14 +91,16 @@ TARGET_OS_KIND="$(printf '%s\n' "$1" | cut -d- -f3)"
 
 __setup_$TARGET_OS_KIND
 
-run $sudo install -d -g "$GID" -o "$UID" "$PREFIX"
+PREFIX="/opt/$1"
+
+run $sudo install -d -g `id -g -n` -o `id -u -n` "$PREFIX"
 
 [ -f cacert.pem ] && run export SSL_CERT_FILE="$PWD/cacert.pem"
 
 run ./xbuilder install automake libtool pkgconf gmake --prefix="$PREFIX"
 
-if command -v bsdtar > /dev/null ; then
-    run bsdtar cvaPf "$1.tar.xz" "$PREFIX"
-else
-    run    tar cvJPf "$1.tar.xz" "$PREFIX"
-fi
+run cp -L `gcc -print-file-name=libcrypt.so.1` "$PREFIX/lib/"
+LIBPERL_DIR="$(patchelf --print-rpath          "$PREFIX/bin/perl")"
+run patchelf --set-rpath "$PREFIX/lib" "$LIBPERL_DIR/libperl.so"
+
+run bsdtar cvaPf "$1.tar.xz" "$PREFIX"
