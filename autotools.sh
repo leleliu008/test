@@ -101,6 +101,9 @@ run ./xbuilder install automake libtool pkgconf gmake --prefix="$PREFIX"
 
 run cp -L `gcc -print-file-name=libcrypt.so.1` "$PREFIX/lib/"
 LIBPERL_DIR="$(patchelf --print-rpath          "$PREFIX/bin/perl")"
+run ls -l "$LIBPERL_DIR/libperl.so"
+run id -g -n
+run id -u -n
 run patchelf --set-rpath "$PREFIX/lib" "$LIBPERL_DIR/libperl.so"
 
 run bsdtar cvaPf "$1.tar.xz" "$PREFIX"
