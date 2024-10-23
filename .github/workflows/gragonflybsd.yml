@@ -32,6 +32,10 @@ jobs:
           run: |
             echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
             set -x
+            uname -s
+            uname -m
+            uname -r
+            cat /etc/os-release
             id
             pwd
             ls
