@@ -29,7 +29,8 @@ jobs:
           usesh: true
           sync: rsync
           copyback: true
-          prepare: |
+          run: |
+            echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
             set -x
             id
             pwd
