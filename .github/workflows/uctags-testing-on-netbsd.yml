@@ -32,7 +32,10 @@ jobs:
             }
 
             run sudo pkgin -y update
-            run sudo pkgin -y install automake autoconf gmake pkg-config jansson libyaml libxml2 libiconv
+            run sudo pkgin -y install automake autoconf gmake pkg-config jansson libyaml libxml2 libiconv || {
+              run cat /var/db/pkgin/pkg_install-err.log
+              exit 1
+            }
 
             run cc --version
 
