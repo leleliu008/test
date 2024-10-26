@@ -38,7 +38,11 @@ jobs:
             cat /etc/os-release
             id
             pwd
-            ls
-            touch hahaha.txt
+            ls /usr/local
+            ls /usr/local/bin
+            sudo pkg update -y
+            sudo pkg install -y gcc11
+            ls /usr/local
+            ls /usr/local/bin
 
       - run: ls
