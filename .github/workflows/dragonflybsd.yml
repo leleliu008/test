@@ -40,8 +40,8 @@ jobs:
             pwd
             ls /usr/local
             ls /usr/local/bin
-            sudo pkg update -y
-            sudo pkg install -y gcc11
+            pkg update -y
+            pkg install -y gcc11
             ls /usr/local
             ls /usr/local/bin
 
