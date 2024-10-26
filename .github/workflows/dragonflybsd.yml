@@ -44,11 +44,13 @@ jobs:
             pkg install -y gcc11
             ls /usr/local
             ls /usr/local/bin
+            ls /usr/libexec/gcc80/
+            echo "$PATH"
 
       - run: ls
 
   dragonflybsd:
-
+    if: false
     runs-on: ubuntu-latest
 
     strategy:
