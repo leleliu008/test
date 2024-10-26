@@ -44,7 +44,10 @@ jobs:
             pkg install -y gcc11
             ls /usr/local
             ls /usr/local/bin
+            ls /usr/libexec/
             ls /usr/libexec/gcc80/
+            command -v gcc
+            command -v g++
             echo "$PATH"
 
       - run: ls
