@@ -38,10 +38,12 @@ jobs:
             cat /etc/os-release
             id
             pwd
+            ls /usr/bin
             ls /usr/local
             ls /usr/local/bin
             pkg update -y
             pkg install -y gcc11
+            ls /usr/bin
             ls /usr/local
             ls /usr/local/bin
             ls /usr/libexec/
