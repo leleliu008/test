@@ -1,0 +1,121 @@
+name: publish ppkg-core
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  freebsd:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        freebsd-version: ['14.1', '14.0', '13.4', '13.3', '13.2']
+        # https://archive.freebsd.org/old-releases/amd64/
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: install -d out/
+
+      - run: mv fonts.conf out/
+
+      - run: curl -LO https://raw.githubusercontent.com/adobe-fonts/source-code-pro/release/OTF/SourceCodePro-Light.otf
+      - run: mv *.otf out/
+
+      - uses: cross-platform-actions/action@master
+        with:
+          operating_system: freebsd
+          version: ${{ matrix.freebsd-version }}
+          shell: bash
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
+
+            run ./ppkg setup --syspm
+            run ./ppkg update
+            run ./ppkg install uppm@0.15.4 --static --profile=debug
+            run ./ppkg pack    uppm@0.15.4
+
+            for item in *.c
+            do
+              cc -std=c99 -Os -flto -Wl,-s -static -o "out/${item%.c}" "$item"
+            done
+
+      - run: tar vxf uppm*.tar.xz -C out --strip-components=1
+      - run: mv out/bin/uppm out/
+      - run: rm -rf out/bin
+      - run: rm -rf out/share
+      - run: rm -rf out/.ppkg
+
+      - run: |
+          DIRNAME="ppkg-core-${{ needs.base.outputs.release-version }}-freebsd-${{ matrix.freebsd-version }}-amd64"
+          mv out "$DIRNAME"
+          tar cJvf "$DIRNAME.tar.xz" "$DIRNAME"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ppkg-core---freebsd-${{ matrix.freebsd-version }}-amd64.tar.xz
+          path: ppkg-core-*-freebsd-${{ matrix.freebsd-version }}-amd64.tar.xz
+
+
+  openbsd:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        openbsd-version: ['7.6', '7.5', '7.4', '7.3', '7.2']
+        # https://cdn.openbsd.org/pub/OpenBSD/
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: install -d out/
+
+      - run: mv fonts.conf out/
+
+      - run: curl -LO https://raw.githubusercontent.com/adobe-fonts/source-code-pro/release/OTF/SourceCodePro-Light.otf
+      - run: mv *.otf out/
+
+      - uses: cross-platform-actions/action@master
+        with:
+          operating_system: openbsd
+          version: ${{ matrix.openbsd-version }}
+          shell: bash
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
+
+            run ./ppkg setup  --syspm
+            run ./ppkg update
+            run ./ppkg install uppm@0.15.4 --profile=debug
+            run ./ppkg pack    uppm@0.15.4
+
+            for item in *.c
+            do
+              cc -std=c99 -Os -flto -Wl,-s -static -o "out/${item%.c}" "$item"
+            done
+
+      - run: tar vxf uppm*.tar.xz -C out --strip-components=1
+      - run: mv out/bin/uppm out/
+      - run: rm -rf out/bin
+      - run: rm -rf out/share
+      - run: rm -rf out/.ppkg
+
+      - run: |
+          DIRNAME="ppkg-core-${{ needs.base.outputs.release-version }}-openbsd-${{ matrix.openbsd-version }}-amd64"
+          mv out "$DIRNAME"
+          tar cJvf "$DIRNAME.tar.xz" "$DIRNAME"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ppkg-core---openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
+          path: ppkg-core-*-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
