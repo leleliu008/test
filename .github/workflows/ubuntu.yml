@@ -11,15 +11,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: build.d
+    container: ubuntu:18.04
 
     steps:
-      - uses: actions/checkout@v4
-
-      - run: install -d build.d
-        working-directory: ${{ github.workspace }}
-
-      - run: pwd
-      - run: ls ${{ github.workspace }}
+      - run: apt -y update
+      - run: apt -y install gcc
+      - run: gcc -print-file-name=libcrypt.a
+      - run: gcc -print-file-name=libcrypt.so
+      - run: gcc -print-file-name=libcrypt.so.1
