@@ -1,0 +1,32 @@
+name: xcpkg
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-version: ['15.0', '14.0', '13.0', '12.0', '11.0', '10.15']
+        target-arch: ['x86_64', 'arm64']
+
+    runs-on: macos-15
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/xcpkg/master/xcpkg
+      - run: chmod a+x xcpkg
+
+      - run: ./xcpkg about
+      - run: ./xcpkg setup
+      - run: ./xcpkg update
+      - run: ./xcpkg install MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}/tic
+      - run: ./xcpkg pack    MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}/tic
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tic---MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}.tar.xz
+          path: tic-*.tar.xz
+
+
