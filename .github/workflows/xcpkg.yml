@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  build:
 
     strategy:
       fail-fast: false
@@ -24,9 +24,33 @@ jobs:
       - run: ./xcpkg install MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}/tic
       - run: ./xcpkg pack    MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}/tic
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: tic---MacOSX-${{ matrix.target-version }}-${{ matrix.target-arch }}.tar.xz
           path: tic-*.tar.xz
 
 
+
+  publish:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '*'
+          path: .
+          merge-multiple: true
+
+      - run: ls -a
+
+      - run: |
+          # to avaid: failed to run git: fatal: not a git repository (or any of the parent directories): .git
+          git -c init.defaultBranch=master init
+          git remote add origin ${{ github.repositoryUrl }}
+
+      - run: gh release create `date +%Y.%m.%d` *.tar.xz
