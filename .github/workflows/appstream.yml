@@ -34,6 +34,9 @@ jobs:
 
           run uname -a
 
+          run apk update
+          run apk add g++ libc-dev linux-headers
+
           run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           run chmod a+x ppkg
 
