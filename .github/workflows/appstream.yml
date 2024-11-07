@@ -36,8 +36,13 @@ jobs:
 
           run wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           run chmod a+x ppkg
+
           run ./ppkg setup
           run ./ppkg update
+
+          sed -i '/^dep-pkg: /s|systemd||'       ~/.ppkg/repos.d/official-core/formula/appstream.yml
+          sed -i 's|systemd=true|systemd=false|' ~/.ppkg/repos.d/official-core/formula/appstream.yml
+
           run ./ppkg install appstream --static
           run ./ppkg pack    appstream
           EOF
