@@ -47,7 +47,7 @@ jobs:
           sed -i 's|systemd=true|systemd=false|' ~/.ppkg/repos.d/official-core/formula/appstream.yml
 
           run ./ppkg install appstream --static
-          run ./ppkg pack    appstream
+          run ./ppkg pack    appstream --exclude include/ --exclude lib/
           EOF
 
           chmod +x run.sh
