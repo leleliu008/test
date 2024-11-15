@@ -16,8 +16,8 @@ jobs:
     steps:
       - run: |
           cat > run.sh <<EOF
-          apk update
-          apk add gcc
+          apt update -y
+          apt install -y gcc
           EOF
 
       # https://github.com/multiarch/qemu-user-static
