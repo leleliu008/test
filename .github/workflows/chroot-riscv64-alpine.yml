@@ -19,6 +19,7 @@ jobs:
           pwd
           wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           chmod a+x ppkg
+          export GITHUB_ACTIONS=true
           ./ppkg setup
           ./ppkg update
           ./ppkg install uctags --static
