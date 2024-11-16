@@ -28,8 +28,9 @@ jobs:
       - run: chmod +x alpine-chroot-install
       - run: sudo ./alpine-chroot-install -d /alpine -a riscv64 -p wget -p g++
       - run: /alpine/enter-chroot sh run.sh
-      - run: sudo install -g `id -g` -o `id -u` /alpine/${{ github.workspace }}/uctags-*-linux-riscv64.tar.xz .
+      - run: ls -l
       - run: /alpine/destroy
+      - run: ls -l
 
       - uses: actions/upload-artifact@v4
         with:
