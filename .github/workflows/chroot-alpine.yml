@@ -75,7 +75,7 @@ jobs:
           run readelf -h ctags
           run readelf -d ctags
 
-          run ctags --version
+          run ./ctags --version
 
           run make check V=1
           run make roundtrip
