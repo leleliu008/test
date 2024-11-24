@@ -69,7 +69,7 @@ jobs:
           run apk add libc-dev gcc make automake autoconf pkgconf python3 diffutils pcre2-dev jansson-dev yaml-dev libxml2-dev
 
           run ./autogen.sh
-          run ./configure
+          run ./configure --enable-debugging
           run make
 
           run readelf -h ctags
@@ -79,6 +79,8 @@ jobs:
 
           run make check V=1
           run make roundtrip
+          run make tmain CI=1 CTAGS_DEP= READTAGS_DEP= OPTSCRIPT_DEP=
+          run make units CI=1 CTAGS_DEP=
           EOF
 
       - run: curl -LO https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/master/alpine-chroot-install
