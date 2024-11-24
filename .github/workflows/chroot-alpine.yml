@@ -54,6 +54,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          repository: universal-ctags/ctags
 
       - run: |
           cat > run.sh <<EOF
