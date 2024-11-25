@@ -12,6 +12,8 @@ jobs:
       matrix:
         version: ['16.04', '18.04', '20.04', '21.04', '22.04', '23.04', '24.04', latest, edge]
  
+    contianer: ubuntu:${{ matrix.version }}
+
     steps:
       - run: |
           cat > test.c <<EOF
@@ -21,13 +23,18 @@ jobs:
             return 0;
           }
           EOF
-      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/gcc-13.1.0-linux-glibc-x86_64.tar.xz
-      - run: tar xf gcc-13.1.0-linux-glibc-x86_64.tar.xz --strip-components=1
+      - run: apt -y update
+      - run: apt -y install curl
 
-      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/binutils-2.41-linux-glibc-x86_64.tar.xz
-      - run: tar xf binutils-2.41-linux-glibc-x86_64.tar.xz --strip-components=1
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/ndk-pkg
+      - run: chmod +x ndk-pkg
 
-      - run: bin/gcc -Os -s -flto -static test.c
-      - run: bin/readelf -h a.out
-      - run: bin/readelf -d a.out
+      - run: ./ndk-pkg about
+      - run: ./ndk-pkg setup
+      - run: ./ndk-pkg sysinfo
+
+      - run: ~/.ndk-pkg/core/bin/gcc -Os -s -flto -static test.c
+      - run: ~/.ndk-pkg/core/bin/readelf -h a.out
+      - run: ~/.ndk-pkg/core/bin/readelf -d a.out
+
       - run: ./a.out
