@@ -33,7 +33,7 @@ jobs:
       - run: ./ndk-pkg setup
       - run: ./ndk-pkg sysinfo
 
-      - run: ~/.ndk-pkg/core/bin/gcc -Os -s -flto -static test.c
+      - run: ~/.ndk-pkg/core/bin/gcc -Os -s -flto test.c
       - run: ~/.ndk-pkg/core/bin/readelf -h a.out
       - run: ~/.ndk-pkg/core/bin/readelf -d a.out
 
