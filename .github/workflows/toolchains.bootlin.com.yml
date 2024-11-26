@@ -19,8 +19,13 @@ jobs:
           cat > run.sh <<EOF
           set -ex
 
-          /lib64/ld-linux-x86-64.so.2 --version
-          /lib64/ld-linux-x86-64.so.2 --version | sed -n '/2\.[0-9][0-9]/p' | sed 's/.*\(2\.[0-9][0-9]\).*/\1/'
+          ldd --version
+          ldd --version | sed -n '/2\.[0-9][0-9]/p' | sed 's/.*\(2\.[0-9][0-9]\).*/\1/'
+
+          if [ -f /lib64/ld-linux-x86-64.so.2 ] ; then
+            /lib64/ld-linux-x86-64.so.2 --version
+            /lib64/ld-linux-x86-64.so.2 --version | sed -n '/2\.[0-9][0-9]/p' | sed 's/.*\(2\.[0-9][0-9]\).*/\1/'
+          fi
 
           apt update -y
           apt install -y curl xz-utils
@@ -40,7 +45,7 @@ jobs:
 
           cat test.c
 
-          x86-64--glibc--stable-2024.05-1/bin/x86_64-linux-gcc test.c
+          toolchain/bin/x86_64-linux-gcc test.c
           ./a.out
           EOF
 
