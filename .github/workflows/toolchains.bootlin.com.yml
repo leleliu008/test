@@ -28,7 +28,7 @@ jobs:
           fi
 
           apt update -y
-          apt install -y curl xz-utils
+          apt install -y curl tar gzip xz-utils bzip2
 
           install -d toolchain
 
