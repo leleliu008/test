@@ -22,11 +22,6 @@ jobs:
           ldd --version
           ldd --version | sed -n '/2\.[0-9][0-9]/p' | sed 's/.*\(2\.[0-9][0-9]\).*/\1/'
 
-          if [ -f /lib64/ld-linux-x86-64.so.2 ] ; then
-            /lib64/ld-linux-x86-64.so.2 --version
-            /lib64/ld-linux-x86-64.so.2 --version | sed -n '/2\.[0-9][0-9]/p' | sed 's/.*\(2\.[0-9][0-9]\).*/\1/'
-          fi
-
           apt update -y
           apt install -y curl tar gzip xz-utils bzip2
 
