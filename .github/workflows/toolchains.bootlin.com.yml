@@ -19,11 +19,16 @@ jobs:
           cat > run.sh <<EOF
           set -ex
 
+          /lib64/ld-linux-x86-64.so.2 --version
+          /lib64/ld-linux-x86-64.so.2 --version | sed -n '/2\.[0-9][0-9]/p' | sed 's/.*\(2\.[0-9][0-9]\).*/\1/'
+
           apt update -y
           apt install -y curl xz-utils
 
+          install -d toolchain
+
           curl -LO https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2024.05-1.tar.xz
-          tar xf x86-64--glibc--stable-2024.05-1.tar.xz
+          tar xf x86-64--glibc--stable-*.tar.xz -C toolchain --strip-components=1
 
           echo '
           #include<stdio.h>
