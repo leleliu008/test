@@ -36,8 +36,8 @@ jobs:
 
           unset V
 
-          if [ -n "$GLIBC_VERSION" ] ; then
-            case $GLIBC_VERSION in
+          if [ -n "\$GLIBC_VERSION" ] ; then
+            case  "\$GLIBC_VERSION" in
               2.39) V='2024.05-1' ;;
               2.38) V='2023.11-1' ;;
               2.37) V='2023.08-1' ;;
@@ -46,17 +46,17 @@ jobs:
               2.34) V='2021.11-5' ;;
             esac
 
-            if [ -z "$V" ] ; then
-              if [ "$GLIBC_VERSION" -ge 2.40 ] ; then
+            if [ -z "\$V" ] ; then
+              if [ "\$GLIBC_VERSION" -ge 2.40 ] ; then
                 V='2024.05-1'
-              elif [ "$GLIBC_VERSION" -le 2.33 ] ; then
+              elif [ "\$GLIBC_VERSION" -le 2.33 ] ; then
                 V='2021.11-5'
               fi
             fi
           fi
 
-          curl -LO https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-$V.tar.xz
-          tar xf x86-64--glibc--stable-$V.tar.xz -C toolchain --strip-components=1
+          curl -LO https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-\$V.tar.xz
+          tar xf x86-64--glibc--stable-\$V.tar.xz -C toolchain --strip-components=1
 
           echo '
           #include<stdio.h>
