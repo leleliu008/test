@@ -38,25 +38,27 @@ jobs:
 
           if [ -n "\$GLIBC_VERSION" ] ; then
             case  "\$GLIBC_VERSION" in
-              2.39) V='2024.05-1' ;;
-              2.38) V='2023.11-1' ;;
-              2.37) V='2023.08-1' ;;
-              2.36) V='2022.08-1' ;;
-              2.35) V='2022.08-1' ;;
-              2.34) V='2021.11-5' ;;
+              2.39) V='2024.05-1' ; X=tar.xz  ;;
+              2.38) V='2023.11-1' ; X=tar.bz2 ;;
+              2.37) V='2023.08-1' ; X=tar.bz2 ;;
+              2.36) V='2022.08-1' ; X=tar.bz2 ;;
+              2.35) V='2022.08-1' ; X=tar.bz2 ;;
+              2.34) V='2021.11-5' ; X=tar.bz2 ;;
             esac
 
             if [ -z "\$V" ] ; then
               if [ "\$GLIBC_VERSION" -ge 2.40 ] ; then
                 V='2024.05-1'
+                X=tar.xz
               elif [ "\$GLIBC_VERSION" -le 2.33 ] ; then
                 V='2021.11-5'
+                X=tar.bz2
               fi
             fi
           fi
 
-          curl -LO https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-\$V.tar.xz
-          tar xf x86-64--glibc--stable-\$V.tar.xz -C toolchain --strip-components=1
+          curl -LO https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-\$V.\$X
+          tar xf x86-64--glibc--stable-\$V.\$X -C toolchain --strip-components=1
 
           echo '
           #include<stdio.h>
