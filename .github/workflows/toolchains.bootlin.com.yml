@@ -39,17 +39,17 @@ jobs:
               2.36) V='2022.08-1' ; X=tar.bz2 ;;
               2.35) V='2022.08-1' ; X=tar.bz2 ;;
               2.34) V='2021.11-5' ; X=tar.bz2 ;;
-            esac
+              2.*)
+                  GLIBC_VERSION_MINOR="\$(printf '%s\n' "\$GLIBC_VERSION" | cut -d. -f2)"
 
-            if [ -z "\$V" ] ; then
-              if [ "\$GLIBC_VERSION" -ge 2.40 ] ; then
-                V='2024.05-1'
-                X=tar.xz
-              elif [ "\$GLIBC_VERSION" -le 2.33 ] ; then
-                V='2021.11-5'
-                X=tar.bz2
-              fi
-            fi
+                  if [ "\$GLIBC_VERSION_MINOR" -ge 40 ] ; then
+                    V='2024.05-1'
+                    X=tar.xz
+                  elif [ "\$GLIBC_VERSION_MINOR" -le 33 ] ; then
+                    V='2021.11-5'
+                    X=tar.bz2
+                  fi
+            esac
           fi
 
           curl -LO https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-\$V.\$X
