@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ['16.04', '18.04', '20.04', '21.04', '22.04', '23.04', '24.04']
+        version: ['18.04', '20.04', '22.04', '24.04']
         target-arch: [x86_64]
           #target-arch: [x86_64, aarch64, ppc64le, riscv64, s390x]
  
