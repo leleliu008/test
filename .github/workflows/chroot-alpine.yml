@@ -43,7 +43,7 @@ jobs:
           path: uctags-*-linux-${{ matrix.target-arch }}.tar.xz
 
 
-  testing2:
+  chroot_qemu:
 
     runs-on: ubuntu-latest
 
