@@ -15,8 +15,6 @@ jobs:
     container: ubuntu:${{ matrix.version }}
 
     steps:
-      - uses: actions/checkout@v4
-
       - run: apt update -y
       - run: apt install -y patchelf curl gzip tar xz-utils vim
 
@@ -47,7 +45,8 @@ jobs:
       - run: install -d binutils
       - run: tar xf binutils-2.43.1-linux-glibc-x86_64.release.tar.xz -C binutils --strip-components=1
 
-      - run: ./relocate.sh
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/refs/heads/master/relocate.sh
+      - run: sh relocate.sh
 
       - run: binutils/bin/ld --version
       - run: binutils/bin/as --version
