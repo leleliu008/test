@@ -1,0 +1,33 @@
+name: glibc
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testing:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['16.04', '18.04', '20.04', '22.04', '24.04']
+ 
+    runs-on: ubuntu-latest
+    container: ubuntu:${{ matrix.version }}
+
+    steps:
+      - run: apt update -y
+      - run: apt install -y patchelf curl gzip tar xz-utils
+
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/glibc-2.40-linux-glibc-x86_64.tar.xz
+      - run: install -d glibc
+      - run: tar xf glibc-2.40-linux-glibc-x86_64.tar.xz -C glibc --strip-components=1
+
+      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" glibc/lib/libc.so.6
+      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" glibc/bin/getconf
+      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      glibc/bin/getconf
+
+      - run: glibc/lib/libc.so.6 --version
+      - run: glibc/lib/ld-linux-x86-64.so.2 --version
+
+      - run: glibc/bin/getconf -a
+      - run: glibc/bin/getconf GNU_LIBC_VERSION
