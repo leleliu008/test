@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - run: apt update -y
-      - run: apt install -y patchelf curl gzip tar xz-utils
+      - run: apt install -y patchelf curl gzip tar xz-utils vim
 
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/glibc-2.40-linux-glibc-x86_64.tar.xz
       - run: install -d glibc
@@ -40,3 +40,15 @@ jobs:
       - run: patchelf --set-rpath       "$PWD/glibc/lib"                      mold/bin/mold
 
       - run: mold/bin/mold --version
+
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/binutils-2.43.1-linux-glibc-x86_64.release.tar.xz
+      - run: install -d binutils
+      - run: tar xf binutils-2.43.1-linux-glibc-x86_64.release.tar.xz -C binutils --strip-components=1
+
+      - run: ./relocate.sh
+
+      - run: binutils/bin/ld --version
+      - run: binutils/bin/as --version
+      - run: binutils/bin/nm --version
+      - run: binutils/bin/strip --version
+      - run: binutils/bin/ranlib --version
