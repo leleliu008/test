@@ -31,3 +31,12 @@ jobs:
 
       - run: glibc/bin/getconf -a
       - run: glibc/bin/getconf GNU_LIBC_VERSION
+
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/mold-2.34.1-linux-glibc-x86_64.release.tar.xz
+      - run: install -d mold
+      - run: tar xf mold-2.34.1-linux-glibc-x86_64.release.tar.xz -C mold --strip-components=1
+
+      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" mold/bin/mold
+      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      mold/bin/mold
+
+      - run: mold/bin/mold --version
