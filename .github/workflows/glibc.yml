@@ -53,3 +53,12 @@ jobs:
       - run: binutils/bin/nm --version
       - run: binutils/bin/strip --version
       - run: binutils/bin/ranlib --version
+
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/appstream-1.0.3-linux-glibc-x86_64.tar.xz
+      - run: install -d appstream
+      - run: tar xf appstream-1.0.3-linux-glibc-x86_64.tar.xz -C appstream --strip-components=1
+
+      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" appstream/bin/appstreamcli
+      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      appstream/bin/appstreamcli
+
+      - run: appstream/bin/appstreamcli --version
