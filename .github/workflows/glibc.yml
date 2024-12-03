@@ -18,6 +18,8 @@ jobs:
       - run: apt update -y
       - run: apt install -y patchelf curl gzip tar xz-utils vim
 
+      ###############################################################################
+
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/glibc-2.40-linux-glibc-x86_64.tar.xz
       - run: install -d glibc
       - run: tar xf glibc-2.40-linux-glibc-x86_64.tar.xz -C glibc --strip-components=1
@@ -32,6 +34,8 @@ jobs:
       - run: glibc/bin/getconf -a
       - run: glibc/bin/getconf GNU_LIBC_VERSION
 
+      ###############################################################################
+
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/mold-2.34.1-linux-glibc-x86_64.release.tar.xz
       - run: install -d mold
       - run: tar xf mold-2.34.1-linux-glibc-x86_64.release.tar.xz -C mold --strip-components=1
@@ -40,6 +44,8 @@ jobs:
       - run: patchelf --set-rpath       "$PWD/glibc/lib"                      mold/bin/mold
 
       - run: mold/bin/mold --version
+
+      ###############################################################################
 
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/binutils-2.43.1-linux-glibc-x86_64.release.tar.xz
       - run: install -d binutils
@@ -54,6 +60,8 @@ jobs:
       - run: binutils/bin/strip --version
       - run: binutils/bin/ranlib --version
 
+      ###############################################################################
+
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/appstream-1.0.3-linux-glibc-x86_64.tar.xz
       - run: install -d appstream
       - run: tar xf appstream-1.0.3-linux-glibc-x86_64.tar.xz -C appstream --strip-components=1
@@ -62,3 +70,14 @@ jobs:
       - run: patchelf --set-rpath       "$PWD/glibc/lib"                      appstream/bin/appstreamcli
 
       - run: appstream/bin/appstreamcli --version
+
+      ###############################################################################
+
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/gcc-13.3.0-linux-glibc-x86_64.release.tar.xz
+      - run: install -d gcc
+      - run: tar xf gcc-*.tar.xz -C gcc --strip-components=1
+
+      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" gcc/bin/gcc
+      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      gcc/bin/gcc
+
+      - run: gcc/bin/gcc --version
