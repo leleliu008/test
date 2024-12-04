@@ -5,9 +5,7 @@ set -e
 SYSROOT="$PWD/glibc/lib"
 DYNAMIC_LOADER="$SYSROOT/ld-linux-x86-64.so.2"
 
-cd "$1"
-
-fs="$(find -type f)"
+fs="$(find "$1" -type f)"
 
 for f in $fs
 do
