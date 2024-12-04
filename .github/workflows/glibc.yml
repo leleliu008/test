@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - run: apt update -y
-      - run: apt install -y patchelf curl gzip tar xz-utils vim
+      - run: apt install -y patchelf curl gzip tar xz-utils vim zlib1g
 
       ###############################################################################
 
@@ -75,7 +75,7 @@ jobs:
 
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/tcc-0.9.27-linux-glibc-x86_64.release.tar.xz
       - run: install -d tcc
-      - run: tar xf tcc-*.tar.xz -C llvm --strip-components=1
+      - run: tar xf tcc-*.tar.xz -C tcc --strip-components=1
 
       - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" tcc/bin/tcc
       - run: patchelf --set-rpath       "$PWD/glibc/lib"                      tcc/bin/tcc
