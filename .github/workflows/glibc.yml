@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - run: apt update -y
-      - run: apt install -y curl
+      - run: apt install -y curl zlib1g
 
       ###############################################################################
 
@@ -105,6 +105,7 @@ jobs:
 
       - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" llvm/bin/clang
       - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      llvm/bin/clang
+      - run: ./patchelf --add-rpath       /usr/lib/x86_64-linux-gnu             llvm/bin/clang
 
       - run: llvm/bin/clang --version
 
