@@ -24,23 +24,23 @@ jobs:
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/xxd-9.1.0200-linux-x86_64
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/patchelf-0.18.0-linux-x86_64
 
-      - run: mv xxd-9.1.0200-linux-x86_64    /usr/bin/xxd
-      - run: mv bsdtar-3.7.2-linux-x86_64    /usr/bin/bsdtar
-      - run: mv patchelf-0.18.0-linux-x86_64 /usr/bin/patchelf
+      - run: ln -s bsdtar-3.7.2-linux-x86_64    bsdtar
+      - run: ln -s xxd-9.1.0200-linux-x86_64    xxd
+      - run: ln -s patchelf-0.18.0-linux-x86_64 patchelf
 
-      - run: chmod +x /usr/bin/xxd
-      - run: chmod +x /usr/bin/bsdtar
-      - run: chmod +x /usr/bin/patchelf
+      - run: chmod +x xxd
+      - run: chmod +x bsdtar
+      - run: chmod +x patchelf
 
       ###############################################################################
 
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/glibc-2.40-linux-glibc-x86_64.tar.xz
       - run: install -d glibc
-      - run: bsdtar xf glibc-2.40-linux-glibc-x86_64.tar.xz -C glibc --strip-components=1
+      - run: ./bsdtar xf glibc-2.40-linux-glibc-x86_64.tar.xz -C glibc --strip-components=1
 
-      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" glibc/lib/libc.so.6
-      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" glibc/bin/getconf
-      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      glibc/bin/getconf
+      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" glibc/lib/libc.so.6
+      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" glibc/bin/getconf
+      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      glibc/bin/getconf
 
       - run: glibc/lib/libc.so.6 --version
       - run: glibc/lib/ld-linux-x86-64.so.2 --version
@@ -52,10 +52,10 @@ jobs:
 
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/mold-2.34.1-linux-glibc-x86_64.release.tar.xz
       - run: install -d mold
-      - run: bsdtar xf mold-2.34.1-linux-glibc-x86_64.release.tar.xz -C mold --strip-components=1
+      - run: ./bsdtar xf mold-2.34.1-linux-glibc-x86_64.release.tar.xz -C mold --strip-components=1
 
-      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" mold/bin/mold
-      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      mold/bin/mold
+      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" mold/bin/mold
+      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      mold/bin/mold
 
       - run: mold/bin/mold --version
 
@@ -63,7 +63,7 @@ jobs:
 
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/binutils-2.43.1-linux-glibc-x86_64.release.tar.xz
       - run: install -d binutils
-      - run: bsdtar xf binutils-2.43.1-linux-glibc-x86_64.release.tar.xz -C binutils --strip-components=1
+      - run: ./bsdtar xf binutils-2.43.1-linux-glibc-x86_64.release.tar.xz -C binutils --strip-components=1
 
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/refs/heads/master/relocate.sh
       - run: sh relocate.sh
@@ -78,10 +78,10 @@ jobs:
 
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/appstream-1.0.3-linux-glibc-x86_64.tar.xz
       - run: install -d appstream
-      - run: bsdtar xf appstream-1.0.3-linux-glibc-x86_64.tar.xz -C appstream --strip-components=1
+      - run: ./bsdtar xf appstream-1.0.3-linux-glibc-x86_64.tar.xz -C appstream --strip-components=1
 
-      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" appstream/bin/appstreamcli
-      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      appstream/bin/appstreamcli
+      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" appstream/bin/appstreamcli
+      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      appstream/bin/appstreamcli
 
       - run: appstream/bin/appstreamcli --version
 
@@ -89,10 +89,10 @@ jobs:
 
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/tcc-0.9.27-linux-glibc-x86_64.release.tar.xz
       - run: install -d tcc
-      - run: bsdtar xf tcc-*.tar.xz -C tcc --strip-components=1
+      - run: ./bsdtar xf tcc-*.tar.xz -C tcc --strip-components=1
 
-      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" tcc/bin/tcc
-      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      tcc/bin/tcc
+      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" tcc/bin/tcc
+      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      tcc/bin/tcc
 
       - run: tcc/bin/tcc -E -dM - < /dev/null
 
@@ -100,11 +100,11 @@ jobs:
 
       - run: curl -LO https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.5/LLVM-19.1.5-Linux-X64.tar.xz
       - run: install -d llvm
-      - run: bsdtar xf LLVM-*.tar.xz -C llvm --strip-components=1
+      - run: ./bsdtar xf LLVM-*.tar.xz -C llvm --strip-components=1
       - run: ls llvm/bin/
 
-      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" llvm/bin/clang
-      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      llvm/bin/clang
+      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" llvm/bin/clang
+      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      llvm/bin/clang
 
       - run: llvm/bin/clang --version
 
@@ -112,9 +112,9 @@ jobs:
 
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/gcc-13.3.0-linux-glibc-x86_64.release.tar.xz
       - run: install -d gcc
-      - run: bsdtar xf gcc-*.tar.xz -C gcc --strip-components=1
+      - run: ./bsdtar xf gcc-*.tar.xz -C gcc --strip-components=1
 
-      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" gcc/bin/gcc
-      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      gcc/bin/gcc
+      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" gcc/bin/gcc
+      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      gcc/bin/gcc
 
       - run: gcc/bin/gcc --version
