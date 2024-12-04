@@ -73,6 +73,17 @@ jobs:
 
       ###############################################################################
 
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/tcc-0.9.27-linux-glibc-x86_64.release.tar.xz
+      - run: install -d tcc
+      - run: tar xf tcc-*.tar.xz -C llvm --strip-components=1
+
+      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" tcc/bin/tcc
+      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      tcc/bin/tcc
+
+      - run: tcc/bin/tcc -E -dM - < /dev/null
+
+      ###############################################################################
+
       - run: curl -LO https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.5/LLVM-19.1.5-Linux-X64.tar.xz
       - run: install -d llvm
       - run: tar xf LLVM-*.tar.xz -C llvm --strip-components=1
