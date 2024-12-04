@@ -122,7 +122,7 @@ jobs:
 
       ###############################################################################
 
-      - run:
+      - run: |
           cat > gcc.specs <<EOF
           %rename cpp_options old_cpp_options
 
@@ -193,7 +193,7 @@ jobs:
 
           EOF
 
-      - run:
+      - run: |
           cat > test.c <<EOF
           #include<stdio.h>
           int main() {
