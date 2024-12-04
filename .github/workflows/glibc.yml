@@ -38,9 +38,11 @@ jobs:
       - run: install -d glibc
       - run: ./bsdtar xf glibc-2.40-linux-glibc-x86_64.tar.xz -C glibc --strip-components=1
 
-      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" glibc/lib/libc.so.6
-      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" glibc/bin/getconf
-      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      glibc/bin/getconf
+      - run: sh relocate.sh glibc
+
+        #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" glibc/lib/libc.so.6
+        #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" glibc/bin/getconf
+        #- run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      glibc/bin/getconf
 
       - run: glibc/lib/libc.so.6 --version
       - run: glibc/lib/ld-linux-x86-64.so.2 --version
@@ -48,14 +50,18 @@ jobs:
       - run: glibc/bin/getconf -a
       - run: glibc/bin/getconf GNU_LIBC_VERSION
 
+      - run: gsed -i "s|/home/leleliu008/.ppkg/installed/linux-glibc-x86_64/bebfceb3d2ea2461fde461b6c32a3e3cafc29d18ecec16e136e32b175caab53d|$PWD/glibc|g" glibc/lib/libc.so glibc/lib/libm.a glibc/lib/libm.so
+
       ###############################################################################
 
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/mold-2.34.1-linux-glibc-x86_64.release.tar.xz
       - run: install -d mold
       - run: ./bsdtar xf mold-2.34.1-linux-glibc-x86_64.release.tar.xz -C mold --strip-components=1
 
-      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" mold/bin/mold
-      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      mold/bin/mold
+      - run: sh relocate.sh mold
+
+        #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" mold/bin/mold
+        #- run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      mold/bin/mold
 
       - run: mold/bin/mold --version
 
@@ -66,7 +72,7 @@ jobs:
       - run: ./bsdtar xf binutils-2.43.1-linux-glibc-x86_64.release.tar.xz -C binutils --strip-components=1
 
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/refs/heads/master/relocate.sh
-      - run: sh relocate.sh
+      - run: sh relocate.sh binutils
 
       - run: binutils/bin/ld --version
       - run: binutils/bin/as --version
@@ -80,8 +86,10 @@ jobs:
       - run: install -d appstream
       - run: ./bsdtar xf appstream-1.0.3-linux-glibc-x86_64.tar.xz -C appstream --strip-components=1
 
-      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" appstream/bin/appstreamcli
-      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      appstream/bin/appstreamcli
+      - run: sh relocate.sh appstream
+
+        #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" appstream/bin/appstreamcli
+        #- run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      appstream/bin/appstreamcli
 
       - run: appstream/bin/appstreamcli --version
 
@@ -91,8 +99,10 @@ jobs:
       - run: install -d tcc
       - run: ./bsdtar xf tcc-*.tar.xz -C tcc --strip-components=1
 
-      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" tcc/bin/tcc
-      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      tcc/bin/tcc
+      - run: sh relocate.sh tcc
+
+        #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" tcc/bin/tcc
+        #- run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      tcc/bin/tcc
 
       - run: tcc/bin/tcc -E -dM - < /dev/null
 
@@ -103,10 +113,98 @@ jobs:
       - run: ./bsdtar xf x86-64--glibc--stable-2024.05-1.tar.xz -C toolchain --strip-components=1
       - run: ls toolchain/bin/
 
-      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" toolchain/bin/x86_64-linux-gcc
-      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      toolchain/bin/x86_64-linux-gcc
+      - run: sh relocate.sh toolchain
+
+        #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" toolchain/bin/x86_64-linux-gcc
+        #- run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      toolchain/bin/x86_64-linux-gcc
 
       - run: toolchain/bin/x86_64-linux-gcc --version
+
+      ###############################################################################
+
+      - run:
+          cat > gcc.specs <<EOF
+          %rename cpp_options old_cpp_options
+
+          *cpp_options:
+          -nostdinc -isystem $PWD/glibc/include -isystem include%s %(old_cpp_options)
+
+          *cc1:
+          %(cc1_cpu) -nostdinc -isystem $PWD/glibc/include -isystem include%s
+
+          *link_libgcc:
+          -L$PWD/glibc/lib -L .%s
+
+          *libgcc:
+          libgcc.a%s %:if-exists(libgcc_eh.a%s)
+
+          *startfile:
+          %{!shared: $PWD/glibc/lib/Scrt1.o} $PWD/glibc/lib/crti.o crtbeginS.o%s
+
+          *endfile:
+          crtendS.o%s $PWD/glibc/lib/crtn.o
+
+          *link:
+          -dynamic-linker $PWD/glibc/lib/ld-linux-x86-64.so.2 -rpath $PWD/glibc/lib -rpath $PWD/toolchain/lib -L $PWD/glibc/lib -L $PWD/toolchain/lib -nostdlib %{shared:-shared} %{static:-static} %{rdynamic:-export-dynamic}
+
+          *esp_link:
+
+
+          *esp_options:
+
+
+          *esp_cpp_options:
+
+
+          EOF
+
+                  cat > g++.specs <<EOF
+          %rename cpp_options old_cpp_options
+
+          *cpp_options:
+          -nostdinc -isystem $PWD/glibc/include -I $PPKG_HOME/core/include/c++/13.1.0 -I $PPKG_HOME/core/include/c++/13.1.0/x86_64-pc-linux-gnu -isystem include%s %(old_cpp_options)
+
+          *cc1:
+          %(cc1_cpu) -nostdinc -isystem $PWD/glibc/include -I $PPKG_HOME/core/include/c++/13.1.0 -I $PPKG_HOME/core/include/c++/13.1.0/x86_64-pc-linux-gnu -isystem include%s
+
+          *link_libgcc:
+          -L$PWD/glibc/lib -L .%s
+
+          *libgcc:
+          libgcc.a%s %:if-exists(libgcc_eh.a%s)
+
+          *startfile:
+          %{!shared: $PWD/glibc/lib/Scrt1.o} $PWD/glibc/lib/crti.o crtbeginS.o%s
+
+          *endfile:
+          crtendS.o%s $PWD/glibc/lib/crtn.o
+
+          *link:
+          -dynamic-linker $PWD/glibc/lib/ld-linux-x86-64.so.2 -rpath $PWD/glibc/lib -rpath $PWD/toolchain/lib -L $PWD/glibc/lib -L $PWD/toolchain/lib -nostdlib %{shared:-shared} %{static:-static} %{rdynamic:-export-dynamic}
+
+          *esp_link:
+
+
+          *esp_options:
+
+
+          *esp_cpp_options:
+
+
+          EOF
+
+      - run:
+          cat > test.c <<EOF
+          #include<stdio.h>
+          int main() {
+            puts("Hello");
+            return 0;
+          }
+          EOF
+
+      - run: toolchain/bin/x86_64-linux-gcc -specs gcc.specs test.c
+      - run: toolchain/bin/x86_64-linux-readelf -l a.out
+      - run: ./a.out
 
       ###############################################################################
 
@@ -114,7 +212,9 @@ jobs:
       - run: install -d gcc
       - run: ./bsdtar xf gcc-*.tar.xz -C gcc --strip-components=1
 
-      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" gcc/bin/gcc
-      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      gcc/bin/gcc
+      - run: sh relocate.sh gcc
+
+        #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" gcc/bin/gcc
+        #- run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      gcc/bin/gcc
 
       - run: gcc/bin/gcc --version
