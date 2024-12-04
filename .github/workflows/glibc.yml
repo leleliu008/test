@@ -24,9 +24,13 @@ jobs:
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/xxd-9.1.0200-linux-x86_64
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/patchelf-0.18.0-linux-x86_64
 
-      - run: mv xxd-9.1.0200-linux-x86_64 /usr/bin/xxd
-      - run: mv bsdtar-3.7.2-linux-x86_64 /usr/bin/bsdtar
+      - run: mv xxd-9.1.0200-linux-x86_64    /usr/bin/xxd
+      - run: mv bsdtar-3.7.2-linux-x86_64    /usr/bin/bsdtar
       - run: mv patchelf-0.18.0-linux-x86_64 /usr/bin/patchelf
+
+      - run: chmod +x /usr/bin/xxd
+      - run: chmod +x /usr/bin/bsdtar
+      - run: chmod +x /usr/bin/patchelf
 
       ###############################################################################
 
