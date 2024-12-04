@@ -77,6 +77,10 @@ jobs:
       - run: install -d llvm
       - run: tar xf LLVM-*.tar.xz -C llvm --strip-components=1
       - run: ls llvm/bin/
+
+      - run: patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" llvm/bin/clang
+      - run: patchelf --set-rpath       "$PWD/glibc/lib"                      llvm/bin/clang
+
       - run: llvm/bin/clang --version
 
       ###############################################################################
