@@ -98,16 +98,15 @@ jobs:
 
       ###############################################################################
 
-      - run: curl -LO https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.5/LLVM-19.1.5-Linux-X64.tar.xz
-      - run: install -d llvm
-      - run: ./bsdtar xf LLVM-*.tar.xz -C llvm --strip-components=1
-      - run: ls llvm/bin/
+      - run: curl -LO https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2024.05-1.tar.xz
+      - run: install -d toolchain
+      - run: ./bsdtar xf x86-64--glibc--stable-2024.05-1.tar.xz -C toolchain --strip-components=1
+      - run: ls toolchain/bin/
 
-      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" llvm/bin/clang
-      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      llvm/bin/clang
-      - run: ./patchelf --add-rpath       /usr/lib/x86_64-linux-gnu             llvm/bin/clang
+      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" toolchain/bin/gcc
+      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      toolchain/bin/gcc
 
-      - run: llvm/bin/clang --version
+      - run: toolchain/bin/gcc --version
 
       ###############################################################################
 
