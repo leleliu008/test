@@ -20,6 +20,10 @@ jobs:
 
       ###############################################################################
 
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/refs/heads/master/relocate.sh
+
+      ###############################################################################
+
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/bsdtar-3.7.2-linux-x86_64
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/xxd-9.1.0200-linux-x86_64
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/patchelf-0.18.0-linux-x86_64
@@ -71,7 +75,6 @@ jobs:
       - run: install -d binutils
       - run: ./bsdtar xf binutils-2.43.1-linux-glibc-x86_64.release.tar.xz -C binutils --strip-components=1
 
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/test/refs/heads/master/relocate.sh
       - run: sh relocate.sh binutils
 
       - run: binutils/bin/ld --version
