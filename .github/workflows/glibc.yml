@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - run: apt update -y
-      - run: apt install -y curl zlib1g
+      - run: apt install -y curl
 
       ###############################################################################
 
