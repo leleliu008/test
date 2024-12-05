@@ -62,7 +62,7 @@ jobs:
           V='2024.05-1'
           X=tar.xz
 
-          export SSL_CERT_FILE="$PWD/cacert.pem"
+          export SSL_CERT_FILE="\$PWD/cacert.pem"
 
           ./curl -LO https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-\$V.\$X
           ./bsdtar xf x86-64--glibc--stable-\$V.\$X -C toolchain --strip-components=1
