@@ -26,13 +26,16 @@ jobs:
 
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/bsdtar-3.7.2-linux-x86_64
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/xxd-9.1.0200-linux-x86_64
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/gsed-4.9-linux-x86_64
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/patchelf-0.18.0-linux-x86_64
 
       - run: ln -s bsdtar-3.7.2-linux-x86_64    bsdtar
       - run: ln -s xxd-9.1.0200-linux-x86_64    xxd
+      - run: ln -s gsed-4.9-linux-x86_64        gsed
       - run: ln -s patchelf-0.18.0-linux-x86_64 patchelf
 
       - run: chmod +x xxd
+      - run: chmod +x gsed
       - run: chmod +x bsdtar
       - run: chmod +x patchelf
 
@@ -54,7 +57,7 @@ jobs:
       - run: glibc/bin/getconf -a
       - run: glibc/bin/getconf GNU_LIBC_VERSION
 
-      - run: gsed -i "s|/home/leleliu008/.ppkg/installed/linux-glibc-x86_64/bebfceb3d2ea2461fde461b6c32a3e3cafc29d18ecec16e136e32b175caab53d|$PWD/glibc|g" glibc/lib/libc.so glibc/lib/libm.a glibc/lib/libm.so
+      - run: ./gsed -i "s|/home/leleliu008/.ppkg/installed/linux-glibc-x86_64/bebfceb3d2ea2461fde461b6c32a3e3cafc29d18ecec16e136e32b175caab53d|$PWD/glibc|g" glibc/lib/libc.so glibc/lib/libm.a glibc/lib/libm.so
 
       ###############################################################################
 
