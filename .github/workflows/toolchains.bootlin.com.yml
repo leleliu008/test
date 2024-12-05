@@ -15,6 +15,87 @@ jobs:
           #target-arch: [x86_64, aarch64, ppc64le, riscv64, s390x]
  
     steps:
+      - run: |
+          cat > gcc.specs <<EOF
+          %rename cpp_options old_cpp_options
+
+          *cpp_options:
+          -nostdinc -isystem /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/include -isystem include%s %(old_cpp_options)
+
+          *cc1:
+          %(cc1_cpu) -nostdinc -isystem /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/include -isystem include%s
+
+          *link_libgcc:
+          -L/root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib -L .%s
+
+          *libgcc:
+          libgcc.a%s %:if-exists(libgcc_eh.a%s)
+
+          *startfile:
+          %{!shared: /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/Scrt1.o} /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/crti.o crtbeginS.o%s
+
+          *endfile:
+          crtendS.o%s /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/crtn.o
+
+          *link:
+          -dynamic-linker /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/ld-linux-x86-64.so.2 -rpath /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib -rpath /root/toolchain/x86_64-buildroot-linux-gnu/lib64 -L /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib -L /root/toolchain/x86_64-buildroot-linux-gnu/lib64 -nostdlib %{shared:-shared} %{static:-static} %{rdynamic:-export-dynamic}
+
+          *esp_link:
+
+
+          *esp_options:
+
+
+          *esp_cpp_options:
+
+
+          EOF
+
+      - run: |
+          cat > g++.specs <<EOF
+          %rename cpp_options old_cpp_options
+
+          *cpp_options:
+          -nostdinc -isystem /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/include -I $PPKG_HOME/core/include/c++/13.1.0 -I $PPKG_HOME/core/include/c++/13.1.0/x86_64-pc-linux-gnu -isystem include%s %(old_cpp_options)
+
+          *cc1:
+          %(cc1_cpu) -nostdinc -isystem /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/include -I $PPKG_HOME/core/include/c++/13.1.0 -I $PPKG_HOME/core/include/c++/13.1.0/x86_64-pc-linux-gnu -isystem include%s
+
+          *link_libgcc:
+          -L/root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib -L .%s
+
+          *libgcc:
+          libgcc.a%s %:if-exists(libgcc_eh.a%s)
+
+          *startfile:
+          %{!shared: /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/Scrt1.o} /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/crti.o crtbeginS.o%s
+
+          *endfile:
+          crtendS.o%s /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/crtn.o
+
+          *link:
+          -dynamic-linker /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/ld-linux-x86-64.so.2 -rpath /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib -rpath /root/toolchain/x86_64-buildroot-linux-gnu/lib64 -L /root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib -L /root/toolchain/x86_64-buildroot-linux-gnu/lib64 -nostdlib %{shared:-shared} %{static:-static} %{rdynamic:-export-dynamic}
+
+          *esp_link:
+
+
+          *esp_options:
+
+
+          *esp_cpp_options:
+
+
+          EOF
+
+      - run: |
+          cat > test.c <<EOF
+          #include<stdio.h>
+          int main() {
+            puts("Hello");
+            return 0;
+          }
+          EOF
+
       - run: curl -LO https://curl.se/ca/cacert.pem
 
       - run: curl -L -o curl     https://github.com/leleliu008/test/releases/download/2023.10.08/curl-8.7.1-linux-x86_64
@@ -73,17 +154,9 @@ jobs:
           ./patchelf --set-rpath       "\$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib"                      toolchain/x86_64-buildroot-linux-gnu/bin/ld
           ./patchelf --set-rpath       "\$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib"                      toolchain/libexec/gcc/x86_64-buildroot-linux-gnu/13.3.0/liblto_plugin.so
 
-          echo '
-          #include<stdio.h>
-          int main() {
-            puts("Hello");
-            return 0;
-          }
-          ' > test.c
-
-          cat test.c
-
-          toolchain/bin/x86_64-linux-gcc test.c
+          toolchain/bin/x86_64-linux-gcc -specs gcc.specs test.c
+          toolchain/bin/x86_64-linux-readelf -l a.out
+          toolchain/bin/x86_64-linux-readelf -d a.out
           ./a.out
           EOF
 
