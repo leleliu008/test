@@ -67,9 +67,6 @@ jobs:
 
       - run: sh relocate.sh mold
 
-        #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" mold/bin/mold
-        #- run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      mold/bin/mold
-
       - run: mold/bin/mold --version
 
       ###############################################################################
@@ -94,9 +91,6 @@ jobs:
 
       - run: sh relocate.sh appstream
 
-        #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" appstream/bin/appstreamcli
-        #- run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      appstream/bin/appstreamcli
-
       - run: appstream/bin/appstreamcli --version
 
       ###############################################################################
@@ -106,9 +100,6 @@ jobs:
       - run: ./bsdtar xf tcc-*.tar.xz -C tcc --strip-components=1
 
       - run: sh relocate.sh tcc
-
-        #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" tcc/bin/tcc
-        #- run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      tcc/bin/tcc
 
       - run: tcc/bin/tcc -E -dM - < /dev/null
 
@@ -226,4 +217,4 @@ jobs:
         #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" gcc/bin/gcc
         #- run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      gcc/bin/gcc
 
-      - run: gcc/bin/gcc --version
+        #- run: gcc/bin/gcc --version
