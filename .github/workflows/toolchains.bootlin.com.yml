@@ -67,11 +67,11 @@ jobs:
           ./curl -LO https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-\$V.\$X
           ./bsdtar xf x86-64--glibc--stable-\$V.\$X -C toolchain --strip-components=1
 
-          ./patchelf --set-interpreter "$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/ld-linux-x86-64.so.2" toolchain/bin/x86_64-linux-gcc
-          ./patchelf --set-rpath       "$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib"                      toolchain/bin/x86_64-linux-gcc
-          ./patchelf --set-interpreter "$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/ld-linux-x86-64.so.2" toolchain/x86_64-buildroot-linux-gnu/bin/ld
-          ./patchelf --set-rpath       "$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib"                      toolchain/x86_64-buildroot-linux-gnu/bin/ld
-          ./patchelf --set-rpath       "$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib"                      toolchain/libexec/gcc/x86_64-buildroot-linux-gnu/13.3.0/liblto_plugin.so
+          ./patchelf --set-interpreter "\$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/ld-linux-x86-64.so.2" toolchain/bin/x86_64-linux-gcc
+          ./patchelf --set-rpath       "\$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib"                      toolchain/bin/x86_64-linux-gcc
+          ./patchelf --set-interpreter "\$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/ld-linux-x86-64.so.2" toolchain/x86_64-buildroot-linux-gnu/bin/ld
+          ./patchelf --set-rpath       "\$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib"                      toolchain/x86_64-buildroot-linux-gnu/bin/ld
+          ./patchelf --set-rpath       "\$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib"                      toolchain/libexec/gcc/x86_64-buildroot-linux-gnu/13.3.0/liblto_plugin.so
 
           echo '
           #include<stdio.h>
