@@ -19,7 +19,17 @@ jobs:
           cat > test.c <<EOF
           #include<stdio.h>
           int main() {
-            puts("Hello");
+            puts("Hello C");
+            return 0;
+          }
+          EOF
+
+      - run: |
+          cat > test.cc <<EOF
+          #include<iostream>
+          using namespace std;
+          int main() {
+            cout << "Hello C++" << endl;
             return 0;
           }
           EOF
@@ -62,6 +72,11 @@ jobs:
           toolchain/bin/x86_64-linux-readelf -l a.out
           toolchain/bin/x86_64-linux-readelf -d a.out
           ./a.out
+
+          toolchain/bin/x86_64-linux-g++ -v -Wl,-v -o b.out test.cc -Wl,-dynamic-linker=/root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/ld-linux-x86-64.so.2 -Wl,-rpath,/root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib
+          toolchain/bin/x86_64-linux-readelf -l b.out
+          toolchain/bin/x86_64-linux-readelf -d b.out
+          ./b.out
           EOF
 
       # https://github.com/multiarch/qemu-user-static
