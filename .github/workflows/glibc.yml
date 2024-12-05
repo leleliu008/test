@@ -123,6 +123,8 @@ jobs:
 
       - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" toolchain/bin/x86_64-linux-gcc
       - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      toolchain/bin/x86_64-linux-gcc
+      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" toolchain/x86_64-buildroot-linux-gnu/bin/ld
+      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      toolchain/x86_64-buildroot-linux-gnu/bin/ld
 
       - run: toolchain/bin/x86_64-linux-gcc --version
 
