@@ -119,10 +119,10 @@ jobs:
       - run: ./bsdtar xf x86-64--glibc--stable-2024.05-1.tar.xz -C toolchain --strip-components=1
       - run: ls toolchain/bin/
 
-      - run: sh relocate.sh toolchain
+        #- run: sh relocate.sh toolchain
 
-        #- run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" toolchain/bin/x86_64-linux-gcc
-        #- run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      toolchain/bin/x86_64-linux-gcc
+      - run: ./patchelf --set-interpreter "$PWD/glibc/lib/ld-linux-x86-64.so.2" toolchain/bin/x86_64-linux-gcc
+      - run: ./patchelf --set-rpath       "$PWD/glibc/lib"                      toolchain/bin/x86_64-linux-gcc
 
       - run: toolchain/bin/x86_64-linux-gcc --version
 
