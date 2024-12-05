@@ -15,15 +15,22 @@ jobs:
           #target-arch: [x86_64, aarch64, ppc64le, riscv64, s390x]
  
     steps:
+      - run: curl -LO https://curl.se/ca/cacert.pem
+
+      - run: curl -L -o curl     https://github.com/leleliu008/test/releases/download/2023.10.08/curl-8.7.1-linux-x86_64
+      - run: curl -L -o bsdtar   https://github.com/leleliu008/test/releases/download/2023.10.08/bsdtar-3.7.2-linux-x86_64
+      - run: curl -L -o xxd      https://github.com/leleliu008/test/releases/download/2023.10.08/xxd-9.1.0200-linux-x86_64
+      - run: curl -L -o gsed     https://github.com/leleliu008/test/releases/download/2023.10.08/gsed-4.9-linux-x86_64
+      - run: curl -L -o patchelf https://github.com/leleliu008/test/releases/download/2023.10.08/patchelf-0.18.0-linux-x86_64
+
+      - run: chmod +x curl bsdtar xxd gsed patchelf
+
       - run: |
           cat > run.sh <<EOF
           set -ex
 
           ldd --version
           ldd --version | sed -n '/2\.[0-9][0-9]/p' | sed 's/.*\(2\.[0-9][0-9]\).*/\1/'
-
-          apt update -y
-          apt install -y curl tar gzip xz-utils bzip2
 
           install -d toolchain
 
@@ -52,11 +59,13 @@ jobs:
             esac
           fi
 
-          curl -LO https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-\$V.\$X
-          tar xf x86-64--glibc--stable-\$V.\$X -C toolchain --strip-components=1
+          V='2024.05-1'
+          X=tar.xz
 
-          curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/patchelf-0.18.0-linux-x86_64
-          ln -s patchelf-0.18.0-linux-x86_64 patchelf
+          export SSL_CERT_FILE="$PWD/cacert.pem"
+
+          ./curl -LO https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-\$V.\$X
+          ./bsdtar xf x86-64--glibc--stable-\$V.\$X -C toolchain --strip-components=1
 
           ./patchelf --set-interpreter "$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/ld-linux-x86-64.so.2" toolchain/bin/x86_64-linux-gcc
           ./patchelf --set-rpath       "$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib"                      toolchain/bin/x86_64-linux-gcc
