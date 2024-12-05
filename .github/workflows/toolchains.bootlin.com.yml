@@ -154,7 +154,8 @@ jobs:
           ./patchelf --set-rpath       "\$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib"                      toolchain/x86_64-buildroot-linux-gnu/bin/ld
           ./patchelf --set-rpath       "\$PWD/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib"                      toolchain/libexec/gcc/x86_64-buildroot-linux-gnu/13.3.0/liblto_plugin.so
 
-          toolchain/bin/x86_64-linux-gcc -specs gcc.specs test.c
+          #toolchain/bin/x86_64-linux-gcc -specs gcc.specs test.c
+          toolchain/bin/x86_64-linux-gcc -v -Wl,-v test.c -Wl,-dynamic-linker=/root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib/ld-linux-x86-64.so.2 -Wl,-rpath,/root/toolchain/x86_64-buildroot-linux-gnu/sysroot/lib
           toolchain/bin/x86_64-linux-readelf -l a.out
           toolchain/bin/x86_64-linux-readelf -d a.out
           ./a.out
