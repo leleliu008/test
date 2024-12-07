@@ -1,0 +1,23 @@
+name: linux-glibc-x86_64-tcc self-contained
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testing:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['16.04', '18.04', '20.04', '22.04', '24.04']
+ 
+    runs-on: ubuntu-latest
+    container: ubuntu:${{ matrix.version }}
+
+    steps:
+      - run: apt update -y
+      - run: apt install -y curl tar gzip xz-utils
+
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/tcc-0.9.27-linux-glibc-any-x86_64.release.tar.xz
+      - run: tar xf *.tar.xz --strip-components=1
+      - run: bin/tcc -E -dM - < /dev/null
