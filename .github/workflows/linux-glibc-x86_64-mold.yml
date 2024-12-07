@@ -1,4 +1,4 @@
-name: linux-glibc-x86_64-appstream self-contained
+name: linux-glibc-x86_64-mold self-contained
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
       - run: apt update -y
       - run: apt install -y curl tar gzip xz-utils
 
-      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/appstream-1.0.3-linux-glibc-any-x86_64.tar.xz
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/mold-2.34.1-linux-glibc-any-x86_64.release.tar.xz
       - run: tar xf *.tar.xz --strip-components=1
-      - run: bin/appstreamcli --help
-      - run: bin/appstreamcli --version
+      - run: bin/mold --help
+      - run: bin/mold --version
