@@ -1,0 +1,24 @@
+name: linux-glibc-x86_64-appstream self-contained
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testing:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['16.04', '18.04', '20.04', '22.04', '24.04']
+ 
+    runs-on: ubuntu-latest
+    container: ubuntu:${{ matrix.version }}
+
+    steps:
+      - run: apt update -y
+      - run: apt install -y curl tar gzip xz-utils
+
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/appstream-1.0.3-linux-glibc-any-x86_64.tar.xz
+      - run: tar xf *.tar.xz --strip-components=1
+      - run: cd bin && ./appstreamcli --help
+      - run: cd bin && ./appstreamcli --version
