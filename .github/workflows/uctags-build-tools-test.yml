@@ -27,6 +27,7 @@ jobs:
 
       - run: |
           export PATH="/opt/uctags-build-tools-2024.10.27-linux-glibc-x86_64/bin:$PATH"
+          python3 -m pip install docutils
           cd ctags
           ./autogen.sh
           ./configure
