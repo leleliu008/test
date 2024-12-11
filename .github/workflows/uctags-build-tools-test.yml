@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - run: apt -y update
-      - run: apt -y install curl tar gzip xz-utils git
+      - run: apt -y install curl tar gzip xz-utils git gcc
 
       - run: git clone --depth=1 https://github.com/universal-ctags/ctags
 
