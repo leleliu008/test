@@ -22,11 +22,10 @@ jobs:
       - run: git clone --depth=1 https://github.com/universal-ctags/ctags
 
       - run: curl -LO https://github.com/leleliu008/uctags-build-tools/releases/download/2024.10.27/uctags-build-tools-2024.10.27-linux-glibc-x86_64.tar.xz
-      - run: tar xf uctags-build-tools-2024.10.27-linux-glibc-x86_64.tar.xz
-      - run: ls     uctags-build-tools-2024.10.27-linux-glibc-x86_64/
+      - run: tar xPf uctags-build-tools-2024.10.27-linux-glibc-x86_64.tar.xz
 
       - run: |
-          export PATH="$PWD/uctags-build-tools-2024.10.27-linux-glibc-x86_64/bin:$PATH"
+          export PATH="/opt/uctags-build-tools-2024.10.27-linux-glibc-x86_64/bin:$PATH"
           cd ctags
           ./autogen.sh
           ./configure
