@@ -63,7 +63,7 @@ jobs:
       - run: chmod +x qemu-binfmt-conf.sh
       - run: mv qemu-binfmt-conf.sh alpine-rootfs/
 
-      - run: sudo chroot alpine-rootfs qemu/bin/qemu-loongarch64 sh -ex run.sh
+      - run: sudo chroot alpine-rootfs qemu/bin/qemu-loongarch64 /bin/sh -ex run.sh
 
       - uses: actions/upload-artifact@v4
         with:
