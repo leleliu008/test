@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - run: apt-get -y update
-      - run: apt-get -y install qemu-user-static
+      - run: apt-get -y install curl tar gzip xz-utils qemu-user-static
       - run: dpkg -L qemu-user-static
       - run: ls /usr/bin/qemu-*
 
