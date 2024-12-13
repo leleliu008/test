@@ -11,7 +11,8 @@ jobs:
     steps:
       - run: curl -LO https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/loongarch64/alpine-minirootfs-3.21.0-loongarch64.tar.gz
       - run: install -d alpine-rootfs
-      - run: tar xf alpine-minirootfs-3.20.3-x86_64.tar.gz -C alpine-rootfs
+      - run: tar xf alpine-minirootfs-*-loongarch64.tar.gz -C alpine-rootfs
+
       - run: cp -p /etc/resolv.conf alpine-rootfs/etc/
 
       - run: sudo mount -o bind  /dev alpine-rootfs/dev
