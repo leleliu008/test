@@ -61,13 +61,11 @@ jobs:
 
       - run: curl -LO https://raw.githubusercontent.com/qemu/qemu/master/scripts/qemu-binfmt-conf.sh
       - run: chmod +x qemu-binfmt-conf.sh
-
       - run: mv qemu-binfmt-conf.sh alpine-rootfs/
-      - run: mv qemu-run.sh         alpine-rootfs/
 
       - run: sudo chroot alpine-rootfs qemu/bin/qemu-loongarch64 sh -ex run.sh
 
       - uses: actions/upload-artifact@v4
         with:
           name: uctags---linux-loongarch64.tar.xz
-          path: uctags-*-linux-loongarch64.tar.xz
+          path: uctags-*-linux-loongarch64.release.tar.xz
