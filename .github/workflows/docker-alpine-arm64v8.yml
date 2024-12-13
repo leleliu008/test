@@ -1,0 +1,24 @@
+name: docker alpine arm64v8
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['3.12', '3.13', '3.14', '3.15', '3.16', '3.17', '3.18', '3.19', '3.20', '3.21', latest, edge]
+ 
+    steps:
+      - run: |
+          cat > run.sh <<EOF
+          apk update
+          apk add gcc
+          EOF
+
+      # https://github.com/multiarch/qemu-user-static
+      - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - run: docker run -v $PWD:/root -w /root --name alpine arm64v8/alpine:${{ matrix.version }} sh run.sh
