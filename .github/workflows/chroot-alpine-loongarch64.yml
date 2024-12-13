@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install qemu-user-static
+
       - run: curl -LO https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/loongarch64/alpine-minirootfs-3.21.0-loongarch64.tar.gz
       - run: install -d alpine-rootfs
       - run: tar xf alpine-minirootfs-*-loongarch64.tar.gz -C alpine-rootfs
@@ -65,7 +68,8 @@ jobs:
 
       - run: curl -LO https://dl-cdn.alpinelinux.org/v3.21/community/x86_64/qemu-loongarch64-9.1.2-r1.apk
       - run: tar xf qemu-loongarch64-*.apk
-      - run: mv usr/bin/qemu-loongarch64 alpine-rootfs/
+        #- run: mv usr/bin/qemu-loongarch64 alpine-rootfs/
+      - run: sudo cp qemu-loongarch64 alpine-rootfs/
 
       - run: sudo chroot alpine-rootfs /qemu-loongarch64 /bin/sh -ex run.sh
 
