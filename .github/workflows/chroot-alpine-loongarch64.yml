@@ -11,6 +11,8 @@ jobs:
     steps:
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install qemu-user-static
+      - run: dpkg -L qemu-user-static
+      - run: ls /usr/bin/qemu-*
 
       - run: curl -LO https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/loongarch64/alpine-minirootfs-3.21.0-loongarch64.tar.gz
       - run: install -d alpine-rootfs
