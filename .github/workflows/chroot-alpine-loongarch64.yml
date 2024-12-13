@@ -1,0 +1,72 @@
+name: chroot loongarch64/alpine
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testing:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: curl -LO https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/loongarch64/alpine-minirootfs-3.21.0-loongarch64.tar.gz
+      - run: install -d alpine-rootfs
+      - run: tar xf alpine-minirootfs-3.20.3-x86_64.tar.gz -C alpine-rootfs
+      - run: cp -p /etc/resolv.conf alpine-rootfs/etc/
+
+      - run: sudo mount -o bind  /dev alpine-rootfs/dev
+      - run: sudo mount -t proc  none alpine-rootfs/proc
+      - run: sudo mount -t sysfs none alpine-rootfs/sys
+
+      - run: |
+          cat > alpine-rootfs/chroot-run.sh <<EOF
+          # https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html
+
+          if [ ! -d /proc/sys/fs/binfmt_misc ] ; then
+              echo "binfmt_misc linux module is not loaded. run '/sbin/modprobe binfmt_misc' to load it."
+              exit 1
+          fi
+
+          if [ ! -f /proc/sys/fs/binfmt_misc/register ] ; then
+              mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+          fi
+
+          find /proc/sys/fs/binfmt_misc -type f -name 'qemu-*' -exec sh -c 'echo -1 > {}' \;
+
+          exec /qemu-binfmt-conf.sh --qemu-path /qemu/bin -p yes
+
+          EOF
+
+      - run: |
+          cat > alpine-rootfs/run.sh <<EOF
+          uname -a
+          id
+          pwd
+
+          wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+          chmod a+x ppkg
+
+          export GITHUB_ACTIONS=true
+
+          ./ppkg setup
+          ./ppkg update
+          ./ppkg install uctags --static
+          ./ppkg pack    uctags
+          EOF
+
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/qemu-9.1.2-linux-x86_64.release.tar.xz
+      - run: install -d alpine-rootfs/qemu
+      - run: tar xf qemu-9.1.2-linux-x86_64.release.tar.xz --strip-components=1 -C alpine-rootfs/qemu
+
+      - run: curl -LO https://raw.githubusercontent.com/qemu/qemu/master/scripts/qemu-binfmt-conf.sh
+      - run: chmod +x qemu-binfmt-conf.sh
+
+      - run: mv qemu-binfmt-conf.sh alpine-rootfs/
+      - run: mv qemu-run.sh         alpine-rootfs/
+
+      - run: sudo chroot alpine-rootfs qemu/bin/qemu-loongarch64 sh -ex run.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags---linux-loongarch64.tar.xz
+          path: uctags-*-linux-loongarch64.tar.xz
