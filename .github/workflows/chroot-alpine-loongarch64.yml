@@ -7,10 +7,11 @@ jobs:
   testing:
 
     runs-on: ubuntu-latest
+    container: ubuntu:24.04
 
     steps:
-      - run: sudo apt-get -y update
-      - run: sudo apt-get -y install qemu-user-static
+      - run: apt-get -y update
+      - run: apt-get -y install qemu-user-static
       - run: dpkg -L qemu-user-static
       - run: ls /usr/bin/qemu-*
 
@@ -20,9 +21,9 @@ jobs:
 
       - run: cp -p /etc/resolv.conf alpine-rootfs/etc/
 
-      - run: sudo mount -o bind  /dev alpine-rootfs/dev
-      - run: sudo mount -t proc  none alpine-rootfs/proc
-      - run: sudo mount -t sysfs none alpine-rootfs/sys
+      - run: mount -o bind  /dev alpine-rootfs/dev
+      - run: mount -t proc  none alpine-rootfs/proc
+      - run: mount -t sysfs none alpine-rootfs/sys
 
       - run: |
           cat > alpine-rootfs/chroot-run.sh <<EOF
@@ -71,9 +72,9 @@ jobs:
       - run: curl -LO https://dl-cdn.alpinelinux.org/v3.21/community/x86_64/qemu-loongarch64-9.1.2-r1.apk
       - run: tar xf qemu-loongarch64-*.apk
         #- run: mv usr/bin/qemu-loongarch64 alpine-rootfs/
-      - run: sudo cp -L /usr/bin/qemu-loongarch64 alpine-rootfs/
+      - run: cp -L /usr/bin/qemu-loongarch64 alpine-rootfs/
 
-      - run: sudo chroot alpine-rootfs /qemu-loongarch64 /bin/sh -ex run.sh
+      - run: chroot alpine-rootfs /qemu-loongarch64 /bin/sh -ex run.sh
 
       - uses: actions/upload-artifact@v4
         with:
