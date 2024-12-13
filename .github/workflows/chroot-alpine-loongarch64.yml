@@ -63,9 +63,11 @@ jobs:
       - run: chmod +x qemu-binfmt-conf.sh
       - run: mv qemu-binfmt-conf.sh alpine-rootfs/
 
-      - run: sudo chroot alpine-rootfs /sbin/apk update
-      - run: sudo chroot alpine-rootfs /sbin/apk add qemu-loongarch64
-      - run: sudo chroot alpine-rootfs /usr/bin/qemu-loongarch64 /bin/sh -ex run.sh
+      - run: curl -LO https://dl-cdn.alpinelinux.org/v3.21/community/x86_64/qemu-loongarch64-9.1.2-r1.apk
+      - run: tar xf qemu-loongarch64-*.apk
+      - run: mv usr/bin/qemu-loongarch64 alpine-rootfs/
+
+      - run: sudo chroot alpine-rootfs /qemu-loongarch64 /bin/sh -ex run.sh
 
       - uses: actions/upload-artifact@v4
         with:
