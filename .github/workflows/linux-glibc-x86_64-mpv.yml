@@ -1,0 +1,27 @@
+name: linux-glibc-x86_64-mpv self-contained
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testing:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['14.04', '16.04', '18.04', '20.04', '21.04', '22.04', '23.04', '24.04', latest]
+ 
+    steps:
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/mpv-0.39.0-linux-glibc-any-x86_64.release.tar.xz
+      - run: tar xf *.tar.xz --strip-components=1
+
+      - run: |
+          cat > run.sh <<EOF
+          set -ex
+          bin/mpv --help
+          bin/mpv --version
+          EOF
+
+      - run: docker run -v $PWD:/root -w /root --name ubuntu ubuntu:${{ matrix.version }} sh run.sh
