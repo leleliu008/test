@@ -1,4 +1,4 @@
-name: linux-glibc-x86_64-tcc self-contained
+name: linux-any-x86_64-tcc
 
 on:
   workflow_dispatch:
@@ -24,3 +24,25 @@ jobs:
           EOF
 
       - run: docker run -v $PWD:/root -w /root --name ubuntu ubuntu:${{ matrix.version }} sh run.sh
+
+
+  alpine:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [3.21, 3.20, 3.19, 3.18, 3.17, 3.16, 3.15, 3.14, 3.13, 3.12]
+ 
+    steps:
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/tcc-0.9.27-linux-glibc-any-x86_64.release.tar.xz
+      - run: tar xf *.tar.xz --strip-components=1
+
+      - run: |
+          cat > run.sh <<EOF
+          set -ex
+          bin/tcc -E -dM - < /dev/null
+          EOF
+
+      - run: docker run -v $PWD:/root -w /root --name alpine alpine:${{ matrix.version }} sh run.sh
