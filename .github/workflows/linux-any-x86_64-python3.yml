@@ -1,0 +1,50 @@
+name: linux-any-x86_64-appstream
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ubuntu:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['14.04', '16.04', '18.04', '20.04', '21.04', '22.04', '23.04', '24.04', latest]
+ 
+    steps:
+      - run: curl -LO https://github.com/leleliu008/python-distribution/releases/download/2024.11.08/python-distribution-2024.11.08-linux-any-x86_64.tar.xz
+      - run: tar xf *.tar.xz --strip-components=1
+
+      - run: |
+          cat > run.sh <<EOF
+          set -ex
+          bin/python3 --help
+          bin/python3 --version
+          EOF
+
+      - run: docker run -v $PWD:/root -w /root --name ubuntu ubuntu:${{ matrix.version }} sh run.sh
+
+
+  alpine:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['3.21', '3.20', '3.19', '3.18', '3.17', '3.16', '3.15', '3.14', '3.13', '3.12']
+ 
+    steps:
+      - run: curl -LO https://github.com/leleliu008/python-distribution/releases/download/2024.11.08/python-distribution-2024.11.08-linux-any-x86_64.tar.xz
+      - run: tar xf *.tar.xz --strip-components=1
+
+      - run: |
+          cat > run.sh <<EOF
+          set -ex
+          bin/python3 --help
+          bin/python3 --version
+          EOF
+
+      - run: docker run -v $PWD:/root -w /root --name alpine alpine:${{ matrix.version }} sh run.sh
