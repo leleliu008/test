@@ -1,4 +1,4 @@
-name: linux-any-x86_64-appstream
+name: linux-any-x86_64-python3
 
 on:
   workflow_dispatch:
