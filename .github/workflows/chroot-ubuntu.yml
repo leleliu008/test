@@ -75,7 +75,7 @@ jobs:
           }
 
           apt -y update
-          apt -y install gcc make automake autoconf pkg-config python3 diffutils pcre2-dev jansson-dev yaml-dev libxml2-dev
+          apt -y install gcc make automake autoconf pkg-config python3 diffutils libseccomp-dev libjansson-dev libyaml-dev libxml2-dev libpcre2-dev
 
           run ./autogen.sh
           run ./configure --enable-debugging
