@@ -47,8 +47,8 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uctags---linux-x86_64.tar.xz
-          path: uctags-*-linux-x86_64.tar.xz
+          name: uctags---linux-x86_64.release.tar.xz
+          path: uctags-*-linux-x86_64.release.tar.xz
 
 
   chroot_qemu:
@@ -115,5 +115,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uctags---linux-${{ matrix.target-arch }}.tar.xz
-          path: uctags-*-linux-${{ matrix.target-arch }}.tar.xz
+          name: uctags---linux-${{ matrix.target-arch }}.release.tar.xz
+          path: uctags-*-linux-${{ matrix.target-arch }}.release.tar.xz
