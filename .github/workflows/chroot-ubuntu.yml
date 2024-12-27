@@ -1,0 +1,129 @@
+name: chroot ubuntu
+
+on:
+  workflow_dispatch:
+
+jobs:
+  chroot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          cat > run.sh <<EOF
+          set -ex
+          uname -a
+          id
+          pwd
+
+          apt -y update
+          apt -y install curl
+
+          curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+          chmod a+x ppkg
+
+          export GITHUB_ACTIONS=true
+
+          ./ppkg setup
+          ./ppkg update
+          ./ppkg install uctags --static
+          ./ppkg pack    uctags
+          EOF
+
+      - run: curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.1-base-amd64.tar.gz
+      - run: install -d ubuntu-rootfs
+      - run: tar xf ubuntu-base-*.tar.gz -C ubuntu-rootfs
+
+      - run: cp -p /etc/resolv.conf ubuntu-rootfs/etc/
+      - run: mv run.sh ubuntu-rootfs/
+
+      - run: sudo mount -o bind  /dev ubuntu-rootfs/dev
+      - run: sudo mount -t proc  none ubuntu-rootfs/proc
+      - run: sudo mount -t sysfs none ubuntu-rootfs/sys
+      - run: sudo mount -t tmpfs none ubuntu-rootfs/tmp
+
+      - run: sudo chroot ubuntu-rootfs /bin/sh run.sh
+
+      - run: mv ubuntu-rootfs/uctags-*.tar.xz .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags---linux-x86_64.tar.xz
+          path: uctags-*-linux-x86_64.tar.xz
+
+
+  chroot_qemu:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-arch: [aarch64, ppc64le, riscv64, s390x]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: universal-ctags/ctags
+
+      - run: |
+          cat > run.sh <<EOF
+          set -ex
+
+          run() {
+            printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "\$*"
+            eval "\$@"
+          }
+
+          apt -y update
+          apt -y install gcc make automake autoconf pkg-config python3 diffutils pcre2-dev jansson-dev yaml-dev libxml2-dev
+
+          run ./autogen.sh
+          run ./configure --enable-debugging
+          run make
+
+          run readelf -h ctags
+          run readelf -d ctags
+
+          run ./ctags --version
+
+          run make check V=1
+          run make roundtrip
+          run make tmain CI=1 CTAGS_DEP= READTAGS_DEP= OPTSCRIPT_DEP=
+          run make units CI=1 CTAGS_DEP=
+          EOF
+
+      - run: |
+          case ${{ matrix.target-arch }} in
+            x86_64)  X=amd64 ;;
+            aarch64) X=arm64 ;;
+            ppc64le) X=ppc64el ;;
+            *)       X=${{ matrix.target-arch }}
+          esac
+          curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.1-base-$X.tar.gz
+
+      - run: install -d ubuntu-rootfs
+      - run: tar xf ubuntu-base-24.04.1-base-*.tar.gz -C ubuntu-rootfs
+
+      - run: cp -p /etc/resolv.conf ubuntu-rootfs/etc/
+      - run: mv run.sh ubuntu-rootfs/
+
+      - run: sudo mount -o bind  /dev ubuntu-rootfs/dev
+      - run: sudo mount -t proc  none ubuntu-rootfs/proc
+      - run: sudo mount -t sysfs none ubuntu-rootfs/sys
+      - run: sudo mount -t tmpfs none ubuntu-rootfs/tmp
+
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install qemu-user-static binfmt-support
+
+      - run: update-binfmts --enable
+
+      - run: mv /usr/bin/qemu-${{ matrix.target-arch }}-static ubuntu-rootfs/
+
+      - run: sudo chroot ubuntu-rootfs /qemu-${{ matrix.target-arch }}-static /bin/sh run.sh
+
+      - run: mv ubuntu-rootfs/uctags-*.tar.xz .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uctags---linux-${{ matrix.target-arch }}.tar.xz
+          path: uctags-*-linux-${{ matrix.target-arch }}.tar.xz
