@@ -1,0 +1,14 @@
+name: docker debian-loongarch64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    containner: cr.loongnix.cn/library/debian
+
+    steps:
+      - run: uname -a
+      - run: apt update -y
+      - run: apt install -y gcc
