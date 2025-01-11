@@ -6,7 +6,7 @@ on:
 jobs:
   testing:
     runs-on: ubuntu-latest
-    containner: cr.loongnix.cn/library/debian
+    container: cr.loongnix.cn/library/debian
 
     steps:
       - run: uname -a
