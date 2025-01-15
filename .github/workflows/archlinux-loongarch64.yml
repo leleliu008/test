@@ -1,0 +1,63 @@
+name: chroot loongarch64/alpine
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testing:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: apt-get -y update
+      - run: apt-get -y install curl tar gzip xz-utils qemu-user-static
+
+      - run: dpkg -L qemu-user-static
+      - run: ls /usr/bin/qemu-*
+
+      - run: curl -LO https://mirrors.wsyu.edu.cn/loongarch/archlinux/iso/latest/archlinux-bootstrap-loong64.tar.gz
+      - run: install -d archlinux-loongarch64-rootfs
+      - run: tar xf archlinux-bootstrap-loong64.tar.gz -C archlinux-loongarch64-rootfs
+
+      - run: cp -p /etc/resolv.conf archlinux-loongarch64-rootfs/etc/
+
+      - run: mount -o bind  /dev archlinux-loongarch64-rootfs/dev
+      - run: mount -t proc  none archlinux-loongarch64-rootfs/proc
+      - run: mount -t sysfs none archlinux-loongarch64-rootfs/sys
+
+      - run: |
+          cat > archlinux-loongarch64-rootfs/chroot-run.sh <<EOF
+          # https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html
+
+          if [ ! -d /proc/sys/fs/binfmt_misc ] ; then
+              echo "binfmt_misc linux module is not loaded. run '/sbin/modprobe binfmt_misc' to load it."
+              exit 1
+          fi
+
+          if [ ! -f /proc/sys/fs/binfmt_misc/register ] ; then
+              mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+          fi
+
+          find /proc/sys/fs/binfmt_misc -type f -name 'qemu-*' -exec sh -c 'echo -1 > {}' \;
+
+          exec /qemu-binfmt-conf.sh --qemu-path /qemu/bin -p yes
+
+          EOF
+
+      - run: |
+          cat > archlinux-loongarch64-rootfs/run.sh <<EOF
+          uname -a
+          id
+          pwd
+          EOF
+
+      - run: curl -LO https://raw.githubusercontent.com/qemu/qemu/master/scripts/qemu-binfmt-conf.sh
+      - run: chmod +x qemu-binfmt-conf.sh
+      - run: mv qemu-binfmt-conf.sh archlinux-loongarch64-rootfs/
+
+      - run: curl -LO https://dl-cdn.alpinelinux.org/v3.21/community/x86_64/qemu-loongarch64-9.1.2-r1.apk
+      - run: tar xf qemu-loongarch64-*.apk
+        #- run: mv usr/bin/qemu-loongarch64 archlinux-loongarch64-rootfs/
+      - run: cp -L /usr/bin/qemu-loongarch64 archlinux-loongarch64-rootfs/
+
+      - run: chroot archlinux-loongarch64-rootfs /qemu-loongarch64 /bin/sh -ex run.sh
