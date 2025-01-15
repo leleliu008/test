@@ -32,7 +32,9 @@ jobs:
           }
           EOF
 
-      - run: ./zig cc -flto -Os -s test.c
+      - run: |
+          unset CC CXX AS LD
+          ./zig cc -flto -Os -s test.c
       - run: ./a.out
 
   alpine:
@@ -58,5 +60,7 @@ jobs:
           }
           EOF
 
-      - run: ./zig cc -flto -Os -s test.c
+      - run: |
+          ./zig cc -flto -Os -s test.c
+          unset CC CXX AS LD
       - run: ./a.out
