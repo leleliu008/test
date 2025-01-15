@@ -48,6 +48,9 @@ jobs:
     container: alpine:${{ matrix.tag }}
 
     steps:
+      - run: apk update
+      - run: apk add gcompat g++ linux-headers
+
       - run: wget https://ziglang.org/builds/zig-linux-x86_64-0.14.0-dev.2643+fb43e91b2.tar.xz
       - run: tar xf zig-linux-x86_64-*.tar.xz --strip-components=1
 
