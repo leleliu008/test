@@ -16,12 +16,12 @@ jobs:
 
     steps:
       - run: apt update -y
-      - run: apt install -y curl libarchive-tools
+      - run: apt install -y curl xz-utils
 
       ###############################################################################
 
       - run: curl -LO https://ziglang.org/builds/zig-linux-x86_64-0.14.0-dev.2643+fb43e91b2.tar.xz
-      - run: bsdtar xf zig-linux-x86_64-*.tar.xz --strip-components=1
+      - run: tar xf zig-linux-x86_64-*.tar.xz --strip-components=1
 
       - run: |
           cat > test.c <<EOF
@@ -32,7 +32,7 @@ jobs:
           }
           EOF
 
-      - run: ./zig cc test.c
+      - run: ./zig cc -flto -Os -s test.c
       - run: ./a.out
 
   alpine:
@@ -58,5 +58,5 @@ jobs:
           }
           EOF
 
-      - run: ./zig cc test.c
+      - run: ./zig cc -flto -Os -s test.c
       - run: ./a.out
