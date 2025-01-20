@@ -1,0 +1,13 @@
+name: download and show sha256sum
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ubuntu:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: curl -LO https://github.com/lzhiyong/termux-ndk/releases/download/android-ndk/android-ndk-r27b-aarch64.zip
+      - run: sha256sum android-ndk-r27b-aarch64.zip
