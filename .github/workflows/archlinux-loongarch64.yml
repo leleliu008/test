@@ -9,8 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: apt-get -y update
-      - run: apt-get -y install curl tar gzip xz-utils qemu-user-static
+      - run: id
+
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install curl tar gzip xz-utils qemu-user-static
 
       - run: dpkg -L qemu-user-static
       - run: ls /usr/bin/qemu-*
@@ -21,9 +23,9 @@ jobs:
 
       - run: cp -p /etc/resolv.conf archlinux-loongarch64-rootfs/etc/
 
-      - run: mount -o bind  /dev archlinux-loongarch64-rootfs/dev
-      - run: mount -t proc  none archlinux-loongarch64-rootfs/proc
-      - run: mount -t sysfs none archlinux-loongarch64-rootfs/sys
+      - run: sudo mount -o bind  /dev archlinux-loongarch64-rootfs/dev
+      - run: sudo mount -t proc  none archlinux-loongarch64-rootfs/proc
+      - run: sudo mount -t sysfs none archlinux-loongarch64-rootfs/sys
 
       - run: |
           cat > archlinux-loongarch64-rootfs/chroot-run.sh <<EOF
@@ -64,4 +66,4 @@ jobs:
           #- run: mv usr/bin/qemu-loongarch64 archlinux-loongarch64-rootfs/
       - run: cp -L /usr/bin/qemu-loongarch64-static archlinux-loongarch64-rootfs/
 
-      - run: chroot archlinux-loongarch64-rootfs /qemu-loongarch64-static /bin/sh -ex run.sh
+      - run: sudo chroot archlinux-loongarch64-rootfs /qemu-loongarch64-static /bin/sh -ex run.sh
