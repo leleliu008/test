@@ -1,4 +1,4 @@
-name: chroot loongarch64/alpine
+name: chroot loongarch64/archlinux
 
 on:
   workflow_dispatch:
@@ -38,10 +38,14 @@ jobs:
               mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
           fi
 
-          find /proc/sys/fs/binfmt_misc -type f -name 'qemu-*' -exec sh -c 'echo -1 > {}' \;
-
-          exec /qemu-binfmt-conf.sh --qemu-path /qemu/bin -p yes
-
+          cat > /proc/sys/fs/binfmt_misc/qemu-loongarch64 <<EOF2
+          enabled
+          interpreter /qemu-loongarch64-static
+          flags: F
+          offset 0
+          magic 7f454c4602010100000000000000000002000201
+          mask fffffffffffffffc00fffffffffffffffeffffff
+          EOF2
           EOF
 
       - run: |
@@ -51,13 +55,13 @@ jobs:
           pwd
           EOF
 
-      - run: curl -LO https://raw.githubusercontent.com/qemu/qemu/master/scripts/qemu-binfmt-conf.sh
-      - run: chmod +x qemu-binfmt-conf.sh
-      - run: mv qemu-binfmt-conf.sh archlinux-loongarch64-rootfs/
+          #- run: curl -LO https://raw.githubusercontent.com/qemu/qemu/master/scripts/qemu-binfmt-conf.sh
+          #- run: chmod +x qemu-binfmt-conf.sh
+          #- run: mv qemu-binfmt-conf.sh archlinux-loongarch64-rootfs/
 
-      - run: curl -LO https://dl-cdn.alpinelinux.org/v3.21/community/x86_64/qemu-loongarch64-9.1.2-r1.apk
-      - run: tar xf qemu-loongarch64-*.apk
-        #- run: mv usr/bin/qemu-loongarch64 archlinux-loongarch64-rootfs/
-      - run: cp -L /usr/bin/qemu-loongarch64 archlinux-loongarch64-rootfs/
+          #- run: curl -LO https://dl-cdn.alpinelinux.org/v3.21/community/x86_64/qemu-loongarch64-9.1.2-r1.apk
+          #- run: tar xf qemu-loongarch64-*.apk
+          #- run: mv usr/bin/qemu-loongarch64 archlinux-loongarch64-rootfs/
+      - run: cp -L /usr/bin/qemu-loongarch64-static archlinux-loongarch64-rootfs/
 
-      - run: chroot archlinux-loongarch64-rootfs /qemu-loongarch64 /bin/sh -ex run.sh
+      - run: chroot archlinux-loongarch64-rootfs /qemu-loongarch64-static /bin/sh -ex run.sh
