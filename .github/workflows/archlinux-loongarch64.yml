@@ -21,7 +21,8 @@ jobs:
       - run: install -d archlinux-loongarch64-rootfs
       - run: tar xf archlinux-bootstrap-loong64.tar.gz -C archlinux-loongarch64-rootfs --strip-components=1
 
-      - run: sudo install -g `id -g` -o `id -u` /etc/resolv.conf archlinux-loongarch64-rootfs/etc/
+      - run: sudo install -g `id -g` -o `id -u` /etc/resolv.conf                 archlinux-loongarch64-rootfs/etc/
+      - run: sudo install -g `id -g` -o `id -u` /usr/bin/qemu-loongarch64-static archlinux-loongarch64-rootfs/
 
       - run: sudo mount -o bind  /dev archlinux-loongarch64-rootfs/dev
       - run: sudo mount -t proc  none archlinux-loongarch64-rootfs/proc
@@ -55,15 +56,19 @@ jobs:
           uname -a
           id
           pwd
+
+          pacman -Syy --noconfirm
+          pacman -S   --noconfirm curl gcc base-devel
+
+          curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+          chmod a+x ppkg
+
+          export GITHUB_ACTIONS=true
+
+          ./ppkg setup
+          ./ppkg update
+          ./ppkg install uctags
+          ./ppkg bundle  uctags
           EOF
-
-          #- run: curl -LO https://raw.githubusercontent.com/qemu/qemu/master/scripts/qemu-binfmt-conf.sh
-          #- run: chmod +x qemu-binfmt-conf.sh
-          #- run: mv qemu-binfmt-conf.sh archlinux-loongarch64-rootfs/
-
-          #- run: curl -LO https://dl-cdn.alpinelinux.org/v3.21/community/x86_64/qemu-loongarch64-9.1.2-r1.apk
-          #- run: tar xf qemu-loongarch64-*.apk
-          #- run: mv usr/bin/qemu-loongarch64 archlinux-loongarch64-rootfs/
-      - run: sudo install -g `id -g` -o `id -u` /usr/bin/qemu-loongarch64-static archlinux-loongarch64-rootfs/
 
       - run: sudo chroot archlinux-loongarch64-rootfs /qemu-loongarch64-static /bin/sh -ex run.sh
