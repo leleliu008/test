@@ -19,7 +19,7 @@ jobs:
 
       - run: curl -LO https://mirrors.wsyu.edu.cn/loongarch/archlinux/iso/latest/archlinux-bootstrap-loong64.tar.gz
       - run: install -d archlinux-loongarch64-rootfs
-      - run: tar xf archlinux-bootstrap-loong64.tar.gz -C archlinux-loongarch64-rootfs
+      - run: tar xf archlinux-bootstrap-loong64.tar.gz -C archlinux-loongarch64-rootfs --strip-components=1
 
       - run: sudo install -g `id -g` -o `id -u` /etc/resolv.conf archlinux-loongarch64-rootfs/etc/
 
