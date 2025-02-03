@@ -21,7 +21,7 @@ jobs:
       - run: install -d archlinux-loongarch64-rootfs
       - run: tar xf archlinux-bootstrap-loong64.tar.gz -C archlinux-loongarch64-rootfs
 
-      - run: cp -p /etc/resolv.conf archlinux-loongarch64-rootfs/etc/
+      - run: sudo install -g `id -g` -o `id -u` /etc/resolv.conf archlinux-loongarch64-rootfs/etc/
 
       - run: sudo mount -o bind  /dev archlinux-loongarch64-rootfs/dev
       - run: sudo mount -t proc  none archlinux-loongarch64-rootfs/proc
@@ -64,6 +64,6 @@ jobs:
           #- run: curl -LO https://dl-cdn.alpinelinux.org/v3.21/community/x86_64/qemu-loongarch64-9.1.2-r1.apk
           #- run: tar xf qemu-loongarch64-*.apk
           #- run: mv usr/bin/qemu-loongarch64 archlinux-loongarch64-rootfs/
-      - run: cp -L /usr/bin/qemu-loongarch64-static archlinux-loongarch64-rootfs/
+      - run: sudo install -g `id -g` -o `id -u` /usr/bin/qemu-loongarch64-static archlinux-loongarch64-rootfs/
 
       - run: sudo chroot archlinux-loongarch64-rootfs /qemu-loongarch64-static /bin/sh -ex run.sh
