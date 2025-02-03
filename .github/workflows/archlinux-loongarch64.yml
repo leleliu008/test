@@ -29,36 +29,13 @@ jobs:
       - run: sudo mount -t sysfs none archlinux-loongarch64-rootfs/sys
 
       - run: |
-          cat > archlinux-loongarch64-rootfs/chroot-run.sh <<EOF
-          # https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html
-
-          if [ ! -d /proc/sys/fs/binfmt_misc ] ; then
-              echo "binfmt_misc linux module is not loaded. run '/sbin/modprobe binfmt_misc' to load it."
-              exit 1
-          fi
-
-          if [ ! -f /proc/sys/fs/binfmt_misc/register ] ; then
-              mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-          fi
-
-          cat > /proc/sys/fs/binfmt_misc/qemu-loongarch64 <<EOF2
-          enabled
-          interpreter /qemu-loongarch64-static
-          flags: F
-          offset 0
-          magic 7f454c4602010100000000000000000002000201
-          mask fffffffffffffffc00fffffffffffffffeffffff
-          EOF2
-          EOF
-
-      - run: |
           cat > archlinux-loongarch64-rootfs/run.sh <<EOF
           uname -a
           id
           pwd
 
           pacman -Syy --noconfirm
-          pacman -S   --noconfirm curl gcc base-devel
+          pacman -S   --noconfirm gcc base-devel
 
           curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           chmod a+x ppkg
