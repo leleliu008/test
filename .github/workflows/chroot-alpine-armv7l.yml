@@ -37,4 +37,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: xxd---linux-armv7l.tar.xz
-          path: xxd-*-linux-armv7l.tar.xz
+          path: ./*.tar.xz
