@@ -1,4 +1,4 @@
-name: chroot loongarch64/archlinux
+name: chroot archlinux/loongarch64
 
 on:
   workflow_dispatch:
