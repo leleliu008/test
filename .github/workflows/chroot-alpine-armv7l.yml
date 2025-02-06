@@ -29,7 +29,7 @@ jobs:
 
       - run: curl -LO https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/master/alpine-chroot-install
       - run: chmod +x alpine-chroot-install
-      - run: sudo ./alpine-chroot-install -d /alpine -a ${{ matrix.target-arch }} -p wget -p g++
+      - run: sudo ./alpine-chroot-install -d /alpine -a armhf -p wget -p g++
       - run: /alpine/enter-chroot sh run.sh
       - run: /alpine/destroy
       - run: ls -l
