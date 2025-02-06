@@ -1,4 +1,4 @@
-name: chroot riscv64/alpine
+name: chroot alpine/riscv64
 
 on:
   workflow_dispatch:

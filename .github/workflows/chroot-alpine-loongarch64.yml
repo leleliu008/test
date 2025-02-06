@@ -1,4 +1,4 @@
-name: chroot loongarch64/alpine
+name: chroot alpine/loongarch64
 
 on:
   workflow_dispatch:
