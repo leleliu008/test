@@ -28,7 +28,7 @@ jobs:
           install -d src
           tar xf *.tar.gz -C src --strip-components=1
           cd src
-          cargo build --release --vv
+          cargo build --release -vv
           ls
           EOF
 
