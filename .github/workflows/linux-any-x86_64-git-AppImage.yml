@@ -17,9 +17,12 @@ jobs:
       - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/git-2.48.1-linux-x86_64.release.AppImage
       - run: chmod +x *.AppImage
 
+      - run: curl -LO https://curl.se/ca/cacert.pem
+
       - run: |
           cat > run.sh <<EOF
           set -ex
+          export SSL_CERT_FILE="\$PWD/cacert.pem"
           ./*.AppImage --appimage-extract
           squashfs-root/bin/git --help
           squashfs-root/bin/git --version
