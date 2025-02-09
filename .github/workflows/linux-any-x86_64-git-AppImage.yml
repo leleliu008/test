@@ -23,6 +23,9 @@ jobs:
           ./*.AppImage --appimage-extract
           squashfs-root/bin/git --help
           squashfs-root/bin/git --version
+          squashfs-root/bin/git https://github.com/leleliu008/test
+          squashfs-root/bin/git -C test status
+          squashfs-root/bin/git -C test pull
           EOF
 
       - run: docker run -v $PWD:/root -w /root --name ubuntu ubuntu:${{ matrix.version }} sh run.sh
@@ -47,6 +50,9 @@ jobs:
           ./*.AppImage --appimage-extract
           squashfs-root/bin/git --help
           squashfs-root/bin/git --version
+          squashfs-root/bin/git https://github.com/leleliu008/test
+          squashfs-root/bin/git -C test status
+          squashfs-root/bin/git -C test pull
           EOF
 
       - run: docker run -v $PWD:/root -w /root --name alpine alpine:${{ matrix.version }} sh run.sh
