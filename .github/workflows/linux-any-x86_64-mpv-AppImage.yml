@@ -20,8 +20,9 @@ jobs:
       - run: |
           cat > run.sh <<EOF
           set -ex
-          ./*.AppImage --help
-          ./*.AppImage --version
+          ./*.AppImage --appimage-extract
+          squashfs-root/bin/mpv --help
+          squashfs-root/bin/mpv --version
           EOF
 
       - run: docker run -v $PWD:/root -w /root --name ubuntu ubuntu:${{ matrix.version }} sh run.sh
@@ -43,8 +44,9 @@ jobs:
       - run: |
           cat > run.sh <<EOF
           set -ex
-          ./*.AppImage --help
-          ./*.AppImage --version
+          ./*.AppImage --appimage-extract
+          squashfs-root/bin/mpv --help
+          squashfs-root/bin/mpv --version
           EOF
 
       - run: docker run -v $PWD:/root -w /root --name alpine alpine:${{ matrix.version }} sh run.sh
