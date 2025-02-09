@@ -23,7 +23,7 @@ jobs:
           ./*.AppImage --appimage-extract
           squashfs-root/bin/git --help
           squashfs-root/bin/git --version
-          squashfs-root/bin/git https://github.com/leleliu008/test
+          squashfs-root/bin/git clone https://github.com/leleliu008/test
           squashfs-root/bin/git -C test status
           squashfs-root/bin/git -C test pull
           EOF
@@ -50,7 +50,7 @@ jobs:
           ./*.AppImage --appimage-extract
           squashfs-root/bin/git --help
           squashfs-root/bin/git --version
-          squashfs-root/bin/git https://github.com/leleliu008/test
+          squashfs-root/bin/git clone https://github.com/leleliu008/test
           squashfs-root/bin/git -C test status
           squashfs-root/bin/git -C test pull
           EOF
