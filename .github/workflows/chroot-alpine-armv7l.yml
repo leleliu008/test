@@ -17,14 +17,12 @@ jobs:
           int main() {
             char ts[20];
 
-            time_t t = time(NULL);
-
             int ret;
 
-            if (sizeof(t) == sizeof(long)) {
-              ret = snprintf(ts, 20, "%ld", t);
-            } else if (sizeof(t) == sizeof(long long)) {
-              ret = snprintf(ts, 20, "%lld", t);
+            if (sizeof(time_t) == sizeof(long)) {
+              ret = snprintf(ts, 20, "%ld", time(NULL));
+            } else if (sizeof(time_t) == sizeof(long long)) {
+              ret = snprintf(ts, 20, "%lld", time(NULL));
             }
 
             if (ret < 0) {
