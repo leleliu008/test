@@ -13,17 +13,12 @@ jobs:
           cat > test.c <<EOF
           #include <time.h>
           #include <stdio.h>
+          #include <inttypes.h>
 
           int main() {
             char ts[20];
 
-            int ret;
-
-            if (sizeof(time_t) == sizeof(long)) {
-              ret = snprintf(ts, 20, "%ld", time(NULL));
-            } else if (sizeof(time_t) == sizeof(long long)) {
-              ret = snprintf(ts, 20, "%lld", time(NULL));
-            }
+            int ret = snprintf(ts, 20, "%" PRIdMAX, time(NULL));
 
             if (ret < 0) {
                 perror(NULL);
