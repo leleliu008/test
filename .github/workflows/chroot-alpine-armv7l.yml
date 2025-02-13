@@ -17,7 +17,15 @@ jobs:
           int main() {
             char ts[20];
 
-            int ret = snprintf(ts, 20, "%lld", time(NULL));
+            time_t t = time(NULL);
+
+            int ret;
+
+            if (sizeof(t) == sizeof(long)) {
+              ret = snprintf(ts, 20, "%ld", t);
+            } else if (sizeof(t) == sizeof(long long)) {
+              ret = snprintf(ts, 20, "%lld", t);
+            }
 
             if (ret < 0) {
                 perror(NULL);
