@@ -4,33 +4,14 @@ on:
   workflow_dispatch
 
 jobs:
-  build1:
-    if: false
-    runs-on: ubuntu-latest
-
-    steps:
-      - run: |
-          set -ex
-          git clone https://github.com/simplex-chat/simplex-chat
-          cd simplex-chat
-          git checkout stable
-          DOCKER_BUILDKIT=1 docker build --output . .
-
-  build2:
-    if: false
-    runs-on: ubuntu-latest
-
-    steps:
-      - run: |
-          set -ex
-          curl -LO https://github.com/simplex-chat/simplex-chat/archive/refs/tags/v6.0.4.tar.gz
-          tar vxf v6.0.4.tar.gz
-          cd simplex-chat-6.0.4
-          DOCKER_BUILDKIT=1 docker build --output . .
-
-  build3:
+  build:
     runs-on: ubuntu-latest
     container: alpine
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['6.2.5', '6.0.4']
 
     env:
       BOOTSTRAP_HASKELL_GHC_VERSION: 9.6.3
@@ -43,8 +24,8 @@ jobs:
 
       - run: ln -s /usr/lib/libncursesw.so.6 /usr/lib/libtinfow.so.6
 
-      - run: curl -LO https://github.com/simplex-chat/simplex-chat/archive/refs/tags/v6.0.4.tar.gz
-      - run: tar vxf v6.0.4.tar.gz --strip-components=1
+      - run: curl -LO https://github.com/simplex-chat/simplex-chat/archive/refs/tags/v${{ matrix.version }}.tar.gz
+      - run: tar vxf *.tar.gz --strip-components=1
 
       - run: curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 
@@ -67,3 +48,8 @@ jobs:
 
       - run: ls out/
       - run: readelf -d out/*
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: simplex-chat-${{ matrix.version }}
+          path: out/*
