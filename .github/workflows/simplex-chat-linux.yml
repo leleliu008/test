@@ -38,6 +38,9 @@ jobs:
       - run: mv scripts/cabal.project.local.linux cabal.project.local
 
       - run: |
+          sed -i '/extra-source-files:/a \  - PRIVACY.md' package.yaml
+
+      - run: |
           sed -i '/- -Wunused-type-patterns/a\  - -O2\n\  - -split-sections\n\  - -with-rtsopts=-N\n\  - -static\n\cc-options: -static\n\ld-options: -static -pthread' package.yaml
 
       - run: cabal install --install-method=copy --installdir=/usr/local/bin hpack-0.36.0
