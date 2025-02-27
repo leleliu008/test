@@ -1,13 +1,7 @@
-# Copyright: 2022 fpliu
-# License: GPL-2.0-or-later
-
-name: DragonFlyBSD clockid_t sizeof
+name: DragonFlyBSD sizeof clockid_t
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -24,6 +18,7 @@ jobs:
       - run: |
           cat > test.c <<EOF
           #include<time.h>
+          #include<stdio.h>
           int main() {
             printf("%ld\n", sizeof(clockid_t));
             return 0;
