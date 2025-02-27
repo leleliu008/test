@@ -1,0 +1,50 @@
+# Copyright: 2022 fpliu
+# License: GPL-2.0-or-later
+
+name: DragonFlyBSD clockid_t sizeof
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['6.4.0']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          cat > test.c <<EOF
+          #include<time.h>
+          int main() {
+            printf("%ld\n", sizeof(clockid_t));
+            return 0;
+          }
+          EOF
+
+      - run: ls
+
+      - uses: vmactions/dragonflybsd-vm@v1
+        with:
+          release: "${{ matrix.version }}"
+          usesh: true
+          sync: rsync
+          copyback: true
+          run: |
+            set -ex
+            uname -s
+            uname -m
+            uname -r
+            cat /etc/os-release
+            id
+            cc test.c
+            ./a.out
+            cc -E test.c
