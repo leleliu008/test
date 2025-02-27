@@ -43,7 +43,7 @@ jobs:
       - run: curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.2-base-s390x.tar.gz
 
       - run: install -d ubuntu-rootfs
-      - run: tar xf ubuntu-base-24.04.1-base-*.tar.gz -C ubuntu-rootfs
+      - run: tar xf ubuntu-base-24.04.2-base-*.tar.gz -C ubuntu-rootfs
 
       - run: cp -p /etc/resolv.conf ubuntu-rootfs/etc/
       - run: mv run.sh ubuntu-rootfs/
