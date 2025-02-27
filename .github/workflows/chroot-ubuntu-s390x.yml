@@ -53,6 +53,6 @@ jobs:
       - run: sudo mount -t sysfs none ubuntu-rootfs/sys
       - run: sudo mount -t tmpfs none ubuntu-rootfs/tmp
 
-      - run: sudo install -g `id -g` -o `id -u` /usr/bin/qemu-${{ matrix.target-arch }}-static ubuntu-rootfs/
+      - run: sudo install -g `id -g` -o `id -u` /usr/bin/qemu-s390x-static ubuntu-rootfs/
 
-      - run: sudo chroot ubuntu-rootfs /qemu-${{ matrix.target-arch }}-static /bin/sh run.sh
+      - run: sudo chroot ubuntu-rootfs /qemu-s390x-static /bin/sh run.sh
