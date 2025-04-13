@@ -1,13 +1,37 @@
-name: download and show sha256sum
+name: Download
 
 on:
   workflow_dispatch:
+    inputs:
+
+      url:
+        description: input a download url
+        required: true
+        default: https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz
 
 jobs:
-  ubuntu:
+
+  base:
 
     runs-on: ubuntu-latest
 
     steps:
-      - run: curl -LO https://github.com/lzhiyong/termux-ndk/releases/download/android-ndk/android-ndk-r27b-aarch64.zip
-      - run: sha256sum android-ndk-r27b-aarch64.zip
+      - id:  prepare
+        run: printf 'FILENAME=%s\n' "$(basename '${{ github.event.inputs.url }}')" >> "$GITHUB_OUTPUT"
+
+    outputs:
+      filename: ${{ steps.prepare.outputs.FILENAME }}
+
+
+  download:
+    needs: base
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: curl -LO ${{ github.event.inputs.url }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.base.outputs.filename }}
+          path: ${{ needs.base.outputs.filename }}
