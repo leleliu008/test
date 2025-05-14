@@ -1,0 +1,29 @@
+name: ndk-pkg
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  ndk-pkg:
+
+    runs-on: ubuntu-latest
+    container: alpine
+
+    steps:
+      - run: wget https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
+
+      - run: chmod +x ndk-pkg
+
+      - run: ./ndk-pkg setup
+      - run: ./ndk-pkg about
+      - run: ./ndk-pkg update
+      - run: ./ndk-pkg install android-21-arm64-v8a/rav1e
+      - run: ./ndk-pkg bundle  android-21-arm64-v8a/rav1e .tar.xz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rav1e.tar.xz
+          path: ./*.tar.xz
