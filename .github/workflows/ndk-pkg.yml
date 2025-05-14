@@ -1,10 +1,7 @@
 name: ndk-pkg
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   ndk-pkg:
@@ -13,7 +10,7 @@ jobs:
     container: alpine
 
     steps:
-      - run: wget https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/bin/ndk-pkg
+      - run: wget https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/ndk-pkg
 
       - run: chmod +x ndk-pkg
 
