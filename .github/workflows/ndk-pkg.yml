@@ -4,23 +4,43 @@ on:
   workflow_dispatch:
 
 jobs:
-  ndk-pkg:
-
+  alpine:
+ 
     runs-on: ubuntu-latest
+
     container: alpine
 
     steps:
       - run: wget https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/ndk-pkg
-
       - run: chmod +x ndk-pkg
 
       - run: ./ndk-pkg setup
       - run: ./ndk-pkg about
       - run: ./ndk-pkg update
       - run: ./ndk-pkg install android-35-arm64-v8a/rav1e -x-cargo --static
-      - run: ./ndk-pkg bundle  android-35-arm64-v8a/rav1e .tar.xz
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: rav1e.tar.xz
-          path: ./*.tar.xz
+  ubuntu:
+ 
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/ndk-pkg
+      - run: chmod +x ndk-pkg
+
+      - run: ./ndk-pkg setup
+      - run: ./ndk-pkg about
+      - run: ./ndk-pkg update
+      - run: ./ndk-pkg install android-35-arm64-v8a/rav1e -x-cargo --static
+
+  macos:
+ 
+    runs-on: macos-14
+
+    steps:
+      - run: curl https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/ndk-pkg
+      - run: chmod +x ndk-pkg
+
+      - run: ./ndk-pkg setup
+      - run: ./ndk-pkg about
+      - run: ./ndk-pkg update
+      - run: ./ndk-pkg install android-35-arm64-v8a/rav1e -x-cargo --static
