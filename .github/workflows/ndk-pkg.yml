@@ -34,10 +34,10 @@ jobs:
 
   macos:
  
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
-      - run: curl https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/ndk-pkg
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ndk-pkg/master/ndk-pkg
       - run: chmod +x ndk-pkg
 
       - run: ./ndk-pkg setup
