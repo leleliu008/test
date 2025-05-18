@@ -14,6 +14,5 @@ jobs:
 
       - run: bin/xcpkg about
       - run: bin/xcpkg sysinfo
-      - run: bin/xcpkg setup
       - run: bin/xcpkg update
       - run: bin/xcpkg install q -v-env -v-net
