@@ -10,6 +10,17 @@ jobs:
 
     steps:
       - run: |
+          cat > test.c <<EOF
+          #include<limits.h>
+          int main() {
+            char p[PATH_MAX];
+            p[0] = /;
+            p[1] = '\0';
+            return 0;
+          }
+          EOF
+
+      - run: |
           cat > run.sh <<EOF
           set -ex
           uname -a
@@ -18,6 +29,8 @@ jobs:
 
           apk update
           apk add g++ libc-dev linux-headers rust cargo
+
+          cc -flto -Os -std=c99 test.c
 
           find / -name 'libgcc*'
           nm /usr/lib/gcc/riscv64-alpine-linux-musl/14.2.0/libgcc_eh.a
@@ -31,7 +44,7 @@ jobs:
           ./ppkg setup
           ./ppkg update
           ./ppkg install b3sum --static
-          ./ppkg bundle  b3sum
+          ./ppkg bundle  b3sum .tar.xz
           EOF
 
       - run: curl -LO https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/master/alpine-chroot-install
