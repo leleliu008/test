@@ -15,10 +15,19 @@ jobs:
           uname -a
           id
           pwd
+
+          apk update
+          apk add g++ libc-dev linux-headers rust cargo
+
           find / -name 'libgcc*'
+          nm /usr/lib/gcc/riscv64-alpine-linux-musl/14.2.0/libgcc_eh.a
+          nm /usr/lib/gcc/riscv64-alpine-linux-musl/14.2.0/libgcc.a
+
           wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           chmod a+x ppkg
+
           export GITHUB_ACTIONS=true
+
           ./ppkg setup
           ./ppkg update
           ./ppkg install b3sum --static
