@@ -11,10 +11,10 @@ jobs:
     steps:
       - run: |
           cat > test.c <<EOF
-          #include<limits.h>
+          #include<linux/limits.h>
           int main() {
             char p[PATH_MAX];
-            p[0] = /;
+            p[0] = '/';
             p[1] = '\0';
             return 0;
           }
