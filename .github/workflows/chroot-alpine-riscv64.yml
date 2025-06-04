@@ -15,13 +15,14 @@ jobs:
           uname -a
           id
           pwd
+          find / -name 'libgcc*'
           wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
           chmod a+x ppkg
           export GITHUB_ACTIONS=true
           ./ppkg setup
           ./ppkg update
-          ./ppkg install uctags --static
-          ./ppkg pack    uctags
+          ./ppkg install b3sum --static
+          ./ppkg bundle  b3sum
           EOF
 
       - run: curl -LO https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/master/alpine-chroot-install
@@ -34,5 +35,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uctags---linux-riscv64.tar.xz
-          path: uctags-*-linux-riscv64.tar.xz
+          name: b3sum---linux-riscv64.tar.xz
+          path: b3sum-*-linux-riscv64.tar.xz
