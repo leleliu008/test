@@ -59,12 +59,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ['6.4.0']
+        version: ['6.4']
 
     steps:
       - uses: vmactions/dragonflybsd-vm@v1
         with:
-          release: "${{ matrix.version }}"
+          release: "${{ matrix.version }}.0"
           usesh: true
           sync: rsync
           copyback: true
