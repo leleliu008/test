@@ -4,10 +4,7 @@
 name: DragonFlyBSD
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -43,6 +40,7 @@ jobs:
             ls /usr/local/bin
             pkg update -y
             pkg install -y gcc11
+            pkg install -y go-yq
             ls /usr/bin
             ls /usr/local
             ls /usr/local/bin
@@ -61,12 +59,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ['6.4']
+        version: ['6.4.0']
 
     steps:
       - uses: vmactions/dragonflybsd-vm@v1
         with:
-          release: "${{ matrix.version }}.0"
+          release: "${{ matrix.version }}"
           usesh: true
           sync: rsync
           copyback: true
@@ -80,14 +78,13 @@ jobs:
 
             curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
             chmod a+x ppkg
-            ./ppkg setup --syspm
+
+            ./ppkg setup
             ./ppkg update
-            ~/.ppkg/uppm/installed/gsed/bin/gsed -i "/git-url/a git-sha: ${{ needs.check.outputs.git-sha }}" ~/.ppkg/repos.d/official-core/formula/uctags.yml
-            ./ppkg install dragonflybsd-${{ matrix.version }}-x86_64/uctags --static
-            ./ppkg pack    dragonflybsd-${{ matrix.version }}-x86_64/uctags -t tar.gz
-            ./ppkg pack    dragonflybsd-${{ matrix.version }}-x86_64/uctags -t tar.xz
+            ./ppkg install dragonflybsd-${{ matrix.version }}-x86_64/uppm@0.15.4 --static
+            ./ppkg bundle  dragonflybsd-${{ matrix.version }}-x86_64/uppm@0.15.4 -t tar.xz
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uctags---dragonflybsd-${{ matrix.version }}-x86_64-tar
-          path: uctags-*-dragonflybsd-${{ matrix.version }}-x86_64.tar.*
+          name: uppm---dragonflybsd-${{ matrix.version }}-x86_64-tar.xz
+          path: uppm-*-dragonflybsd-${{ matrix.version }}-x86_64.tar.xz

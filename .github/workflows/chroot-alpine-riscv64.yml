@@ -57,5 +57,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: b3sum---linux-riscv64.tar.xz
-          path: b3sum-*-linux-riscv64.tar.xz
+          name: b3sum---linux-riscv64.release.tar.xz
+          path: b3sum-*-linux-riscv64.release.tar.xz
