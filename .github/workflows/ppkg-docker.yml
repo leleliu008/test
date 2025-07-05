@@ -13,7 +13,7 @@ jobs:
         os: [ubuntu, alpine]
         arch: [amd64, arm64/v8, riscv64, ppc64le, s390x]
 
-    runs-on: ubuntu:24.04
+    runs-on: ubuntu-latest
 
     steps:
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
