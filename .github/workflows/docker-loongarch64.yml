@@ -1,0 +1,22 @@
+name: docker loongarch64
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  debian:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: docker run --privileged --rm qemu-loongarch-static --reset
+      - run: docker run -it cr.loongnix.cn/library/debian uname -m
+
+  archlinux:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: docker run --privileged --rm qemu-loongarch-static --reset
+      - run: docker run -it ghcr.io/loongarchlinux/archlinux:latest uname -m
