@@ -19,8 +19,7 @@ jobs:
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
 
-      - name: create run.sh
-        run: |
+      - run: |
           cat > run.sh <<EOF
           set -e
 
@@ -37,9 +36,9 @@ jobs:
               eval "\$*"
           }
 
-          run uname -a
-
           export GITHUB_ACTIONS=true
+
+          run uname -a
 
           run ./ppkg setup
           run ./ppkg update
@@ -57,4 +56,5 @@ jobs:
               docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
           esac
 
+      - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/${{ matrix.os }} uname -a
       - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/${{ matrix.os }} /bin/sh run.sh
