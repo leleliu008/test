@@ -20,7 +20,7 @@ jobs:
       - run: curl -L -o bsdtar https://github.com/leleliu008/bsdtar.exe/releases/download/2025.06.26/bsdtar-3.7.7-linux-x86_64.release
       - run: chmod +x   bsdtar
 
-      - run: curl -LO https://mirrors.wsyu.edu.cn/loongarch/archlinux/iso/latest/archlinux-bootstrap-loong64.tar.gz
+      - run: curl -LO https://mirrors.nju.edu.cn/loongarch/archlinux/iso/latest/archlinux-bootstrap-loong64.tar.gz
       - run: install -d archlinux-loongarch64-rootfs
       - run: ./bsdtar xvf archlinux-bootstrap-loong64.tar.gz -C archlinux-loongarch64-rootfs --strip-components=1
 
