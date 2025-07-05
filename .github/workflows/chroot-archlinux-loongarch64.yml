@@ -27,9 +27,9 @@ jobs:
       - run: sudo install -g `id -g` -o `id -u` /etc/resolv.conf                 archlinux-loongarch64-rootfs/etc/
       - run: sudo install -g `id -g` -o `id -u` /usr/bin/qemu-loongarch64-static archlinux-loongarch64-rootfs/
 
-      - run: sudo mount -o bind  /dev archlinux-loongarch64-rootfs/dev
-      - run: sudo mount -t proc  none archlinux-loongarch64-rootfs/proc
-      - run: sudo mount -t sysfs none archlinux-loongarch64-rootfs/sys
+      - run: sudo mount -o bind  /dev  archlinux-loongarch64-rootfs/dev
+      - run: sudo mount -o bind  /proc archlinux-loongarch64-rootfs/proc
+      - run: sudo mount -t sysfs none  archlinux-loongarch64-rootfs/sys
 
       - run: sudo mount --bind archlinux-loongarch64-rootfs archlinux-loongarch64-rootfs
 
@@ -52,8 +52,6 @@ jobs:
           ./ppkg install uctags
           ./ppkg bundle  uctags
           EOF
-
-          #- run: docker run --rm --privileged zhangguanzhang/qemu-user-static --reset -p yes
 
       - run: sudo chroot archlinux-loongarch64-rootfs /qemu-loongarch64-static --help
       - run: sudo chroot archlinux-loongarch64-rootfs /qemu-loongarch64-static --version
