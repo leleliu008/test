@@ -16,9 +16,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
-      - run: chmod a+x ppkg
-
       - run: |
           cat > run.sh <<EOF
           set -e
@@ -36,17 +33,13 @@ jobs:
               eval "\$*"
           }
 
-          export GITHUB_ACTIONS=true
-
           run uname -a
 
-          run ./ppkg setup
-          run ./ppkg update
-          run ./ppkg install xxd
-          run ./ppkg bundle  xxd .tar.xz
+          run ppkg setup
+          run ppkg update
+          run ppkg install xxd
+          run ppkg bundle  xxd .tar.xz
           EOF
-
-          chmod +x run.sh
 
       - run: |
           case ${{ matrix.arch }} in
@@ -56,5 +49,4 @@ jobs:
               docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
           esac
 
-      - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/${{ matrix.os }} uname -a
-      - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/${{ matrix.os }} /bin/sh run.sh
+      - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/${{ matrix.os }} run.sh
