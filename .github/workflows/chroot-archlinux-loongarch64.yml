@@ -11,11 +11,11 @@ jobs:
     steps:
       - run: id
 
-        #- run: sudo apt-get -y update
-        #- run: sudo apt-get -y install curl qemu-user-static
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install qemu-user-static
 
-        #- run: dpkg -L qemu-user-static
-        #- run: ls /usr/bin/qemu-*
+      - run: dpkg -L qemu-user-static
+      - run: ls /usr/bin/qemu-*
 
       - run: curl -L -o bsdtar https://github.com/leleliu008/bsdtar.exe/releases/download/2025.06.26/bsdtar-3.7.7-linux-x86_64.release
       - run: chmod +x   bsdtar
@@ -25,7 +25,7 @@ jobs:
       - run: ./bsdtar xvf archlinux-bootstrap-loong64.tar.gz -C archlinux-loongarch64-rootfs --strip-components=1
 
       - run: sudo install -g `id -g` -o `id -u` /etc/resolv.conf                 archlinux-loongarch64-rootfs/etc/
-        #- run: sudo install -g `id -g` -o `id -u` /usr/bin/qemu-loongarch64-static archlinux-loongarch64-rootfs/
+      - run: sudo install -g `id -g` -o `id -u` /usr/bin/qemu-loongarch64-static archlinux-loongarch64-rootfs/
 
       - run: sudo mount -o bind  /dev archlinux-loongarch64-rootfs/dev
       - run: sudo mount -t proc  none archlinux-loongarch64-rootfs/proc
@@ -53,7 +53,7 @@ jobs:
           ./ppkg bundle  uctags
           EOF
 
-      - run: docker run --rm --privileged zhangguanzhang/qemu-user-static --reset -p yes
+          #- run: docker run --rm --privileged zhangguanzhang/qemu-user-static --reset -p yes
 
-      - run: sudo chroot archlinux-loongarch64-rootfs uname -m
-      - run: sudo chroot archlinux-loongarch64-rootfs /bin/sh -ex run.sh
+      - run: sudo chroot archlinux-loongarch64-rootfs /qemu-loongarch64-static uname -m
+      - run: sudo chroot archlinux-loongarch64-rootfs /qemu-loongarch64-static /bin/sh -ex run.sh
