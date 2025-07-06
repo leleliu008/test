@@ -36,6 +36,7 @@ jobs:
           run uname -a
 
           run ppkg setup
+          run ppkg sysinfo
           run ppkg update
           run ppkg install xxd
           run ppkg bundle  xxd .tar.xz
@@ -77,13 +78,14 @@ jobs:
           run uname -a
 
           run ppkg setup
+          run ppkg sysinfo
           run ppkg update
           run ppkg install xxd
           run ppkg bundle  xxd .tar.xz
           EOF
 
       - run: docker run --rm --privileged zhangguanzhang/qemu-user-static --reset -p yes
-      - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/alpine /bin/sh run.sh
+      - run: docker run --platform linux/loong64 -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/alpine/loong64 /bin/sh run.sh
 
 
   openeuler:
@@ -117,6 +119,7 @@ jobs:
 
           run ppkg setup
           run readelf -d /bin/sh
+          run ppkg sysinfo
           run ppkg update
           run ppkg install xxd
           run ppkg bundle  xxd .tar.xz
