@@ -15,26 +15,23 @@ jobs:
           id
           pwd
 
-          apt -y update
-          apt -y install curl xz-utils g++
-
-          curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
-          chmod a+x ppkg
-
           export GITHUB_ACTIONS=true
 
           ./ppkg setup
           ./ppkg update
           ./ppkg install uctags --static
-          ./ppkg pack    uctags
+          ./ppkg bundle  uctags .tar.xz
           EOF
 
-      - run: curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.1-base-amd64.tar.gz
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
+
+      - run: curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.2-base-amd64.tar.gz
       - run: install -d ubuntu-rootfs
       - run: tar xf ubuntu-base-*.tar.gz -C ubuntu-rootfs
 
       - run: cp -p /etc/resolv.conf ubuntu-rootfs/etc/
-      - run: mv run.sh ubuntu-rootfs/
+      - run: mv ppkg run.sh ubuntu-rootfs/
 
       - run: sudo mount -o bind  /dev ubuntu-rootfs/dev
       - run: sudo mount -t proc  none ubuntu-rootfs/proc
@@ -68,19 +65,16 @@ jobs:
           id
           pwd
 
-          apt -y update
-          apt -y install curl xz-utils g++
-
-          curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
-          chmod a+x ppkg
-
           export GITHUB_ACTIONS=true
 
           ./ppkg setup
           ./ppkg update
           ./ppkg install uctags --static
-          ./ppkg pack    uctags
+          ./ppkg bundle  uctags .tar.xz
           EOF
+
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
 
       - run: |
           case ${{ matrix.target-arch }} in
@@ -89,13 +83,13 @@ jobs:
             ppc64le) X=ppc64el ;;
             *)       X=${{ matrix.target-arch }}
           esac
-          curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.1-base-$X.tar.gz
+          curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.2-base-$X.tar.gz
 
       - run: install -d ubuntu-rootfs
       - run: tar xf ubuntu-base-24.04.1-base-*.tar.gz -C ubuntu-rootfs
 
       - run: cp -p /etc/resolv.conf ubuntu-rootfs/etc/
-      - run: mv run.sh ubuntu-rootfs/
+      - run: mv ppkg run.sh ubuntu-rootfs/
 
       - run: sudo mount -o bind  /dev ubuntu-rootfs/dev
       - run: sudo mount -t proc  none ubuntu-rootfs/proc
@@ -103,9 +97,11 @@ jobs:
       - run: sudo mount -t tmpfs none ubuntu-rootfs/tmp
 
       - run: sudo apt-get -y update
-      - run: sudo apt-get -y install qemu-user-static binfmt-support
+      - run: sudo apt-get -y install qemu-user-static
 
-      - run: update-binfmts --enable
+        #binfmt-support
+
+        #- run: update-binfmts --enable
 
       - run: sudo install -g `id -g` -o `id -u` /usr/bin/qemu-${{ matrix.target-arch }}-static ubuntu-rootfs/
 
