@@ -56,10 +56,10 @@ jobs:
       - run: sudo mount -t sysfs none ubuntu-rootfs/sys
       - run: sudo mount -t tmpfs none ubuntu-rootfs/tmp
 
-      - if: matrix.target-arch == x86_64
+      - if: matrix.target-arch == 'x86_64'
         run: sudo chroot ubuntu-rootfs /bin/sh run.sh
 
-      - if: matrix.target-arch != x86_64
+      - if: matrix.target-arch != 'x86_64'
         run: |
           sudo apt-get -y update
           sudo apt-get -y install qemu-user-static
