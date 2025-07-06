@@ -4,58 +4,15 @@ on:
   workflow_dispatch:
 
 jobs:
+
   chroot:
-    runs-on: ubuntu-latest
-
-    steps:
-      - run: |
-          cat > run.sh <<EOF
-          set -ex
-          uname -a
-          id
-          pwd
-
-          export GITHUB_ACTIONS=true
-
-          ./ppkg setup
-          ./ppkg update
-          ./ppkg install uctags --static
-          ./ppkg bundle  uctags .tar.xz
-          EOF
-
-      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
-      - run: chmod a+x ppkg
-
-      - run: curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.2-base-amd64.tar.gz
-      - run: install -d ubuntu-rootfs
-      - run: tar xf ubuntu-base-*.tar.gz -C ubuntu-rootfs
-
-      - run: cp -p /etc/resolv.conf ubuntu-rootfs/etc/
-      - run: mv ppkg run.sh ubuntu-rootfs/
-
-      - run: sudo mount -o bind  /dev ubuntu-rootfs/dev
-      - run: sudo mount -t proc  none ubuntu-rootfs/proc
-      - run: sudo mount -t sysfs none ubuntu-rootfs/sys
-      - run: sudo mount -t tmpfs none ubuntu-rootfs/tmp
-
-      - run: sudo chroot ubuntu-rootfs /bin/sh run.sh
-
-      - run: mv ubuntu-rootfs/uctags-*.tar.xz .
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: uctags---linux-x86_64.release.tar.xz
-          path: uctags-*-linux-x86_64.release.tar.xz
-
-
-  chroot_qemu:
 
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        target-arch: [aarch64, ppc64le, riscv64, s390x]
+        target-arch: [x86_64, aarch64, riscv64, ppc64le, s390x]
 
     steps:
       - run: |
@@ -69,21 +26,24 @@ jobs:
 
           ./ppkg setup
           ./ppkg update
-          ./ppkg install uctags --static
-          ./ppkg bundle  uctags .tar.xz
+          ./ppkg install sysinfo
+          ./ppkg bundle  sysinfo .tar.xz
           EOF
 
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
       - run: chmod a+x ppkg
 
-      - run: |
+      - id: arch
+        run: |
           case ${{ matrix.target-arch }} in
             x86_64)  X=amd64 ;;
             aarch64) X=arm64 ;;
             ppc64le) X=ppc64el ;;
             *)       X=${{ matrix.target-arch }}
           esac
-          curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.2-base-$X.tar.gz
+          printf 'arch=%s\n' "$X" >> "$GITHUB_OUTPUT"
+
+      - run: curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.2-base-${{ steps.arch.outputs.arch }}.tar.gz
 
       - run: install -d ubuntu-rootfs
       - run: tar xf ubuntu-base-*.tar.gz -C ubuntu-rootfs
@@ -96,20 +56,19 @@ jobs:
       - run: sudo mount -t sysfs none ubuntu-rootfs/sys
       - run: sudo mount -t tmpfs none ubuntu-rootfs/tmp
 
-      - run: sudo apt-get -y update
-      - run: sudo apt-get -y install qemu-user-static
+      - if: matrix.target-arch == x86_64
+        run: sudo chroot ubuntu-rootfs /bin/sh run.sh
 
-        #binfmt-support
+      - if: matrix.target-arch != x86_64
+        run: |
+          sudo apt-get -y update
+          sudo apt-get -y install qemu-user-static
+          sudo install -g `id -g` -o `id -u` /usr/bin/qemu-${{ matrix.target-arch }}-static ubuntu-rootfs/
+          sudo chroot ubuntu-rootfs /qemu-${{ matrix.target-arch }}-static /bin/sh run.sh
 
-        #- run: update-binfmts --enable
-
-      - run: sudo install -g `id -g` -o `id -u` /usr/bin/qemu-${{ matrix.target-arch }}-static ubuntu-rootfs/
-
-      - run: sudo chroot ubuntu-rootfs /qemu-${{ matrix.target-arch }}-static /bin/sh run.sh
-
-      - run: mv ubuntu-rootfs/uctags-*.tar.xz .
+      - run: mv ubuntu-rootfs/sysinfo-*.tar.xz .
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uctags---linux-${{ matrix.target-arch }}.release.tar.xz
-          path: uctags-*-linux-${{ matrix.target-arch }}.release.tar.xz
+          name: sysinfo---linux-glibc-${{ matrix.target-arch }}.release.tar.xz
+          path: sysinfo-*-linux-glibc-${{ matrix.target-arch }}.release.tar.xz
