@@ -28,6 +28,7 @@ jobs:
           ./ppkg update
           ./ppkg install sysinfo
           ./ppkg bundle  sysinfo .tar.xz
+          ~/.ppkg/installed/linux-*/sysinfo/bin/sysinfo
           EOF
 
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
