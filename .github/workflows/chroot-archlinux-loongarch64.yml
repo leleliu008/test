@@ -30,6 +30,7 @@ jobs:
       - run: sudo mount -o bind  /dev  archlinux-loongarch64-rootfs/dev
       - run: sudo mount -o bind  /proc archlinux-loongarch64-rootfs/proc
       - run: sudo mount -t sysfs none  archlinux-loongarch64-rootfs/sys
+      - run: sudo mount --bind "$PWD" "$PWD"
 
       - run: sudo mount --bind archlinux-loongarch64-rootfs archlinux-loongarch64-rootfs
 
