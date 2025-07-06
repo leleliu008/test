@@ -5,25 +5,27 @@ on:
 
 jobs:
 
+  # https://github.com/loong64/docker-library
+
   alpine:
 
     runs-on: ubuntu-latest
 
     steps:
-      - run: docker run --rm --privileged zhangguanzhang/qemu-user-static --reset -p yes
-      - run: docker run --platform linux/loong64 loongarch64/alpine:3.21 uname -m
+      - run: docker run --rm --privileged ghcr.io/loong64/binfmt --install all
+      - run: docker run --platform linux/loong64 ghcr.io/loong64/alpine:3.22 uname -m
 
   openeuler:
 
     runs-on: ubuntu-latest
 
     steps:
-      - run: docker run --rm --privileged zhangguanzhang/qemu-user-static --reset -p yes
+      - run: docker run --rm --privileged ghcr.io/loong64/binfmt --install all
       - run: docker run --platform linux/loong64 loongarch64/openeuler:24.03-LTS cat /etc/os-release
   archlinux:
 
     runs-on: ubuntu-latest
 
     steps:
-      - run: docker run --rm --privileged zhangguanzhang/qemu-user-static --reset -p yes
+      - run: docker run --rm --privileged ghcr.io/loong64/binfmt --install all
       - run: docker run --platform linux/loong64 ghcr.io/loongarchlinux/archlinux:latest uname -m
