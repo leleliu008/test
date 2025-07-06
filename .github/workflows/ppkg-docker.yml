@@ -121,8 +121,9 @@ jobs:
           run readelf -d /bin/sh
           run ppkg sysinfo
           run ppkg update
-          run ppkg install xxd
-          run ppkg bundle  xxd .tar.xz
+          run ppkg install sysinfo
+          run ~/.ppkg/installed/linux-*/sysinfo/bin/sysinfo
+          run ppkg bundle  sysinfo .tar.xz
           EOF
 
       - run: |
