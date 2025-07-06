@@ -11,6 +11,8 @@ jobs:
     steps:
       - run: id
 
+      - run: cat /proc/self/mounts
+
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install qemu-user-static
 
