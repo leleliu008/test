@@ -49,7 +49,7 @@ jobs:
               docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
           esac
 
-      - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/${{ matrix.os }} /bin/sh run.sh
+      - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root --name ${{ matrix.os }} ghcr.io/leleliu008/ppkg/${{ matrix.os }} /bin/sh run.sh
 
 
   openeuler:
@@ -95,4 +95,5 @@ jobs:
               docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
           esac
 
-      - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/openeuler /bin/sh run.sh
+          #- run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root --name openeuler ghcr.io/leleliu008/ppkg/openeuler /bin/sh run.sh
+      - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root --name openeuler openeuler/openeuler:24.03 /bin/sh run.sh
