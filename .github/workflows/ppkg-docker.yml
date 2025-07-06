@@ -116,6 +116,7 @@ jobs:
           run uname -a
 
           run ppkg setup
+          run readelf -d /bin/sh
           run ppkg update
           run ppkg install xxd
           run ppkg bundle  xxd .tar.xz
