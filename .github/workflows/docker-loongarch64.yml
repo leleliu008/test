@@ -7,25 +7,34 @@ jobs:
 
   # https://github.com/loong64/docker-library
 
-  alpine:
+  build:
 
     runs-on: ubuntu-latest
 
-    steps:
-      - run: docker run --rm --privileged ghcr.io/loong64/binfmt --install all
-      - run: docker run --platform linux/loong64 ghcr.io/loong64/alpine:3.22 uname -m
-
-  openeuler:
-
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ['ghcr.io/loong64/alpine:3.22', 'loongarch64/openeuler:24.03-LTS', 'ghcr.io/loongarchlinux/archlinux:latest']
 
     steps:
-      - run: docker run --rm --privileged ghcr.io/loong64/binfmt --install all
-      - run: docker run --platform linux/loong64 loongarch64/openeuler:24.03-LTS cat /etc/os-release
-  archlinux:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
 
-    runs-on: ubuntu-latest
+      - run: |
+          cat > run.sh <<EOF
+          set -ex
+          uname -a
+          id
+          pwd
 
-    steps:
+          export GITHUB_ACTIONS=true
+
+          ./ppkg setup
+          ./ppkg update
+          ./ppkg install sysinfo
+          ./ppkg bundle  sysinfo .tar.xz
+          ~/.ppkg/installed/linux-*/sysinfo/bin/sysinfo
+          EOF
+
       - run: docker run --rm --privileged ghcr.io/loong64/binfmt --install all
-      - run: docker run --platform linux/loong64 ghcr.io/loongarchlinux/archlinux:latest uname -m
+      - run: docker run -v $PWD:/root -w /root --platform linux/loong64 ${{ matrix.image }} /bin/sh run.sh
