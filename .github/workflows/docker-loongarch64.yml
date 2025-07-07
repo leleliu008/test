@@ -6,6 +6,8 @@ on:
 jobs:
 
   # https://github.com/loong64/docker-library
+  # https://github.com/loongarchlinux
+  # https://hub.docker.com/r/openeuler/openeuler/tags
 
   build:
 
@@ -14,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: ['ghcr.io/loong64/alpine:3.22', 'loongarch64/openeuler:24.03-LTS', 'ghcr.io/loongarchlinux/archlinux:latest']
+        image: ['ghcr.io/loong64/alpine:3.22', 'ghcr.io/loong64/debian:trixie', 'ghcr.io/loongarchlinux/archlinux:latest', 'openeuler/openeuler:24.03']
 
     steps:
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
