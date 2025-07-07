@@ -84,7 +84,8 @@ jobs:
           run ppkg bundle  xxd .tar.xz
           EOF
 
-      - run: docker run --rm --privileged zhangguanzhang/qemu-user-static --reset -p yes
+      # https://github.com/loong64/docker-library
+      - run: docker run --privileged --rm ghcr.io/loong64/binfmt --install all
       - run: docker run --platform linux/loong64 -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/alpine/loong64 /bin/sh run.sh
 
 
@@ -131,7 +132,8 @@ jobs:
             amd64)
               ;;
             loong64)
-              docker run --rm --privileged zhangguanzhang/qemu-user-static --reset -p yes
+              # https://github.com/loong64/docker-library
+              docker run --privileged --rm ghcr.io/loong64/binfmt --install all
               ;;
             *)
               # https://github.com/multiarch/qemu-user-static
