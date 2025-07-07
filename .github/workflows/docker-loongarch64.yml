@@ -38,5 +38,10 @@ jobs:
           ~/.ppkg/installed/linux-*/sysinfo/bin/sysinfo
           EOF
 
-      - run: docker run --rm --privileged ghcr.io/loong64/binfmt --install all
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install qemu-user-static binfmt-support
+      - run: update-binfmts --enable
+
+        #- run: docker run --rm --privileged ghcr.io/loong64/binfmt --install all
+
       - run: docker run -v $PWD:/root -w /root --platform linux/loong64 ${{ matrix.image }} /bin/sh run.sh
