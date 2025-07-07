@@ -43,12 +43,10 @@ jobs:
           EOF
 
       - run: |
-          case ${{ matrix.arch }} in
-            amd64) ;;
-            *)
-              # https://github.com/multiarch/qemu-user-static
-              docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-          esac
+          sudo apt-get -y update
+          sudo apt-get -y install qemu-user-static binfmt-support
+          update-binfmts --enable
+        if: matrix.arch != 'amd64'
 
       - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/${{ matrix.os }} /bin/sh run.sh
 
@@ -84,10 +82,63 @@ jobs:
           run ppkg bundle  xxd .tar.xz
           EOF
 
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install qemu-user-static binfmt-support
+      - run: update-binfmts --enable
+
       # https://github.com/loong64/docker-library
-      - run: docker run --privileged --rm ghcr.io/loong64/binfmt --install all
+      #- run: docker run --privileged --rm ghcr.io/loong64/binfmt --install all
+
       - run: docker run --platform linux/loong64 -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/alpine/loong64 /bin/sh run.sh
 
+
+  loong64:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [debian, archlinux]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          cat > run.sh <<EOF
+          set -e
+
+          COLOR_GREEN='\033[0;32m'        # Green
+          COLOR_PURPLE='\033[0;35m'       # Purple
+          COLOR_OFF='\033[0m'             # Reset
+
+          echo() {
+              printf '%b\n' "\$*"
+          }
+
+          run() {
+              echo "\${COLOR_PURPLE}==>\${COLOR_OFF} \${COLOR_GREEN}\$@\${COLOR_OFF}"
+              eval "\$*"
+          }
+
+          run uname -a
+
+          run ppkg setup
+          run readelf -d /bin/sh
+          run ppkg sysinfo
+          run ppkg update
+          run ppkg install sysinfo
+          run ~/.ppkg/installed/linux-*/sysinfo/bin/sysinfo
+          run ppkg bundle  sysinfo .tar.xz
+          EOF
+
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install qemu-user-static binfmt-support
+      - run: update-binfmts --enable
+
+      # https://github.com/loong64/docker-library
+      #- run: docker run --privileged --rm ghcr.io/loong64/binfmt --install all
+
+      - run: docker run --platform linux/loong64 -v $PWD:/root -w /root ghcr.io/leleliu008/ppkg/${{ matrix.os }}/loong64 /bin/sh run.sh
+ 
 
   openeuler:
 
@@ -137,8 +188,11 @@ jobs:
               ;;
             *)
               # https://github.com/multiarch/qemu-user-static
-              docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+              #docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+              sudo apt-get -y update
+              sudo apt-get -y install qemu-user-static binfmt-support
+              update-binfmts --enable
           esac
 
       - run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root --name openeuler ghcr.io/leleliu008/ppkg/openeuler /bin/sh run.sh
-        #- run: docker run --platform linux/${{ matrix.arch }} -v $PWD:/root -w /root --name openeuler openeuler/openeuler:24.03 /bin/sh run.sh
