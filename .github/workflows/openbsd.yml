@@ -1,0 +1,40 @@
+name: OpenBSD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        openbsd-version: ['7.7', '7.6', '7.5', '7.4', '7.3', '7.2']
+
+    steps:
+      - uses: cross-platform-actions/action@master
+        with:
+          operating_system: openbsd
+          version: ${{ matrix.openbsd-version }}
+          shell: bash
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
+
+            set -ex
+
+            X='
+            a/b/xx.txt|d/f/v.so
+            '
+
+            for KV in $X
+            do
+              K="${KV%|*}"
+              V="${KV#*|}"
+              echo "KV=$KV"
+              echo "K=$K"
+              echo "V=$V"
+            done
