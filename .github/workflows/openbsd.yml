@@ -17,7 +17,7 @@ jobs:
         with:
           operating_system: openbsd
           version: ${{ matrix.openbsd-version }}
-          shell: bash
+          shell: sh
           run: |
             run() {
               printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
