@@ -32,8 +32,8 @@ jobs:
 
             for KV in $X
             do
-              K="${KV%|*}"
-              V="${KV#*|}"
+              K="${KV%'|'*}"
+              V="${KV#*'|'}"
               echo "KV=$KV"
               echo "K=$K"
               echo "V=$V"
