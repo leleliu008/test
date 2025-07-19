@@ -1,0 +1,27 @@
+name: NetBSD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        netbsd-version: ['10.0', '9.4', '9.3', '9.2']
+
+    steps:
+      - uses: cross-platform-actions/action@master
+        with:
+          operating_system: netbsd
+          version: ${{ matrix.netbsd-version }}
+          shell: sh
+          run: |
+            set -ex
+
+            sudo pkgin -y update
+            sudo pkgin -y install bash coreutils findutils getopt gawk gsed grep git curl bsdtar tree jq go122 gcc13 binutils gmake m4 ca-certificates
+
+            echo "hkshdfdfd" | grep hd
