@@ -38,9 +38,8 @@ jobs:
             ls /usr/bin
             ls /usr/local
             ls /usr/local/bin
-            pkg update -y
+            pkg update
             pkg install -y gcc11 go122
-            pkg install -y go-yq
             ls /usr/bin
             ls /usr/local
             ls /usr/local/bin
@@ -77,8 +76,6 @@ jobs:
               eval "$@"
             }
 
-            #run pkg install -y curl libnghttp2 gcc
-
             ./ppkg setup
             ./ppkg update
             ./ppkg install dragonflybsd-${{ matrix.version }}-x86_64/uppm@0.15.4 --static
@@ -86,5 +83,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: uppm---dragonflybsd-${{ matrix.version }}-x86_64-tar.xz
-          path: uppm-*-dragonflybsd-${{ matrix.version }}-x86_64.tar.xz
+          name: uppm---dragonflybsd-${{ matrix.version }}-x86_64.release.tar.xz
+          path: uppm-*-dragonflybsd-${{ matrix.version }}-x86_64.release.tar.xz
