@@ -39,7 +39,7 @@ jobs:
             ls /usr/local
             ls /usr/local/bin
             pkg update -y
-            pkg install -y gcc11
+            pkg install -y gcc11 go122
             pkg install -y go-yq
             ls /usr/bin
             ls /usr/local
@@ -62,6 +62,9 @@ jobs:
         version: ['6.4']
 
     steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
+
       - uses: vmactions/dragonflybsd-vm@v1
         with:
           release: "${{ matrix.version }}.0"
@@ -74,10 +77,7 @@ jobs:
               eval "$@"
             }
 
-            run pkg install -y curl libnghttp2 gcc
-
-            curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
-            chmod a+x ppkg
+            #run pkg install -y curl libnghttp2 gcc
 
             ./ppkg setup
             ./ppkg update
