@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        netbsd-version: ['10.0', '9.4', '9.3', '9.2']
+        netbsd-version: ['10.1', '10.0', '9.4', '9.3', '9.2']
 
     steps:
       - run: curl -LO https://curl.se/ca/cacert.pem
@@ -25,11 +25,7 @@ jobs:
           run: |
             set -ex
 
-            #sudo pkgin -y update
-            #sudo pkgin -y install curl bsdtar
-
-            #sed -i 's|pkgin -y install bash|pkgin -y install bash jq patch patchelf pkg-config|' ppkg
-            sed -i 's|pkgin -y install bash .*|pkgin -y install bash coreutils findutils getopt gawk gsed grep git curl bsdtar tree jq patch patchelf pkg-config go122 gcc13 binutils cmake gmake ninja-build flex bison m4 ca-certificates|' ppkg
+            uname -r
 
             export SSL_CERT_FILE="$PWD/cacert.pem"
 
