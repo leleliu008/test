@@ -13,6 +13,10 @@ jobs:
         netbsd-version: ['10.0', '9.4', '9.3', '9.2']
 
     steps:
+      - run: curl -LO https://curl.se/ca/cacert.pem
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
+
       - uses: cross-platform-actions/action@master
         with:
           operating_system: netbsd
@@ -21,13 +25,15 @@ jobs:
           run: |
             set -ex
 
-            sudo pkgin -y update
-            sudo pkgin -y install curl bsdtar
-
-            curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
-            chmod a+x ppkg
+            #sudo pkgin -y update
+            #sudo pkgin -y install curl bsdtar
 
             #sed -i 's|pkgin -y install bash|pkgin -y install bash cmake|' ppkg
 
+            export SSL_CERT_FILE="$PWD/cacert.pem"
+
+            ls
+
             ./ppkg setup --syspm
+            ./ppkg update
             ./ppkg search lib
