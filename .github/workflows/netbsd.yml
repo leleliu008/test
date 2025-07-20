@@ -28,7 +28,8 @@ jobs:
             #sudo pkgin -y update
             #sudo pkgin -y install curl bsdtar
 
-            sed -i 's|pkgin -y install bash|pkgin -y install bash jq patch patchelf pkg-config|' ppkg
+            #sed -i 's|pkgin -y install bash|pkgin -y install bash jq patch patchelf pkg-config|' ppkg
+            sed -i 's|pkgin -y install bash|pkgin -y install bash cmake gmake ninja-build flex bison m4|' ppkg
 
             export SSL_CERT_FILE="$PWD/cacert.pem"
 
