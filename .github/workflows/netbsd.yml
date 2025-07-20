@@ -17,11 +17,17 @@ jobs:
         with:
           operating_system: netbsd
           version: ${{ matrix.netbsd-version }}
-          shell: sh
+          shell: bash
           run: |
             set -ex
 
             sudo pkgin -y update
-            sudo pkgin -y install bash coreutils findutils getopt gawk gsed grep git curl bsdtar tree jq go122 gcc13 binutils gmake m4 ca-certificates
+            sudo pkgin -y install curl bsdtar
 
-            echo "hkshdfdfd" | grep hd
+            curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+            chmod a+x ppkg
+
+            #sed -i 's|pkgin -y install bash|pkgin -y install bash cmake|' ppkg
+
+            ./ppkg setup --syspm
+            ./ppkg search lib
