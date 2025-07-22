@@ -29,7 +29,12 @@ jobs:
 
             export SSL_CERT_FILE="$PWD/cacert.pem"
 
+            sudo pkgin -y install python312
+
             ls
+            ls /usr/pkg/
+            ls /usr/pkg/bin/
+            ls /usr/pkg/python312/bin/
 
             ./ppkg setup --syspm
             ./ppkg update
