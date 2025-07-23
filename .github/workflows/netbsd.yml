@@ -29,6 +29,8 @@ jobs:
 
             export SSL_CERT_FILE="$PWD/cacert.pem"
 
+            echo "$PATH"
+
             sudo pkgin -y install python312 bash coreutils findutils gawk gsed grep git curl bsdtar tree jq gcc13 binutils
 
             ls
