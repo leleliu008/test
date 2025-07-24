@@ -34,6 +34,7 @@ jobs:
 
             ls /usr/local/
             ls /usr/local/bin/
+            ls /usr/local/libexec/
 
             X='
             a/b/xx.txt|d/f/v.so
