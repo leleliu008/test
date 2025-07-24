@@ -28,7 +28,9 @@ jobs:
 
             id
 
-            sudo pkg_add python%3.11
+            uname -r
+
+            sudo pkg_add gawk gsed ggrep python%3.11
 
             ls /usr/local/
             ls /usr/local/bin/
