@@ -26,6 +26,13 @@ jobs:
 
             set -ex
 
+            id
+
+            sudo pkg_add python%3.11
+
+            ls /usr/local/
+            ls /usr/local/bin/
+
             X='
             a/b/xx.txt|d/f/v.so
             '
