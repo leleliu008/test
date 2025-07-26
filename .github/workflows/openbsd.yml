@@ -36,14 +36,14 @@ jobs:
             ls /usr/local/bin/
             ls /usr/local/libexec/
 
-            curl -LO https://github.com/leleliu008/perl-distribution/releases/download/5.40.2/perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
+            curl -LO https://github.com/fpliu1214/perl-distribution/releases/download/5.40.2/perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
             install -d perl/
             bsdtar xf perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz -C perl/ --strip-components=1
 
-            #export PATH="$PWD/perl/bin:$PATH"
+            export PATH="$PWD/perl/bin:$PATH"
 
-            #perl -V:prefix
-            #perl -V
+            perl -V:prefix
+            perl -V
 
             $PWD/perl/bin/perl -V:prefix
             $PWD/perl/bin/perl -V
