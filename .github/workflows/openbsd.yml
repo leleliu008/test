@@ -42,6 +42,7 @@ jobs:
 
             export PATH="$PWD/perl/bin:$PATH"
 
+            perl -e 'print $^X'
             perl -V:prefix
             perl -V
 
