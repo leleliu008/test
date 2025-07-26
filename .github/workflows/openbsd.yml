@@ -68,7 +68,7 @@ jobs:
             ls /usr/local/bin/
             ls /usr/local/libexec/
 
-            gcc test.c
+            /usr/local/libexec/gcc test.c
             ./a.out
 
             curl -LO https://github.com/fpliu1214/perl-distribution/releases/download/5.40.2/perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
