@@ -36,15 +36,7 @@ jobs:
             ls /usr/local/bin/
             ls /usr/local/libexec/
 
-            X='
-            a/b/xx.txt|d/f/v.so
-            '
-
-            for KV in $X
-            do
-              K="${KV%'|'*}"
-              V="${KV#*'|'}"
-              echo "KV=$KV"
-              echo "K=$K"
-              echo "V=$V"
-            done
+            curl -LO https://github.com/leleliu008/perl-distribution/releases/download/5.40.2/perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
+            install -d perl/
+            tar xf perl-5.40.2-openbsd-7.7-amd64.tar.xz -C perl/ --strip-components=1
+            bin/perl -V:prefix
