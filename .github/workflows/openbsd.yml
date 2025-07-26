@@ -39,4 +39,4 @@ jobs:
             curl -LO https://github.com/leleliu008/perl-distribution/releases/download/5.40.2/perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
             install -d perl/
             bsdtar xf perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz -C perl/ --strip-components=1
-            bin/perl -V:prefix
+            perl/bin/perl -V:prefix
