@@ -30,7 +30,7 @@ jobs:
 
             uname -r
 
-            sudo pkg_add gawk gsed ggrep python%3.11
+            sudo pkg_add libarchive gawk gsed ggrep python%3.11
 
             ls /usr/local/
             ls /usr/local/bin/
@@ -38,5 +38,5 @@ jobs:
 
             curl -LO https://github.com/leleliu008/perl-distribution/releases/download/5.40.2/perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
             install -d perl/
-            tar xf perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz -C perl/ --strip-components=1
+            bsdtar xf perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz -C perl/ --strip-components=1
             bin/perl -V:prefix
