@@ -13,6 +13,38 @@ jobs:
         openbsd-version: ['7.7', '7.6', '7.5', '7.4', '7.3', '7.2']
 
     steps:
+      - run: |
+          cat > test.c <<EOF
+          #include <stdio.h>
+          #include <sys/types.h>
+          #include <sys/sysctl.h>
+          int main() {
+            const int mib[4] = { CTL_KERN, KERN_PROC_ARGS, getpid(), KERN_PROC_ARGV };
+
+            size_t argc;
+
+            if (sysctl(mib, 4, NULL, &argc, NULL, 0) != 0) {
+                return -1;
+            }
+
+            char** argv = (char**)malloc(argc);
+
+            if (argv == NULL) {
+                return -2;
+            }
+
+            memset(argv, 0, argc);
+
+            if (sysctl(mib, 4, argv, &argc, NULL, 0) != 0) {
+                free(argv);
+                return -3;
+            }
+
+            puts(argv[0]);
+            return 0;
+          }
+          EOF
+
       - uses: cross-platform-actions/action@master
         with:
           operating_system: openbsd
@@ -35,6 +67,9 @@ jobs:
             ls /usr/local/
             ls /usr/local/bin/
             ls /usr/local/libexec/
+
+            gcc test.c
+            ./a.out
 
             curl -LO https://github.com/fpliu1214/perl-distribution/releases/download/5.40.2/perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
             install -d perl/
