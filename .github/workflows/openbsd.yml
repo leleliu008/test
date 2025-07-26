@@ -62,7 +62,7 @@ jobs:
 
             uname -r
 
-            sudo pkg_add libarchive gawk gsed ggrep python%3.11
+            sudo pkg_add libarchive gcc%11 python%3.11
 
             ls /usr/local/
             ls /usr/local/bin/
