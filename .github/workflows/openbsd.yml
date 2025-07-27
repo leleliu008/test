@@ -21,6 +21,7 @@ jobs:
           #include <unistd.h>
           #include <sys/types.h>
           #include <sys/sysctl.h>
+
           int main() {
             const int mib[4] = { CTL_KERN, KERN_PROC_ARGS, getpid(), KERN_PROC_ARGV };
 
@@ -44,6 +45,14 @@ jobs:
             }
 
             puts(argv[0]);
+
+            for (size_t i = 0U; i < argc; i++) {
+                free(argv[i]);
+                argv[i] = NULL;
+            }
+
+            free(argv);
+
             return 0;
           }
           EOF
