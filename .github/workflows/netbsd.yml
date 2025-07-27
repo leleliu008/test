@@ -25,7 +25,7 @@ jobs:
           #include <sys/sysctl.h>
 
           int main() {
-            if (chdir("/usr/local") == -1) {
+            if (chdir("/usr/bin") == -1) {
               perror("/usr/local");
               return -1;
             }
