@@ -19,6 +19,7 @@ jobs:
           #include <stdlib.h>
           #include <string.h>
           #include <unistd.h>
+          #include <limits.h>
           #include <sys/types.h>
           #include <sys/sysctl.h>
 
@@ -46,37 +47,20 @@ jobs:
 
             puts(argv[0]);
 
+            char buf[PATH_MAX];
+
+            if (realpath(argv[0], buf) == NULL) {
+                free(argv);
+                return -4;
+            }
+
+            puts(buf);
+
             free(argv);
 
             return 0;
           }
           EOF
-
-      - run: |
-          cat > test.c <<EOF
-          #include <stdio.h>
-          #include <stdlib.h>
-          #include <string.h>
-          #include <unistd.h>
-          #include <sys/types.h>
-          #include <sys/sysctl.h>
-
-          int main() {
-            const int mib[4] = { CTL_KERN, KERN_PROC_ARGS, getpid(), KERN_PROC_ARGV };
-
-            size_t argc = 1U;
-            char* argv[1] = {NULL};
-
-            if (sysctl(mib, 4, argv, &argc, NULL, 0) != 0) {
-                return -3;
-            }
-
-            puts(argv[0]);
-
-            return 0;
-          }
-          EOF
-
 
       - uses: cross-platform-actions/action@master
         with:
