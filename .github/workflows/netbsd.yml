@@ -20,9 +20,16 @@ jobs:
       - run: |
           cat > test.c <<EOF
           #include <stdio.h>
+          #include <unistd.h>
           #include <sys/types.h>
           #include <sys/sysctl.h>
-          int main(int argc, char* argv[]) {
+
+          int main() {
+            if (chdir("/usr/local") == -1) {
+              perror("/usr/local");
+              return -1;
+            }
+
             const int mib[] = { CTL_KERN, KERN_PROC_ARGS, -1, KERN_PROC_PATHNAME };
 
             size_t len = 0U;
