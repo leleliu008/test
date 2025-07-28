@@ -78,7 +78,7 @@ jobs:
                       buf[i] = argv0[i];
                   }
 
-                  return (m -1)
+                  return (m -1);
                 } else {
                   const int mib[4] = { CTL_KERN, KERN_PROC_ARGS, getpid(), KERN_PROC_CWD };
 
