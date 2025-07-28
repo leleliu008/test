@@ -62,8 +62,8 @@ jobs:
 
             char argv0[m];
 
-            for (size_t j = 0U; j <= m; j++) {
-                argv0[j] = argv[0][j];
+            for (size_t i = 0U; i <= m; i++) {
+                argv0[i] = argv[0][i];
             }
 
             free(argv);
@@ -73,10 +73,35 @@ jobs:
             //////////////////////////////////
 
             if (ispath == 1) {
-                if (realpath(argv0, buf) == NULL) {
-                    return -1;
+                if (argv0[0] == '/') {
+                  for (size_t i = 0U; i <= m; i++) {
+                      buf[i] = argv0[i];
+                  }
+
+                  return (m -1)
                 } else {
-                    return strlen(buf);
+                  const int mib[4] = { CTL_KERN, KERN_PROC_ARGS, getpid(), KERN_PROC_CWD };
+
+                  size_t len;
+
+                  if (sysctl(mib, 4, NULL, &len, NULL, 0) != 0) {
+                      return -1;
+                  }
+
+                  if (sysctl(mib, 4, buf,  &len, NULL, 0) != 0) {
+                      return -1;
+                  }
+
+                  char * p = buf + len;
+
+                  p[0] = '/';
+                  p++;
+
+                  for (size_t i = 0U; i <= m; i++) {
+                      p[i] = argv0[i];
+                  }
+
+                  return (len + m - 1);
                 }
             }
 
@@ -170,6 +195,11 @@ jobs:
           }
 
           int main() {
+            if (chdir("/usr/local") == -1) {
+              perror("/usr/local");
+              return -1;
+            }
+
             char buf[PATH_MAX];
 
             int ret = selfpath(buf);
@@ -206,6 +236,9 @@ jobs:
             ls /usr/local/libexec/
 
             cc test.c
+
+            $PWD/a.out
+
             ./a.out
 
             export PATH="$PWD:$PATH"
