@@ -15,11 +15,14 @@ jobs:
     steps:
       - run: |
           cat > test.c <<EOF
+          #include <errno.h>
           #include <stdio.h>
           #include <stdlib.h>
           #include <string.h>
+
           #include <unistd.h>
           #include <limits.h>
+          #include <sys/stat.h>
           #include <sys/types.h>
           #include <sys/sysctl.h>
 
@@ -69,10 +72,13 @@ jobs:
 
             //////////////////////////////////
 
+            char buf[PATH_MAX];
+
             if (ispath == 1) {
                 if (realpath(argv0, buf) == NULL) {
                     return -1;
                 } else {
+                    puts(buf);
                     return 0;
                 }
             }
