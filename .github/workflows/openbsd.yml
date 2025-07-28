@@ -26,37 +26,142 @@ jobs:
           int main() {
             const int mib[4] = { CTL_KERN, KERN_PROC_ARGS, getpid(), KERN_PROC_ARGV };
 
-            size_t argc;
+            size_t size;
 
-            if (sysctl(mib, 4, NULL, &argc, NULL, 0) != 0) {
+            if (sysctl(mib, 4, NULL, &size, NULL, 0) != 0) {
                 return -1;
             }
 
-            char** argv = (char**)malloc(argc);
+            char** argv = (char**)malloc(size);
 
             if (argv == NULL) {
+                errno = ENOMEM;
+                return -1;
+            }
+
+            memset(argv, 0, size);
+
+            if (sysctl(mib, 4, argv, &size, NULL, 0) != 0) {
+                return -1;
+            }
+
+            //////////////////////////////////
+
+            size_t m = 0U;
+
+            int ispath = 0;
+
+            for ( ; argv[0][m] != '\0'; m++) {
+                if (argv[0][m] == '/') {
+                    ispath = 1;
+                }
+            }
+
+            char argv0[m];
+
+            for (size_t j = 0U; j <= m; j++) {
+                argv0[j] = argv[0][j];
+            }
+
+            free(argv);
+
+            fprintf(stderr, "ispath=%d\nargv0=%s\n", ispath, argv0);
+
+            //////////////////////////////////
+
+            if (ispath == 1) {
+                if (realpath(argv0, buf) == NULL) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+
+            //////////////////////////////////
+
+            const char * p = getenv("PATH");
+
+            if (p == NULL) {
                 return -2;
             }
 
-            memset(argv, 0, argc);
-
-            if (sysctl(mib, 4, argv, &argc, NULL, 0) != 0) {
-                free(argv);
+            if (p[0] == '\0') {
                 return -3;
             }
 
-            puts(argv[0]);
+            //////////////////////////////////
 
-            char buf[PATH_MAX];
+            struct stat st;
 
-            if (realpath(argv[0], buf) == NULL) {
-                free(argv);
-                return -4;
+            char pathBuf[PATH_MAX];
+
+            char * q;
+
+            size_t i;
+            size_t n;
+
+          loop:
+            if (p[0] == '\0') {
+                return 0;
             }
 
-            puts(buf);
+            if (p[0] == ' ' || p[0] == ':') {
+                p++;
+                goto loop;
+            }
 
-            free(argv);
+            //////////////////////////////////
+
+            for (i = 0U; ; i++) {
+                pathBuf[i] = p[i];
+
+                if (p[i] == '\0') {
+                    break;
+                }
+
+                if (p[i] == ':') {
+                    pathBuf[i] = '\0';
+                    break;
+                }
+            }
+
+            //////////////////////////////////
+
+            if ((stat(pathBuf, &st) == 0) && S_ISDIR(st.st_mode)) {
+                q = &pathBuf[i];
+
+                q[0] = '/';
+
+                q++;
+
+                for (size_t j = 0U; ; j++) {
+                    q[j] = argv0[j];
+
+                    if (q[j] == '\0') {
+                        n = i + j + 1U;
+                        break;
+                    }
+                }
+
+                if (access(pathBuf, X_OK) == 0) {
+                    for (size_t j = 0U; j < n; j++) {
+                        buf[j] = pathBuf[j];
+                    }
+
+                    buf[n] = '\0';
+
+                    return n;
+                }
+            }
+
+            //////////////////////////////////
+
+            p += i;
+
+            if (p[0] == ':') {
+                p++;
+                goto loop;
+            }
 
             return 0;
           }
@@ -87,6 +192,8 @@ jobs:
 
             cc test.c
             ./a.out
+
+            exit
 
             curl -LO https://github.com/fpliu1214/perl-distribution/releases/download/5.40.2/perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
             install -d perl/
