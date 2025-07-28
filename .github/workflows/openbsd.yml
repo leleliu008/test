@@ -26,7 +26,7 @@ jobs:
           #include <sys/types.h>
           #include <sys/sysctl.h>
 
-          int main() {
+          int selfpath(char buf[]) {
             const int mib[4] = { CTL_KERN, KERN_PROC_ARGS, getpid(), KERN_PROC_ARGV };
 
             size_t size;
@@ -72,13 +72,10 @@ jobs:
 
             //////////////////////////////////
 
-            char buf[PATH_MAX];
-
             if (ispath == 1) {
                 if (realpath(argv0, buf) == NULL) {
                     return -1;
                 } else {
-                    puts(buf);
                     return 0;
                 }
             }
@@ -171,6 +168,18 @@ jobs:
 
             return 0;
           }
+
+          int main() {
+            char buf[PATH_MAX];
+
+            int ret = selfpath(buf);
+
+            if (ret > 0) {
+              printf("%d:%s\n", ret, buf);
+              return 0;
+            }
+            return ret;
+          }
           EOF
 
       - uses: cross-platform-actions/action@master
@@ -198,6 +207,10 @@ jobs:
 
             cc test.c
             ./a.out
+
+            export PATH="$PWD:$PATH"
+
+            a.out
 
             exit
 
