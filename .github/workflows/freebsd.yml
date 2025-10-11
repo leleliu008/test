@@ -55,6 +55,10 @@ jobs:
 
             uname -r
 
+            pkg search cmake
+
+            exit
+
             sudo pkg install -y curl libnghttp2 gcc
 
             ls /usr/local/
