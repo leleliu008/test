@@ -63,6 +63,8 @@ jobs:
 
             echo "$PATH"
 
+            pkgin search cmake
+
             sudo pkgin -y install python312 bash coreutils findutils gawk gsed grep git curl bsdtar tree jq gcc13 binutils
 
             ls
