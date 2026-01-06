@@ -71,6 +71,10 @@ jobs:
 
             sudo pkgin -y install python312 bash coreutils findutils gawk gsed grep git curl bsdtar tree jq gcc13 binutils
 
+            echo 'hello world' | /usr/pkg/gnu/bin/grep hello
+
+            /usr/pkg/gnu/bin/expr 2 + 3
+
             ls
             ls /usr/pkg/
             ls /usr/pkg/bin/
