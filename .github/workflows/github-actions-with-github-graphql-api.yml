@@ -1,24 +1,26 @@
-name: graphql
+name: GitHub Graphql API test
 
 on:
   workflow_dispatch:
 
 jobs:
-  graphql:
+
+  latestRelease:
+
     runs-on: ubuntu-latest
 
     env:
       GH_TOKEN: ${{ github.token }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - run: |
           cat > QUERY <<EOF
           {
-            repository(owner: "leleliu008", name: "uppm") {
+            repository(owner: "Taywee", name: "args") {
                 latestRelease {
-                  name
+                  tagName
                 }
             }
           }
@@ -26,4 +28,4 @@ jobs:
 
           cat QUERY
 
-          gh api graphql -f "query=$(cat QUERY)" --jq .data.repository.latestRelease.name
+          gh api graphql -f "query=$(cat QUERY)" --jq .data.repository.latestRelease.tagName
