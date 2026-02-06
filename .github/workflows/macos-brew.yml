@@ -12,11 +12,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [14]
+        version: [15]
 
     runs-on: macos-${{ matrix.version }}
 
     steps:
       - run: df -h
-      - run: brew info usbmuxd --json
-      - run: brew info usbmuxd --json | jq -r '.[0].versions.stable'
+
+      - run: brew info cpuinfo
+      - run: brew info cpuinfo --json
+      - run: brew info cpuinfo --json | yq '.[0].versions.stable'
