@@ -77,7 +77,7 @@ jobs:
               eval "$@"
             }
 
-            run pkg install -y wget
+            run pkg install -y wget libunistring
 
             run ./ppkg setup
             run ./ppkg update
