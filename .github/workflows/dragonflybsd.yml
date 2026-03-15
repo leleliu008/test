@@ -16,7 +16,7 @@ jobs:
         version: ['6.4.0']
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - run: ls
 
@@ -77,14 +77,14 @@ jobs:
               eval "$@"
             }
 
-            pkg install -y pkg
+            run pkg install -y wget
 
-            ./ppkg setup
-            ./ppkg update
-            ./ppkg install dragonflybsd-${{ matrix.version }}-x86_64/uppm@0.15.4 --static
-            ./ppkg bundle  dragonflybsd-${{ matrix.version }}-x86_64/uppm@0.15.4 .tar.xz
+            run ./ppkg setup
+            run ./ppkg update
+            run ./ppkg install dragonflybsd-${{ matrix.version }}-x86_64/uppm@0.15.4 --static
+            run ./ppkg bundle  dragonflybsd-${{ matrix.version }}-x86_64/uppm@0.15.4 .tar.xz
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: uppm---dragonflybsd-${{ matrix.version }}-x86_64.release.tar.xz
           path: uppm-*-dragonflybsd-${{ matrix.version }}-x86_64.release.tar.xz
