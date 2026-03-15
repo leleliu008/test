@@ -29,25 +29,35 @@ jobs:
           run: |
             echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
             set -x
+
             uname -s
             uname -m
             uname -r
+
             cat /etc/os-release
+
             id
             pwd
+
             ls /usr/bin
             ls /usr/local
             ls /usr/local/bin
+
             pkg update
             pkg install -y gcc11 go122
+
             ls /usr/bin
             ls /usr/local
             ls /usr/local/bin
             ls /usr/libexec/
             ls /usr/libexec/gcc80/
+
             command -v gcc
             command -v g++
+
             echo "$PATH"
+
+            find / -name curl
 
       - run: ls
 
