@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  base:
     runs-on: ubuntu-latest
 
     strategy:
@@ -51,7 +51,8 @@ jobs:
 
       - run: ls
 
-  dragonflybsd:
+
+  ppkg:
 
     runs-on: ubuntu-latest
 
@@ -75,6 +76,8 @@ jobs:
               printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
               eval "$@"
             }
+
+            pkg install -y pkg
 
             ./ppkg setup
             ./ppkg update
