@@ -1,0 +1,32 @@
+name: swift
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: macos-14
+
+    strategy:
+      fail-fast: false
+      matrix:
+        pkg: [xcbeautify, unxip, mist-cli]
+
+    steps:
+      - run: xcrun swift --version
+
+      - uses: SwiftyLab/setup-swift@latest
+
+      - run: swift --version
+
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/xcpkg-0.30.0-macos-15.0-arm64.release.tar.xz
+      - run: /usr/bin/bsdtar xf xcpkg-0.30.0-macos-15.0-arm64.release.tar.xz --strip-components=1
+
+      - run: bin/xcpkg about
+      - run: bin/xcpkg sysinfo
+
+      - run: bin/xcpkg update
+      - run: bin/xcpkg install MacOSX-14.0-arm64/\${{ matrix.pkg }}
+
+
