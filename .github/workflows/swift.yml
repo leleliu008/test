@@ -10,14 +10,9 @@ jobs:
       fail-fast: false
       matrix:
         runs-on: [macos-14, macos-15]
-
+        pkg: [swiftformat, swiftdraw, swiftly, unxip, xcbeautify, swift-format, swift-section, swiftlint, swift-sh, mist-cli, swift-outdated]
 
     runs-on: ${{ matrix.runs-on }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        pkg: [swiftformat, swiftdraw, swiftly, unxip, xcbeautify, swift-format, swift-section, swiftlint, swift-sh, mist-cli, swift-outdated]
 
     steps:
       - run: xcrun swift --version
