@@ -6,17 +6,24 @@ on:
 jobs:
   build:
 
-    runs-on: macos-14
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: [macos-14, macos-15]
+
+
+    runs-on: ${{ matrix.runs-on }}
 
     strategy:
       fail-fast: false
       matrix:
-        pkg: [xcbeautify, unxip, mist-cli]
+        pkg: [swiftformat, swiftdraw, swiftly, unxip, xcbeautify, swift-format, swift-section, swiftlint, swift-sh, mist-cli, swift-outdated]
 
     steps:
       - run: xcrun swift --version
 
       - uses: SwiftyLab/setup-swift@latest
+        if: matrix.runs-on == 'macos-14'
 
       - run: swift --version
 
