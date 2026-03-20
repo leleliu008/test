@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [macos-14, macos-15]
+        runs-on: [macos-14, macos-15, macos-26]
         pkg: [swiftformat, swiftdraw, swiftly, unxip, xcbeautify, swift-format, swift-section, swiftlint, swift-sh, mist-cli, swift-outdated]
 
     runs-on: ${{ matrix.runs-on }}
@@ -29,6 +29,6 @@ jobs:
       - run: bin/xcpkg sysinfo
 
       - run: bin/xcpkg update
-      - run: bin/xcpkg install MacOSX-14.0-arm64/\${{ matrix.pkg }}
+      - run: bin/xcpkg install MacOSX-14.0-arm64/${{ matrix.pkg }}
 
 
