@@ -332,7 +332,7 @@ jobs:
 
 
   publish:
-    needs: [check, dragonflybsd, freebsd, openbsd, netbsd, macos, linux, android]
+    needs: [prepare, dragonflybsd, freebsd, openbsd, netbsd, macos, linux, android]
 
     runs-on: ubuntu-latest
 
