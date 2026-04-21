@@ -16,7 +16,7 @@ jobs:
         run: |
           PKGS='dufs sysinfo jq yq gh gn gm4 grep gsed gzip gtar gmake gperf getopt yasm nasm ninja scdoc doxygen ffmpeg sqlite3 unzip xz tic xxd bsdtar curl tree d2 dot_static fzf bat findutils coreutils bash patch patchelf pkg-config pkgconf flex bison'
           X="$(printf '%s\n' "$PKGS" | sed 's/[^ ]*/"&",/g')"
-          printf 'PKGS=%s\n' "$X" >> "$GITHUB_OUTPUT"
+          printf 'PKGS=[%s]\n' "$X" >> "$GITHUB_OUTPUT"
 
     outputs:
       pkgs: ${{ steps.prepare.outputs.PKGS }}
