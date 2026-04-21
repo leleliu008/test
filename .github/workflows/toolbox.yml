@@ -14,8 +14,8 @@ jobs:
     steps:
       - id:  prepare
         run: |
-          PKGS='sysinfo, jq, yq, gh, gn, gm4, grep, gsed, gzip, gtar, gmake, gperf, getopt, yasm, nasm, ninja, scdoc, doxygen, sqlite3, unzip, xz, tic, xxd, bsdtar, curl, tree, d2, dot_static, fzf, bat, findutils, coreutils, bash, patch, patchelf, pkg-config, pkgconf, flex, bison'
-          printf 'PKGS=%s\n' "$PKGS" >> "$GITHUB_OUTPUT"
+          PKGS='dufs, sysinfo, jq, yq, gh, gn, gm4, grep, gsed, gzip, gtar, gmake, gperf, getopt, yasm, nasm, ninja, scdoc, doxygen, ffmpeg, sqlite3, unzip, xz, tic, xxd, bsdtar, curl, tree, d2, dot_static, fzf, bat, findutils, coreutils, bash, patch, patchelf, pkg-config, pkgconf, flex, bison'
+          printf 'PKGS=[ %s ]\n' "$PKGS" >> "$GITHUB_OUTPUT"
 
     outputs:
       pkgs: ${{ steps.prepare.outputs.PKGS }}
@@ -31,7 +31,7 @@ jobs:
       matrix:
         version: ['6.4']
         profile: [debug, release]
-        pkg: [ ${{ needs.prepare.outputs.pkgs }} ]
+        pkg: ${{ needs.prepare.outputs.pkgs }}
 
     steps:
       - run: curl -LO https://github.com/leleliu008/uppm-package-repository-dragonflybsd-6.4-x86_64/releases/download/2023.12.04/curl-8.3.0-dragonflybsd-6.4-x86_64.tar.xz
@@ -82,7 +82,7 @@ jobs:
       matrix:
         version: ['15.0', '14.3', '14.2', '14.1', '14.0', '13.5', '13.4', '13.3', '13.2']
         profile: [debug, release]
-        pkg: [ ${{ needs.prepare.outputs.pkgs }} ]
+        pkg: ${{ needs.prepare.outputs.pkgs }}
 
     steps:
       - uses: actions/checkout@v6
@@ -125,7 +125,7 @@ jobs:
       matrix:
         version: ['7.8', '7.7', '7.6', '7.5', '7.4', '7.3', '7.2']
         profile: [debug, release]
-        pkg: [ ${{ needs.prepare.outputs.pkgs }} ]
+        pkg: ${{ needs.prepare.outputs.pkgs }}
 
     steps:
       - uses: actions/checkout@v6
@@ -168,7 +168,7 @@ jobs:
       matrix:
         version: ['10.1', '10.0', '9.4', '9.3', '9.2']
         profile: [debug, release]
-        pkg: [ ${{ needs.prepare.outputs.pkgs }} ]
+        pkg: ${{ needs.prepare.outputs.pkgs }}
 
     steps:
       - uses: actions/checkout@v6
@@ -215,7 +215,7 @@ jobs:
         target-version: ['10.15', '11.0', '12.0', '13.0', '14.0', '15.0', "26.0"]
         target-arch: [x86_64, arm64]
         profile: [debug, release]
-        pkg: [ ${{ needs.prepare.outputs.pkgs }} ]
+        pkg: ${{ needs.prepare.outputs.pkgs }}
 
     steps:
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
@@ -242,7 +242,7 @@ jobs:
       matrix:
         target-arch: [loongarch64, x86_64, aarch64, ppc64le, riscv64, s390x]
         profile: [debug, release]
-        pkg: [ ${{ needs.prepare.outputs.pkgs }} ]
+        pkg: ${{ needs.prepare.outputs.pkgs }}
 
     steps:
       - run: |
@@ -306,7 +306,7 @@ jobs:
       fail-fast: false
       matrix:
         profile: [debug, release]
-        pkg: [ ${{ needs.prepare.outputs.pkgs }} ]
+        pkg: ${{ needs.prepare.outputs.pkgs }}
 
     steps:
       - run: apt -y update
