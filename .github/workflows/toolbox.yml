@@ -31,7 +31,6 @@ jobs:
       fail-fast: false
       matrix:
         version: ['6.4']
-        profile: [debug, release]
         pkg: ${{ fromJSON(needs.prepare.outputs.pkgs) }}
 
     steps:
@@ -63,13 +62,13 @@ jobs:
 
             run ./ppkg setup
             run ./ppkg update
-            run ./ppkg install dragonflybsd-${{ matrix.version }}-x86_64/${{ matrix.pkg }} --static --profile=${{ matrix.profile }}
+            run ./ppkg install dragonflybsd-${{ matrix.version }}-x86_64/${{ matrix.pkg }} --static --profile=release
             run ./ppkg bundle  dragonflybsd-${{ matrix.version }}-x86_64/${{ matrix.pkg }} .tar.xz
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.pkg }}---dragonflybsd-${{ matrix.version }}-x86_64-${{ matrix.profile }}.tar.xz
-          path: ${{ matrix.pkg }}-*-dragonflybsd-${{ matrix.version }}-x86_64.${{ matrix.profile }}.tar.xz
+          name: ${{ matrix.pkg }}---dragonflybsd-${{ matrix.version }}-x86_64-release.tar.xz
+          path: ${{ matrix.pkg }}-*-dragonflybsd-${{ matrix.version }}-x86_64.release.tar.xz
 
 
 
@@ -82,7 +81,6 @@ jobs:
       fail-fast: false
       matrix:
         version: ['15.0', '14.3', '14.2', '14.1', '14.0', '13.5', '13.4', '13.3', '13.2']
-        profile: [debug, release]
         pkg: ${{ fromJSON(needs.prepare.outputs.pkgs) }}
 
     steps:
@@ -106,13 +104,13 @@ jobs:
 
             run ./ppkg setup --syspm
             run ./ppkg update
-            run ./ppkg install freebsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --static --profile=${{ matrix.profile }}
+            run ./ppkg install freebsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --static --profile=release
             run ./ppkg bundle  freebsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} .tar.xz
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.pkg }}---freebsd-${{ matrix.version }}-amd64-${{ matrix.profile }}.tar.xz
-          path: ${{ matrix.pkg }}-*-freebsd-${{ matrix.version }}-amd64.${{ matrix.profile }}.tar.xz
+          name: ${{ matrix.pkg }}---freebsd-${{ matrix.version }}-amd64-release.tar.xz
+          path: ${{ matrix.pkg }}-*-freebsd-${{ matrix.version }}-amd64.release.tar.xz
 
 
 
@@ -125,7 +123,6 @@ jobs:
       fail-fast: false
       matrix:
         version: ['7.8', '7.7', '7.6', '7.5', '7.4', '7.3', '7.2']
-        profile: [debug, release]
         pkg: ${{ fromJSON(needs.prepare.outputs.pkgs) }}
 
     steps:
@@ -149,13 +146,13 @@ jobs:
 
             run ./ppkg setup --syspm
             run ./ppkg update
-            run ./ppkg install openbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --profile=${{ matrix.profile }}
+            run ./ppkg install openbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --profile=release
             run ./ppkg bundle  openbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} .tar.xz
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.pkg }}---openbsd-${{ matrix.version }}-amd64-${{ matrix.profile }}.tar.xz
-          path: ${{ matrix.pkg }}-*-openbsd-${{ matrix.version }}-amd64.${{ matrix.profile }}.tar.xz
+          name: ${{ matrix.pkg }}---openbsd-${{ matrix.version }}-amd64-release.tar.xz
+          path: ${{ matrix.pkg }}-*-openbsd-${{ matrix.version }}-amd64.release.tar.xz
 
 
 
@@ -168,7 +165,6 @@ jobs:
       fail-fast: false
       matrix:
         version: ['10.1', '10.0', '9.4', '9.3', '9.2']
-        profile: [debug, release]
         pkg: ${{ fromJSON(needs.prepare.outputs.pkgs) }}
 
     steps:
@@ -196,13 +192,13 @@ jobs:
 
             run ./ppkg setup --syspm
             run ./ppkg update
-            run ./ppkg install netbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --static --profile=${{ matrix.profile }}
+            run ./ppkg install netbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --static --profile=release
             run ./ppkg bundle  netbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} .tar.xz
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.pkg }}---netbsd-${{ matrix.version }}-amd64-${{ matrix.profile }}.tar.xz
-          path: ${{ matrix.pkg }}-*-netbsd-${{ matrix.version }}-amd64.${{ matrix.profile }}.tar.xz
+          name: ${{ matrix.pkg }}---netbsd-${{ matrix.version }}-amd64-release.tar.xz
+          path: ${{ matrix.pkg }}-*-netbsd-${{ matrix.version }}-amd64.release.tar.xz
 
 
   macos:
@@ -215,7 +211,6 @@ jobs:
       matrix:
         target-version: ['10.15', '11.0', '12.0', '13.0', '14.0', '15.0', "26.0"]
         target-arch: [x86_64, arm64]
-        profile: [debug, release]
         pkg: ${{ fromJSON(needs.prepare.outputs.pkgs) }}
 
     steps:
@@ -224,13 +219,13 @@ jobs:
 
       - run: ./ppkg setup
       - run: ./ppkg update
-      - run: ./ppkg install macos-${{ matrix.target-version }}-${{ matrix.target-arch }}/${{ matrix.pkg }} --profile=${{ matrix.profile }}
+      - run: ./ppkg install macos-${{ matrix.target-version }}-${{ matrix.target-arch }}/${{ matrix.pkg }} --profile=release
       - run: ./ppkg bundle  macos-${{ matrix.target-version }}-${{ matrix.target-arch }}/${{ matrix.pkg }} .tar.xz
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.pkg }}-macos-${{ matrix.target-version }}-${{ matrix.target-arch }}.${{ matrix.profile }}.tar.xz
-          path: ${{ matrix.pkg }}-macos-${{ matrix.target-version }}-${{ matrix.target-arch }}.${{ matrix.profile }}.tar.xz
+          name: ${{ matrix.pkg }}-macos-${{ matrix.target-version }}-${{ matrix.target-arch }}.release.tar.xz
+          path: ${{ matrix.pkg }}-macos-${{ matrix.target-version }}-${{ matrix.target-arch }}.release.tar.xz
 
 
   linux:
@@ -242,7 +237,6 @@ jobs:
       fail-fast: false
       matrix:
         target-arch: [loongarch64, x86_64, aarch64, ppc64le, riscv64, s390x]
-        profile: [debug, release]
         pkg: ${{ fromJSON(needs.prepare.outputs.pkgs) }}
 
     steps:
@@ -278,7 +272,7 @@ jobs:
 
           run ./ppkg setup
           run ./ppkg update
-          run ./ppkg install ${{ matrix.pkg }} --static --profile=${{ matrix.profile }}
+          run ./ppkg install ${{ matrix.pkg }} --static --profile=release
           run ./ppkg bundle  ${{ matrix.pkg }} .tar.xz
           EOF
 
@@ -290,10 +284,10 @@ jobs:
 
       - run: ls
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.pkg }}---linux-${{ matrix.target-arch }}.${{ matrix.profile }}.tar.xz
-          path: ${{ matrix.pkg }}-*-linux-${{ matrix.target-arch }}.${{ matrix.profile }}.tar.xz
+          name: ${{ matrix.pkg }}---linux-${{ matrix.target-arch }}.release.tar.xz
+          path: ${{ matrix.pkg }}-*-linux-${{ matrix.target-arch }}.release.tar.xz
 
 
   android:
@@ -306,7 +300,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        profile: [debug, release]
         pkg: ${{ fromJSON(needs.prepare.outputs.pkgs) }}
 
     steps:
@@ -319,16 +312,16 @@ jobs:
       - run: ./ndk-pkg about
       - run: ./ndk-pkg setup
       - run: ./ndk-pkg update
-      - run: ./ndk-pkg install android-35-arm64-v8a,armeabi-v7a,x86_64,x86/${{ matrix.pkg }} --static --profile=${{ matrix.profile }}
+      - run: ./ndk-pkg install android-35-arm64-v8a,armeabi-v7a,x86_64,x86/${{ matrix.pkg }} --static --profile=release
 
       - run: ./ndk-pkg bundle  android-35-arm64-v8a/${{ matrix.pkg }}   .tar.xz
       - run: ./ndk-pkg bundle  android-35-armeabi-v7a/${{ matrix.pkg }} .tar.xz
       - run: ./ndk-pkg bundle  android-35-x86_64/${{ matrix.pkg }}      .tar.xz
       - run: ./ndk-pkg bundle  android-35-x86/${{ matrix.pkg }}         .tar.xz
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.pkg }}---android-${{ matrix.profile }}
+          name: ${{ matrix.pkg }}---android-release
           path: ${{ matrix.pkg }}-*-android-*.tar.xz
 
 
