@@ -1,37 +1,55 @@
-name: Download
+name: download a file
 
 on:
   workflow_dispatch:
     inputs:
 
       url:
-        description: input a download url
+        description: download url
         required: true
-        default: https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz
+        default: https://ziglang.org/download/0.16.0/zig-aarch64-macos-0.16.0.tar.xz
+
+      publish:
+        description: publish as GitHub release
+        type: boolean
+        default: false
+
+      tagname:
+        description: GitHub release tagname
+        required: false
+
 
 jobs:
 
-  base:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - id:  prepare
-        run: printf 'FILENAME=%s\n' "$(basename '${{ github.event.inputs.url }}')" >> "$GITHUB_OUTPUT"
-
-    outputs:
-      filename: ${{ steps.prepare.outputs.FILENAME }}
-
-
   download:
-    needs: base
 
     runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ github.token }}
 
     steps:
       - run: curl -LO ${{ github.event.inputs.url }}
 
-      - uses: actions/upload-artifact@v4
+      - id:  filename
+        run: printf 'FILENAME=%s\n' "$(basename '${{ github.event.inputs.url }}')" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v6
         with:
-          name: ${{ needs.base.outputs.filename }}
-          path: ${{ needs.base.outputs.filename }}
+          name: ${{ steps.filename.outputs.FILENAME }}
+          path: ${{ steps.filename.outputs.FILENAME }}
+
+      - if: github.event.inputs.publish == 'true'
+        name: publish
+        run: |
+          # to avaid: failed to run git: fatal: not a git repository (or any of the parent directories): .git
+          git -c init.defaultBranch=master init
+          git remote add origin ${{ github.repositoryUrl }}
+
+          if [ -n   '${{ github.event.inputs.tagname }}' ] ; then
+            TAGNAME='${{ github.event.inputs.tagname }}'
+          else
+            TAGNAME='${{ steps.filename.outputs.FILENAME }}'
+          fi
+
+          gh release create "$TAGNAME" * --title "$TAGNAME" --notes "$TAGNAME"
