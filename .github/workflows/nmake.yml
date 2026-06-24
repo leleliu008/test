@@ -16,11 +16,11 @@ jobs:
         target-arch: [x64, x86]
         include:
           - os-version: 2022
-            vs-edition: 2022
+            vs-version: 2022
           - os-version: 2025
-            vs-edition: 2022
+            vs-version: 2022
           - os-version: 2025-vs2026
-            vs-edition: 2026
+            vs-version: 18
 
 
     runs-on: windows-${{ matrix.os-version }}
@@ -38,7 +38,13 @@ jobs:
         run: |
           @echo on
 
-          echo call "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-edition }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.target-arch }} > nmake-setup.cmd
+          dir "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}"
+          dir "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}\Enterprise"
+          dir "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}\Enterprise\VC"
+          dir "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}\Enterprise\VC\Auxiliary"
+          dir "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}\Enterprise\VC\Auxiliary\Build"
+
+          echo call "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.target-arch }} > nmake-setup.cmd
           type nmake-setup.cmd
 
       - name: build libiconv
