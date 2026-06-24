@@ -12,12 +12,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os-version: [2022, 2025, 2025-vs2026]
+        os-version: [2022, 2025-vs2026]
         target-arch: [x64, x86]
         include:
           - os-version: 2022
-            vs-version: 2022
-          - os-version: 2025
             vs-version: 2022
           - os-version: 2025-vs2026
             vs-version: 18
@@ -33,6 +31,8 @@ jobs:
       - run: choco install -y file
 
       - uses: actions/checkout@v6
+        with:
+          repository: universal-ctags/ctags
 
       - name: setup nmake
         run: |
