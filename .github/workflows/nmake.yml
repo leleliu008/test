@@ -38,7 +38,7 @@ jobs:
         run: |
           @echo on
 
-          echo call "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-edition }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.-target-arch }} > nmake-setup.cmd
+          echo call "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-edition }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.target-arch }} > nmake-setup.cmd
           type nmake-setup.cmd
 
       - name: build libiconv
