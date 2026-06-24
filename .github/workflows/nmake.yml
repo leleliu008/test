@@ -12,14 +12,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os-version: [2022, 2025-vs2026]
+        os-version: [2022, 2025]
         target-arch: [x64, x86]
         include:
           - os-version: 2022
             vs-version: 2022
-          - os-version: 2025-vs2026
+          - os-version: 2025
             vs-version: 18
-
 
     runs-on: windows-${{ matrix.os-version }}
 
@@ -37,12 +36,6 @@ jobs:
       - name: setup nmake
         run: |
           @echo on
-
-          dir "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}"
-          dir "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}\Enterprise"
-          dir "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}\Enterprise\VC"
-          dir "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}\Enterprise\VC\Auxiliary"
-          dir "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}\Enterprise\VC\Auxiliary\Build"
 
           echo call "C:\Program Files\Microsoft Visual Studio\${{ matrix.vs-version }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.target-arch }} > nmake-setup.cmd
           type nmake-setup.cmd
