@@ -22,6 +22,7 @@ jobs:
       - run: readelf -d /sbin/init
       - run: readelf -d /bin/sh
       - run: readelf --program-headers /bin/sh
+      - run: /lib/ld-musl-x86_64.so.1 --version
 
       - run: git config --global --add safe.directory /__w/test/test
 
