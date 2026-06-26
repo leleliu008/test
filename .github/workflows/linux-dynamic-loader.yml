@@ -41,7 +41,7 @@ jobs:
           run patchelf --print-interpreter a.out
 
 
-          XX="$(patchelf --print-interpreter a.out)"
+          XX="\$(patchelf --print-interpreter a.out)"
 
           run "\$XX" --version
           EOF
