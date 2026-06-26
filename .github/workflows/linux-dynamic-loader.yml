@@ -1,11 +1,80 @@
-name: show Linux dynamic loaders
+name: show Linux dynamic loader
 
 on:
   workflow_dispatch:
 
 jobs:
 
-  chroot_qemu:
+  glibc:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-arch: [x86_64, aarch64, ppc64le, riscv64, s390x, armhf]
+
+    steps:
+      - run: |
+          cat > test.c <<EOF
+          #include<stdio.h>
+          int main() {
+            puts("Hello\n");
+            return 0;
+          }
+          EOF
+
+      - run: |
+          cat > run.sh <<EOF
+          set -ex
+
+          run() {
+            printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "\$*"
+            eval "\$@"
+          }
+
+          run apt -y update
+          run apt -y install gcc patchelf
+
+          run gcc test.c
+
+          run patchelf --print-interpreter a.out
+          EOF
+
+      - id: arch
+        run: |
+          case ${{ matrix.target-arch }} in
+            x86_64)  X=amd64 ;;
+            aarch64) X=arm64 ;;
+            ppc64le) X=ppc64el ;;
+            *)       X=${{ matrix.target-arch }}
+          esac
+          printf 'ARCH=%s\n' "$X" >> "$GITHUB_OUTPUT"
+
+      - run: curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.2-base-${{ steps.arch.outputs.ARCH }}.tar.gz
+
+      - run: install -d ubuntu-rootfs
+      - run: tar xf *.tar.gz -C ubuntu-rootfs
+
+      - run: cp -p /etc/resolv.conf ubuntu-rootfs/etc/
+      - run: cp README.md build.sh bundle.sh config.pl config.txt perl.c sys-cdefs.h ubuntu-rootfs/
+
+      - run: sudo mount -o bind  /dev ubuntu-rootfs/dev
+      - run: sudo mount -t proc  none ubuntu-rootfs/proc
+      - run: sudo mount -t sysfs none ubuntu-rootfs/sys
+      - run: sudo mount -t tmpfs none ubuntu-rootfs/tmp
+
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install qemu-user-static binfmt-support
+
+      - run: update-binfmts --enable
+
+      - run: sudo install -g `id -g` -o `id -u` /usr/bin/qemu-${{ matrix.target-arch }}-static ubuntu-rootfs/
+
+      - run: sudo chroot ubuntu-rootfs /qemu-${{ matrix.target-arch }}-static /bin/sh bundle.sh ${{ needs.check.outputs.release-version }} linux-any-${{ matrix.target-arch }}
+
+
+  musl:
 
     runs-on: ubuntu-latest
 
@@ -14,11 +83,7 @@ jobs:
       matrix:
         target-arch: [x86_64, loongarch64, aarch64, ppc64le, riscv64, s390x, armhf, x86]
 
-    timeout-minutes: 45
-
     steps:
-      - uses: actions/checkout@v6
-
       - run: |
           cat > test.c <<EOF
           #include<stdio.h>
