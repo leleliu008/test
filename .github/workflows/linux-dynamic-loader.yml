@@ -43,7 +43,7 @@ jobs:
 
           XX="$(patchelf --print-interpreter a.out)"
 
-          run "$XX" --version
+          run "\$XX" --version
           EOF
 
       - id: arch
