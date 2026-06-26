@@ -39,6 +39,11 @@ jobs:
           run gcc test.c
 
           run patchelf --print-interpreter a.out
+
+
+          XX="$(patchelf --print-interpreter a.out)"
+
+          run "$XX" --version
           EOF
 
       - id: arch
