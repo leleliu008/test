@@ -21,7 +21,9 @@ jobs:
 
       - run: readelf -d /sbin/init
       - run: readelf -d /bin/sh
+      - run: readelf --program-headers /bin/sh
 
+      - run: git config --global --add safe.directory /__w/test/test
 
       - run: git init
       - run: git remote add origin https://github.com/${{github.repository}}
