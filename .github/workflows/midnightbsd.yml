@@ -35,7 +35,7 @@ jobs:
             ls /usr/local
             ls /usr/local/bin
 
-            doas mport install bash coreutils findutils gawk gsed gnugrep tree jq git curl gcc
+            doas mport install -y bash coreutils findutils gawk gsed gnugrep tree jq git curl gcc
 
             ls /usr/bin
             ls /usr/local
