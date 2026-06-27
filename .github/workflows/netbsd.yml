@@ -76,6 +76,10 @@ jobs:
             ls /usr/pkg/bin/
             ls /usr/pkg/gnu/bin/
 
+            echo "$PATH" | tr ':' '\n'
+
+            command -v wc
+
             echo 'hello world' | grep hello
             echo 'hello world' | /usr/pkg/gnu/bin/grep hello
 
