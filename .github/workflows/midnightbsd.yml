@@ -1,0 +1,49 @@
+name: MidnightBSD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  base:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['4.0.4']
+
+    steps:
+      - uses: cross-platform-actions/action@master
+        with:
+          operating_system: midnightbsd
+          version: ${{ matrix.version }}
+          shell: bash
+          run: |
+            echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+            set -x
+
+            uname -s
+            uname -m
+            uname -r
+
+            cat /etc/os-release
+
+            id
+            pwd
+
+            ls /usr/bin
+            ls /usr/local
+            ls /usr/local/bin
+
+            doas mport install bash coreutils findutils gawk gsed gnugrep tree jq git curl gcc
+
+            ls /usr/bin
+            ls /usr/local
+            ls /usr/local/bin
+            ls /usr/libexec/
+            ls /usr/libexec/gcc80/
+
+            command -v gcc
+            command -v g++
+
+            echo "$PATH"
