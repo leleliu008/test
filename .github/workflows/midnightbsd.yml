@@ -33,9 +33,19 @@ jobs:
 
             mport list
             mport search curl
+            mport search git
             mport search gcc
+            mport search bash
+            mport search coreutils
+            mport search findutils
+            mport search awk
+            mport search sed
+            mport search grep
+            mport search tree
+            mport search jq
+            mport search yq
 
-            ls /usr/mports/
+            ls /usr/
             ls /usr/bin
             ls /usr/local
             ls /usr/local/bin
