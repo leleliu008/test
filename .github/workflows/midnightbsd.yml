@@ -31,6 +31,8 @@ jobs:
             id
             pwd
 
+            mport --help
+
             mport list
             mport search curl
             mport search git
@@ -50,7 +52,7 @@ jobs:
             ls /usr/local
             ls /usr/local/bin
 
-            doas mport install -y bash coreutils findutils gawk gsed gnugrep tree jq git curl gcc
+            sudo mport install bash coreutils findutils gawk gsed gnugrep tree jq git curl gcc
 
             ls /usr/bin
             ls /usr/local
