@@ -51,19 +51,19 @@ jobs:
             pkg search curl
             pkg search tree
             pkg search grep
-            pkg search core
-            pkg search find
+            pkg search coreutils
+            pkg search findutils
             pkg search awk
             pkg search sed
             pkg search jq
-            pkg search yq
             pkg search go
 
-            sudo pkg install gcc14 git
+            sudo pkg install bash gnu-coreutils gnu-findutils gnu-sed gnu-grep gawk tree jq git curl libarchive gcc14
 
             command -v gcc
             command -v g++
             command -v git
+            command -v bsdtar
 
 
   omnios2:
