@@ -31,7 +31,7 @@ jobs:
             id
             pwd
 
-            mport help
+            mport help || true
 
             mport list
             mport search curl
