@@ -53,7 +53,7 @@ jobs:
             ls /usr/local
             ls /usr/local/bin
 
-            sudo mport delete perl5
+            sudo mport -f delete perl5
             sudo mport install bash coreutils findutils gawk gsed gnugrep tree jq yq go git curl gcc || true
 
             ls /usr/bin
