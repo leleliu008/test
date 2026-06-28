@@ -60,6 +60,7 @@ jobs:
             pkg search jq
             pkg search go
             pkg search pkg-config
+            pkg search make
             pkg search m4
             pkg search perl
 
