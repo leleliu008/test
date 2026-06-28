@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  base:
+  midnightbsd1:
     runs-on: ubuntu-latest
 
     strategy:
@@ -64,3 +64,40 @@ jobs:
             command -v g++
 
             echo "$PATH"
+
+
+  midnightbsd2:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['4.0.4']
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
+
+      - uses: cross-platform-actions/action@master
+        with:
+          operating_system: midnightbsd
+          version: ${{ matrix.version }}
+          shell: bash
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
+
+            run ./ppkg about
+            run ./ppkg setup --syspm
+            run ./ppkg sysinfo
+            run ./ppkg update
+            run ./ppkg install midnightbsd-${{ matrix.version }}-x86_64/uppm@0.15.4 --static
+            run ./ppkg bundle  midnightbsd-${{ matrix.version }}-x86_64/uppm@0.15.4 .tar.xz
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: uppm---midnightbsd-${{ matrix.version }}-x86_64.release.tar.xz
+          path: uppm-*-midnightbsd-${{ matrix.version }}-x86_64.release.tar.xz
