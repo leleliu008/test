@@ -52,7 +52,7 @@ jobs:
             pkg search tree
             pkg search grep
             pkg search coreutils
-            pkg search findutils
+            pkg search find
             pkg search awk
             pkg search sed
             pkg search jq
