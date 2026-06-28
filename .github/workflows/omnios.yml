@@ -31,17 +31,18 @@ jobs:
             id
             pwd
 
-            ls /usr/
-            ls /usr/bin
-            ls /usr/gnu
-            ls /usr/gnu/bin
+            echo "$PATH"
+
+            ls -l /usr/
+            ls -l /usr/bin
+            ls -l /usr/gcc
+            ls -l /usr/gnu
+            ls -l /usr/gnu/bin
 
 
             command -v gcc
             command -v g++
             command -v git
-
-            echo "$PATH"
 
 
   omnios2:
