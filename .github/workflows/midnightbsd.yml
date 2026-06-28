@@ -54,7 +54,7 @@ jobs:
             ls /usr/local/bin
 
             sudo mport index
-            sudo mport update perl5
+            sudo mport update perl5 || true
             sudo mport install bash coreutils findutils gawk gsed gnugrep tree jq yq go git curl gcc || true
 
             ls /usr/bin
