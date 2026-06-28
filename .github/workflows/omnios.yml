@@ -86,6 +86,9 @@ jobs:
             command -v git
             command -v bsdtar
 
+            curl -LO https://raw.githubusercontent.com/leleliu008/test/master/print-needed.c
+            gcc -flto -Os -std=gnu99 print-needed.c
+
             unset GOOS
             unset GOARCH
 
