@@ -48,7 +48,7 @@ jobs:
             pkg search bsdtar
             pkg search libarchive
 
-            pkg install gcc14 git
+            sudo pkg install gcc14 git
 
             command -v gcc
             command -v g++
