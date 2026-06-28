@@ -58,13 +58,21 @@ jobs:
             pkg search jq
             pkg search go
 
-            sudo pkg install bash gnu-coreutils gnu-findutils gnu-sed gnu-grep gawk tree jq git curl libarchive gcc14
+            sudo pkg install bash gnu-coreutils gnu-findutils gnu-sed gnu-grep gawk tree jq git curl libarchive gcc14 go-126
 
             command -v gcc
             command -v g++
             command -v git
             command -v bsdtar
 
+            unset GOOS
+            unset GOARCH
+
+            curl -L -o yq.src.tar.gz https://github.com/mikefarah/yq/archive/refs/tags/v4.53.2.tar.gz
+            install -d yq.src
+            bsdtar xvf yq.src.tar.gz -C yq.src --strip-components=1
+            go build -C yq.src -o ../bin/ -trimpath -ldflags '-s -w'
+            bin/yq --version
 
   omnios2:
 
