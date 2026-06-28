@@ -47,6 +47,17 @@ jobs:
             pkg search git
             pkg search bsdtar
             pkg search libarchive
+            pkg search bash
+            pkg search curl
+            pkg search tree
+            pkg search grep
+            pkg search core
+            pkg search find
+            pkg search awk
+            pkg search sed
+            pkg search jq
+            pkg search yq
+            pkg search go
 
             sudo pkg install gcc14 git
 
