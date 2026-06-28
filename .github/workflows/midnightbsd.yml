@@ -53,13 +53,12 @@ jobs:
             ls /usr/local
             ls /usr/local/bin
 
-            sudo mport install bash coreutils findutils gawk gsed gnugrep tree jq git curl gcc || true
+            sudo mport install bash coreutils findutils gawk gsed gnugrep tree jq yq go git curl gcc || true
 
             ls /usr/bin
             ls /usr/local
             ls /usr/local/bin
             ls /usr/libexec/
-            ls /usr/libexec/gcc80/
 
             command -v gcc
             command -v g++
