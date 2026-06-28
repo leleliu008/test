@@ -46,13 +46,14 @@ jobs:
             mport search tree
             mport search jq
             mport search yq
+            mport search go
 
             ls /usr/
             ls /usr/bin
             ls /usr/local
             ls /usr/local/bin
 
-            sudo mport install bash coreutils findutils gawk gsed gnugrep tree jq git curl gcc
+            sudo mport install bash coreutils findutils gawk gsed gnugrep tree jq git curl gcc || true
 
             ls /usr/bin
             ls /usr/local
