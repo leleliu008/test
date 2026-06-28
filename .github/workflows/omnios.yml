@@ -1,0 +1,86 @@
+name: OmniOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  omnios1:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['r151056', 'r151058']
+
+    steps:
+      - uses: cross-platform-actions/action@master
+        with:
+          operating_system: omnios
+          version: ${{ matrix.version }}
+          shell: bash
+          run: |
+            echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+            set -x
+
+            uname -s
+            uname -m
+            uname -r
+
+            cat /etc/os-release
+
+            id
+            pwd
+
+            ls /usr/
+            ls /usr/bin
+            ls /usr/local
+            ls /usr/local/bin
+
+
+            ls /usr/bin
+            ls /usr/local
+            ls /usr/local/bin
+            ls /usr/libexec/
+
+            command -v gcc
+            command -v g++
+            command -v git
+
+            echo "$PATH"
+
+
+  omnios2:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['r151056', 'r151058']
+
+    steps:
+      - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+      - run: chmod a+x ppkg
+
+      - uses: cross-platform-actions/action@master
+        with:
+          operating_system: omnios
+          version: ${{ matrix.version }}
+          shell: bash
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
+
+            run ./ppkg about
+            run ./ppkg setup --syspm
+            run ./ppkg sysinfo
+            run ./ppkg update
+            run ./ppkg install omnios-${{ matrix.version }}-x86_64/uppm@0.15.4 --static
+            run ./ppkg bundle  omnios-${{ matrix.version }}-x86_64/uppm@0.15.4 .tar.xz
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: uppm---omnios-${{ matrix.version }}-x86_64.release.tar.xz
+          path: uppm-*-omnios-${{ matrix.version }}-x86_64.release.tar.xz
