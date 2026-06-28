@@ -1,21 +1,21 @@
-name: OmniOS
+name: Haiku
 
 on:
   workflow_dispatch:
 
 jobs:
-  omnios1:
+  haiku1:
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        version: ['r151056', 'r151058']
+        version: ['r1beta5']
 
     steps:
       - uses: cross-platform-actions/action@master
         with:
-          operating_system: omnios
+          operating_system: haiku
           version: ${{ matrix.version }}
           shell: bash
           run: |
@@ -33,9 +33,14 @@ jobs:
 
             ls /usr/
             ls /usr/bin
-            ls /usr/gnu
-            ls /usr/gnu/bin
+            ls /usr/local
+            ls /usr/local/bin
 
+
+            ls /usr/bin
+            ls /usr/local
+            ls /usr/local/bin
+            ls /usr/libexec/
 
             command -v gcc
             command -v g++
@@ -44,14 +49,14 @@ jobs:
             echo "$PATH"
 
 
-  omnios2:
+  haiku2:
 
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        version: ['r151056', 'r151058']
+        version: ['r1beta5']
 
     steps:
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
@@ -59,7 +64,7 @@ jobs:
 
       - uses: cross-platform-actions/action@master
         with:
-          operating_system: omnios
+          operating_system: haiku
           version: ${{ matrix.version }}
           shell: bash
           run: |
@@ -72,10 +77,10 @@ jobs:
             run ./ppkg setup --syspm
             run ./ppkg sysinfo
             run ./ppkg update
-            run ./ppkg install omnios-${{ matrix.version }}-x86_64/uppm@0.15.4 --static
-            run ./ppkg bundle  omnios-${{ matrix.version }}-x86_64/uppm@0.15.4 .tar.xz
+            run ./ppkg install haiku-${{ matrix.version }}-x86_64/uppm@0.15.4 --static
+            run ./ppkg bundle  haiku-${{ matrix.version }}-x86_64/uppm@0.15.4 .tar.xz
 
       - uses: actions/upload-artifact@v6
         with:
-          name: uppm---omnios-${{ matrix.version }}-x86_64.release.tar.xz
-          path: uppm-*-omnios-${{ matrix.version }}-x86_64.release.tar.xz
+          name: uppm---haiku-${{ matrix.version }}-x86_64.release.tar.xz
+          path: uppm-*-haiku-${{ matrix.version }}-x86_64.release.tar.xz
