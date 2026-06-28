@@ -40,6 +40,10 @@ jobs:
             ls -l /usr/gnu
             ls -l /usr/gnu/bin
 
+            pkg list
+
+            pkg search gcc
+            pkg search git
 
             command -v gcc
             command -v g++
