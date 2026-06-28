@@ -44,9 +44,16 @@ jobs:
             mport search sed
             mport search grep
             mport search tree
+            mport search perl
+            mport search bsdtar
+            mport search pkg-config
+            mport search pkgconf
             mport search jq
             mport search yq
+            mport search xz
+            mport search ed
             mport search go
+            mport search golang
 
             ls /usr/
             ls /usr/bin
