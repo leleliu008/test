@@ -36,7 +36,8 @@ jobs:
             ls -l /usr/
             ls -l /usr/bin
             ls -l /usr/gcc
-            ls -l /usr/gcc/bin
+            ls -l /usr/gcc/14
+            ls -l /usr/gcc/14/bin
             ls -l /usr/gnu
             ls -l /usr/gnu/bin
 
