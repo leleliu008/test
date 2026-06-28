@@ -7,12 +7,12 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 
-#if defined(__sun) && defined(__SVR4)
+//#if defined(__sun) && defined(__SVR4)
 #include <sys/types.h>
 #include <sys/elf.h>
-#else
-#include <elf.h>
-#endif
+//#else
+//#include <elf.h>
+//#endif
 
 int handle_elf32(const int fd, const char * const fp) {
     Elf32_Ehdr ehdr;
