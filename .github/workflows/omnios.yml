@@ -69,14 +69,15 @@ jobs:
             pkg info gnu-grep
             pkg info gnu-sed
             pkg info gawk
-            pkg info tree
             pkg info curl
-            pkg info git
-            pkg info jq
-            pkg info libarchive
-            pkg info gcc14
-            pkg info go-126
+            pkg info tree || true
+            pkg info git || true
+            pkg info jq || true
+            pkg info libarchive || true
+            pkg info gcc14 || true
+            pkg info go-126 || true
 
+            pfexec pkg refresh
             sudo pkg install bash gnu-coreutils gnu-findutils gnu-sed gnu-grep gawk tree jq git curl libarchive gcc14 go-126
 
             command -v gcc
