@@ -1,6 +1,3 @@
-# Copyright: 2022 fpliu
-# License: GPL-2.0-or-later
-
 name: Gentoo
 
 on:
@@ -13,6 +10,11 @@ jobs:
     container: madhacking/gentoo
 
     steps:
+      - run: command -v curl || true
+      - run: command -v wget || true
+      - run: command -v git || true
+      - run: command -v gcc || true
+
       - run: |
           install -d /etc/portage/binrepos.conf
           cat >      /etc/portage/binrepos.conf/gentoobinhost.conf <<EOF
@@ -24,7 +26,7 @@ jobs:
       - run: emerge --sync
       - run: emerge -g -v dev-vcs/git net-misc/curl sys-devel/gcc
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - run: emerge -s "%^cmake$"
       - run: emerge -s "%^make$"
