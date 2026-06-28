@@ -41,6 +41,8 @@ jobs:
             ls -l /usr/gnu
             ls -l /usr/gnu/bin
 
+            pkg version
+            pkg help
             pkg list
 
             pkg search gcc
@@ -61,6 +63,20 @@ jobs:
             pkg search m4
             pkg search perl
 
+            pkg info bash
+            pkg info gnu-coreutils
+            pkg info gnu-findutils
+            pkg info gnu-grep
+            pkg info gnu-sed
+            pkg info gawk
+            pkg info tree
+            pkg info curl
+            pkg info git
+            pkg info jq
+            pkg info libarchive
+            pkg info gcc14
+            pkg info go-126
+
             sudo pkg install bash gnu-coreutils gnu-findutils gnu-sed gnu-grep gawk tree jq git curl libarchive gcc14 go-126
 
             command -v gcc
@@ -77,7 +93,6 @@ jobs:
             go build -C yq.src -o ../bin/ -trimpath -ldflags '-s -w'
             bin/yq --version
 
-            man pkg
   omnios2:
 
     runs-on: ubuntu-latest
