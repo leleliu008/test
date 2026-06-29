@@ -43,6 +43,7 @@ jobs:
             pkgman search awk
             pkgman search m4
             pkgman search pkg-config
+            pkgman search libarchive
             pkgman search bash
             pkgman search go
             pkgman search golang
@@ -56,7 +57,7 @@ jobs:
             pkgman search core
             pkgman search utils
 
-            pkgman install bash coreutils findutils gawk sed grep tree jq git curl gcc
+            pkgman install bash coreutils findutils gawk sed grep tree jq git curl gcc libarchive_tools
 
             command -v gcc
             command -v g++
