@@ -33,11 +33,6 @@ jobs:
 
             echo "$PATH"
 
-            ls -l /usr/
-            ls -l /usr/bin
-            ls -l /usr/local
-            ls -l /usr/local/bin
-
             pkgman refresh
 
             pkgman search gcc
