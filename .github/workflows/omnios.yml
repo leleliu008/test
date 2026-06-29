@@ -86,8 +86,12 @@ jobs:
             command -v git
             command -v bsdtar
 
-            curl -LO https://raw.githubusercontent.com/leleliu008/test/master/print-needed.c
-            gcc -flto -Os -std=gnu99 print-needed.c
+            curl -LO https://raw.githubusercontent.com/leleliu008/C-examples/refs/heads/master/library/libelf/src/check-if-has-dynamic-section.c
+            gcc -flto -Os -std=gnu99 check-if-has-dynamic-section.c
+            ./a.out a.out
+
+            #curl -LO https://raw.githubusercontent.com/leleliu008/test/master/print-needed.c
+            #gcc -flto -Os -std=gnu99 print-needed.c
 
             unset GOOS
             unset GOARCH
