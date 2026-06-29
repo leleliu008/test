@@ -38,6 +38,27 @@ jobs:
             ls -l /usr/local
             ls -l /usr/local/bin
 
+            pkgman refresh
+
+            pkgman search gcc
+            pkgman search git
+            pkgman search curl
+            pkgman search tar
+            pkgman search sed
+            pkgman search awk
+            pkgman search m4
+            pkgman search pkg-config
+            pkgman search bash
+            pkgman search go
+            pkgman search grep
+            pkgman search find
+            pkgman search diff
+            pkgman search tree
+            pkgman search make
+            pkgman search core
+            pkgman search utils
+
+            pkgman install git curl gcc
 
             command -v gcc
             command -v g++
