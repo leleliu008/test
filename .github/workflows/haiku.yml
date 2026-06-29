@@ -60,7 +60,7 @@ jobs:
             pkgman search core
             pkgman search utils
 
-            pkgman install bash coreutils findutils gawk sed grep tree jq git curl gcc libarchive_tools
+            pkgman install -y bash coreutils findutils gawk sed grep tree jq git curl gcc libarchive_tools
 
             command -v gcc
             command -v g++
