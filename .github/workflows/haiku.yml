@@ -33,6 +33,9 @@ jobs:
 
             echo "$PATH"
 
+            pkgman --help
+            pkgman --version
+
             pkgman refresh
 
             pkgman search gcc
@@ -62,6 +65,7 @@ jobs:
             command -v gcc
             command -v g++
             command -v git
+            command -v go || true
 
             curl -LO https://raw.githubusercontent.com/leleliu008/test/master/print-needed.c
             gcc -flto -Os -std=gnu99 print-needed.c
