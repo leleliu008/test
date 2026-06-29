@@ -45,6 +45,9 @@ jobs:
             pkgman search pkg-config
             pkgman search bash
             pkgman search go
+            pkgman search golang
+            pkgman search jq
+            pkgman search yq
             pkgman search grep
             pkgman search find
             pkgman search diff
@@ -53,7 +56,7 @@ jobs:
             pkgman search core
             pkgman search utils
 
-            pkgman install git curl gcc
+            pkgman install bash coreutils findutils gawk sed grep tree golang jq git curl gcc
 
             command -v gcc
             command -v g++
