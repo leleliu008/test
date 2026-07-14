@@ -1,6 +1,3 @@
-# Copyright: 2022 fpliu
-# License: GPL-2.0-or-later
-
 name: macOS
 
 on:
@@ -12,25 +9,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [14]
-        arch: [x86_64, arm64]
-        include:
-          - arch: x86_64
-            xxxx: -large
-          - arch: arm64
-            xxxx: ''
+        version: [26, 15, 14]
 
-    runs-on: macos-${{ matrix.version }}${{ matrix.xxxx }}
+    runs-on: macos-${{ matrix.version }}
 
     steps:
-      - run: curl -LO https://curl.se/ca/cacert.pem
-      - run: echo "SSL_CERT_FILE=$PWD/cacert.pem" >> "$GITHUB_ENV"
+      - run: curl -LO https://github.com/leleliu008/ndk-pkg/releases/download/ndk-pkg-core-2026.03.12/ndk-pkg-core-2026.03.12-macos-${{ matrix.version }}.0-arm64.tar.xz
+      - run: tar vxf *.tar.xz --strip-components=1
 
-      - run: curl -LO https://github.com/leleliu008/ndk-pkg/releases/download/ndk-pkg-core-2024.05.15/ndk-pkg-core-2024.05.15-macos-${{ matrix.version }}.0-${{ matrix.arch }}.tar.xz
-      - run: tar vxf ndk-pkg-core-2024.05.15-macos-${{ matrix.version }}.0-${{ matrix.arch }}.tar.xz --strip-components=1
-
+      - run: ./uppm about
+      - run: ./uppm sysinfo
       - run: ./uppm update
 
       - run: ls ~/.uppm/repos.d/official-core/formula/
 
-      - run: ./uppm install docbook-xsl
+      - run: ./uppm install android-sdk
