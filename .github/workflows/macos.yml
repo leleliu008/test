@@ -23,4 +23,7 @@ jobs:
 
       - run: ls ~/.uppm/repos.d/official-core/formula/
 
+      - run: curl -LO https://curl.se/ca/cacert.pem
+      - run: echo "SSL_CERT_FILE=$PWD/cacert.pem" >> "$GITHUB_ENV"
+
       - run: ./uppm install android-sdk
