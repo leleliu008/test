@@ -14,7 +14,7 @@ jobs:
     runs-on: macos-${{ matrix.version }}
 
     steps:
-      - run: curl -LO https://github.com/leleliu008/ndk-pkg/releases/download/ndk-pkg-core-2026.03.12/ndk-pkg-core-2026.03.12-macos-${{ matrix.version }}.0-arm64.tar.xz
+      - run: curl -LO https://github.com/leleliu008/ndk-pkg/releases/download/ndk-pkg-core-2026.07.14/ndk-pkg-core-2026.07.14-macos-${{ matrix.version }}.0-arm64.tar.xz
       - run: tar vxf *.tar.xz --strip-components=1
 
       - run: ./uppm about
