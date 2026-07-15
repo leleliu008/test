@@ -80,6 +80,8 @@ jobs:
 
             command -v wc
 
+            wc -l test.c
+
             echo 'hello world' | grep hello
             echo 'hello world' | /usr/pkg/gnu/bin/grep hello
 
