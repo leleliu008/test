@@ -179,6 +179,8 @@ jobs:
 
             cat /etc/installurl
 
+            export PKG_PATH=https://ftp.eu.openbsd.org/pub/OpenBSD
+
             sudo pkg_add libarchive gcc%11 python%3.11
 
             ls /usr/local/
