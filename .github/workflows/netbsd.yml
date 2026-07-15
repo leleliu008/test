@@ -82,6 +82,10 @@ jobs:
 
             wc -l test.c
 
+            /usr/bin/wc -l test.c
+
+            /usr/pkg/gnu/bin/wc -l test.c
+
             ./ppkg setup
             ~/.uppm/installed/coreutils/bin/wc -l test.c
 
