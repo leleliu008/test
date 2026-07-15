@@ -18,6 +18,19 @@ jobs:
       - run: chmod a+x ppkg
 
       - run: |
+          cat > test.sh <<EOF
+          #!/bin/sh
+
+          xc_space=' '
+          xc_tab='	'
+          xc_newline='
+          '
+          IFS="\$xc_space\$xc_tab\$xc_newline"
+
+          echo 'unknown unknown unknown unknown' | wc -w | tr -d "\$xc_space\$xc_tab"
+          EOF
+
+      - run: |
           cat > test.c <<EOF
           #include <stdio.h>
           #include <unistd.h>
@@ -88,6 +101,8 @@ jobs:
 
             ./ppkg setup
             ~/.uppm/installed/coreutils/bin/wc -l test.c
+
+            sh test.sh
 
             echo 'hello world' | grep hello
             echo 'hello world' | /usr/pkg/gnu/bin/grep hello
