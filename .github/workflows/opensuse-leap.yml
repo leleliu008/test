@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        tag: [15.1]
+        tag: [15.3, 15.4]
 
     container: opensuse/leap:${{ matrix.tag }}
 
