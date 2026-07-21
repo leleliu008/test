@@ -1,17 +1,11 @@
-# Copyright: 2022 fpliu
-# License: GPL-2.0-or-later
-
 name: openSUSE Leap
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     
     strategy:
       fail-fast: false
@@ -22,9 +16,11 @@ jobs:
 
     steps:
       - run: zypper update  -y
-      - run: zypper install -y git
+      - run: zypper install -y git curl
 
       - uses: actions/checkout@v2
+
+      - run: curl -v -LO https://curl.se/ca/cacert.pem
 
       - run: zypper help info
 
@@ -40,6 +36,3 @@ jobs:
 
       - run: |
           zypper info   git | sed -n '/Version        :/p' | sed 's/Version        : \(.*\)/\1/' | cut -d- -f1
-
-      - run: ./ndk-pkg update
-      - run: ./ndk-pkg install zlib -x

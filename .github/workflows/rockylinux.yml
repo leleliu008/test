@@ -1,0 +1,23 @@
+name: Rocky Linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: ['8']
+
+    container: rockylinux:${{ matrix.tag }}
+
+    steps:
+      - run: dnf -y update
+      - run: dnf -y install git curl
+
+      - uses: actions/checkout@v2
+
+      - run: curl -v -LO https://curl.se/ca/cacert.pem
