@@ -18,7 +18,7 @@ jobs:
       - run: zypper update  -y
       - run: zypper install -y git curl
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
 
       - run: curl -v -LO https://curl.se/ca/cacert.pem
 
