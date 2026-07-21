@@ -1,0 +1,23 @@
+name: openeuler
+
+on:
+  workflow_dispatch:
+
+jobs:
+  openeuler:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: ['24.03']
+
+    container: openeuler/openeuler:${{ matrix.tag }}
+
+    steps:
+      - run: dnf -y update
+      - run: dnf -y install git curl
+
+      - uses: actions/checkout@v5
+
+      - run: curl -v -LO https://curl.se/ca/cacert.pem
