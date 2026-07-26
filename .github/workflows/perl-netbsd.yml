@@ -15,6 +15,25 @@ jobs:
     steps:
       - run: curl -LO https://curl.se/ca/cacert.pem
 
+      - run: |
+            case ${{ matrix.netbsd-version }} in
+                10.*)
+                    for x in 'bsdtar-3.8.1' 'grep-3.12' 'gsed-4.9' 'gmake-4.4.1' 'coreutils-9.4' 'findutils-4.9.0'
+                    do
+                        f="$x-netbsd-10.0-amd64.release.tar.xz"
+                        curl -LO "https://github.com/leleliu008/uppm-package-repository-netbsd-10.0-amd64/releases/download/2025.07.25/$f"
+                        tar xf "$f" --strip-components=1
+                    done
+                    ;;
+                9.*)
+                    for x in 'bsdtar-3.8.1' 'grep-3.12' 'gsed-4.9' 'gmake-4.4.1' 'coreutils-9.4' 'findutils-4.9.0'
+                    do
+                        f="$x-netbsd-9.2-amd64.release.tar.xz"
+                        curl -LO "https://github.com/leleliu008/uppm-package-repository-netbsd-9.2-amd64/releases/download/2025.07.23/$f"
+                        tar xf "$f" --strip-components=1
+                    done
+            esac
+
       - uses: cross-platform-actions/action@master
         with:
           operating_system: netbsd
@@ -26,8 +45,7 @@ jobs:
             uname -r
 
             export SSL_CERT_FILE="$PWD/cacert.pem"
-
-            sudo pkgin -y install curl bsdtar gmake gcc13 binutils
+            export PATH="$PWD/bin:$PATH"
 
             install -d perl/
 
