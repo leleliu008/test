@@ -33,6 +33,8 @@ jobs:
 
             mport help || true
 
+            sudo mport config set url http://ftp.midnightbsd.org/mports/packages/
+
             mport list
             mport search curl
             mport search git
