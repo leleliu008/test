@@ -41,7 +41,8 @@ jobs:
             install -d perl/
 
             #curl -LO https://github.com/fpliu1214/perl-distribution/releases/download/5.40.2/perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
-            curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/perl-5.42.2-openbsd-7.2-amd64.tar.xz
+            curl -LO https://github.com/leleliu008/perl-distribution/releases/download/5.42.2/perl-5.42.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
+            #curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/perl-5.42.2-openbsd-7.2-amd64.tar.xz
             bsdtar xf perl-*-amd64.tar.xz -C perl/ --strip-components=1
 
             export PATH="$PWD/perl/bin:$PATH"
