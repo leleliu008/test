@@ -27,8 +27,6 @@ jobs:
 
             export SSL_CERT_FILE="$PWD/cacert.pem"
 
-            sudo pkgin -y update
-
             sudo pkgin -y install curl bsdtar gmake gcc13 binutils
 
             install -d perl/
