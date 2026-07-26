@@ -36,7 +36,7 @@ jobs:
 
             cat /etc/installurl
 
-            sudo pkg_add libarchive gmake gcc
+            sudo pkg_add libarchive gmake gcc m4 pkgconf
 
             install -d perl/
 
