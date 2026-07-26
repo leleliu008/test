@@ -1,0 +1,89 @@
+name: OpenBSD perl
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        openbsd-version: ['7.9', '7.8', '7.7', '7.6', '7.5', '7.4', '7.3', '7.2']
+
+    steps:
+      - uses: cross-platform-actions/action@master
+        with:
+          operating_system: openbsd
+          version: ${{ matrix.openbsd-version }}
+          shell: sh
+          run: |
+            run() {
+              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
+              eval "$@"
+            }
+
+            set -ex
+
+            id
+
+            uname -r
+
+            cat /etc/installurl
+
+            sudo sh -c 'echo "http://ftp.eu.openbsd.org/pub/OpenBSD" > /etc/installurl'
+
+            cat /etc/installurl
+
+            sudo pkg_add libarchive gmake gcc
+
+            curl -LO https://github.com/fpliu1214/perl-distribution/releases/download/5.40.2/perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
+            install -d perl/
+            bsdtar xf perl-5.40.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz -C perl/ --strip-components=1
+
+            export PATH="$PWD/perl/bin:$PATH"
+
+            perl -e 'print $^X'
+            perl -V:prefix
+            perl -V
+
+            $PWD/perl/bin/perl -e 'print $^X'
+            $PWD/perl/bin/perl -V:prefix
+            $PWD/perl/bin/perl -V
+
+            export PERL="$PWD/perl/bin/perl"
+
+            install -d openssl/
+            install -d autoconf/
+            install -d automake/
+            install -d autotools/
+
+            export PATH="$PWD/autotools/bin:$PATH"
+
+            curl -LO https://ftp.gnu.org/gnu/autoconf/autoconf-2.73.tar.gz
+            bsdtar xf autoconf-2.73.tar.gz -C autoconf/ --strip-components=1
+            cd autoconf/
+            ./configure --prefix="$PWD/autotools"
+            gmake
+            gmake install
+
+            cd ..
+
+            curl -LO https://ftp.gnu.org/gnu/automake/automake-1.18.1.tar.xz
+            bsdtar xf automake-1.18.1.tar.xz -C automake/ --strip-components=1
+            cd automake/
+            ./configure --prefix="$PWD/autotools"
+            gmake
+            gmake install
+
+            cd ..
+
+            autotools/bin/autoconf -v
+            autotools/bin/automake -v
+
+            curl -LO https://github.com/openssl/openssl/releases/download/openssl-3.6.2/openssl-3.6.2.tar.gz
+            bsdtar xf openssl-3.6.2.tar.gz -C openssl/ --strip-components=1
+            cd openssl
+            ./config --prefix="$PWD/autotools"
+            gmake build_libs
