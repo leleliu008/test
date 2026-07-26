@@ -81,8 +81,8 @@ jobs:
 
             cd ..
 
-            autotools/bin/autoconf -v
-            autotools/bin/automake -v
+            autotools/bin/autoconf --help
+            autotools/bin/automake --help
 
             curl -LO https://github.com/openssl/openssl/releases/download/openssl-3.6.2/openssl-3.6.2.tar.gz
             bsdtar xf openssl-3.6.2.tar.gz -C openssl/ --strip-components=1
