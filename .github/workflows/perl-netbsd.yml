@@ -62,7 +62,7 @@ jobs:
             $PWD/perl/bin/perl -V:prefix
             $PWD/perl/bin/perl -V
 
-            export PERL="$PWD/perl/bin/perl"
+            #export PERL="$PWD/perl/bin/perl"
 
             install -d openssl/
             install -d autoconf/
