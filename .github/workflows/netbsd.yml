@@ -82,6 +82,8 @@ jobs:
 
             pkgin search cmake
 
+            command -v curl
+
             sudo pkgin -y install python312 bash coreutils findutils gawk gsed grep git curl bsdtar tree jq gcc13 binutils
 
             ls
@@ -111,20 +113,3 @@ jobs:
 
             cc test.c
             ./a.out
-
-            curl -LO https://github.com/fpliu1214/perl-distribution/releases/download/5.40.2/perl-5.40.2-netbsd-${{ matrix.netbsd-version }}-amd64.tar.xz
-            install -d perl/
-            bsdtar xf perl-5.40.2-netbsd-${{ matrix.netbsd-version }}-amd64.tar.xz -C perl/ --strip-components=1
-
-            export PATH="$PWD/perl/bin:$PATH"
-
-            perl -e 'print $^X'
-            #perl -V:prefix
-            #perl -V
-
-            $PWD/perl/bin/perl -e 'print $^X'
-            $PWD/perl/bin/perl -V:prefix
-            $PWD/perl/bin/perl -V
-            #./ppkg setup --syspm
-            #./ppkg update
-            #./ppkg search lib
