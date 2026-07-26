@@ -1,4 +1,4 @@
-name: OpenBSD perl
+name: NetBSD perl
 
 on:
   workflow_dispatch:
@@ -10,37 +10,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        openbsd-version: ['7.9', '7.8', '7.7', '7.6', '7.5', '7.4', '7.3', '7.2']
+        netbsd-version: ['10.1', '10.0', '9.4', '9.3', '9.2']
 
     steps:
+      - run: curl -LO https://curl.se/ca/cacert.pem
+
       - uses: cross-platform-actions/action@master
         with:
-          operating_system: openbsd
-          version: ${{ matrix.openbsd-version }}
-          shell: sh
+          operating_system: netbsd
+          version: ${{ matrix.netbsd-version }}
+          shell: bash
           run: |
-            run() {
-              printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "$*"
-              eval "$@"
-            }
-
             set -ex
-
-            id
 
             uname -r
 
-            cat /etc/installurl
+            export SSL_CERT_FILE="$PWD/cacert.pem"
 
-            sudo sh -c 'echo "http://ftp.eu.openbsd.org/pub/OpenBSD" > /etc/installurl'
+            sudo pkgin -y update
 
-            cat /etc/installurl
-
-            sudo pkg_add libarchive gmake gcc m4 pkgconf
+            sudo pkgin -y install curl bsdtar gmake gcc13 binutils
 
             install -d perl/
 
-            curl -LO https://github.com/leleliu008/perl-distribution/releases/download/5.42.2/perl-5.42.2-openbsd-${{ matrix.openbsd-version }}-amd64.tar.xz
+            curl -LO https://github.com/leleliu008/perl-distribution/releases/download/5.42.2/perl-5.42.2-netbsd-${{ matrix.netbsd-version }}-amd64.tar.xz
             bsdtar xf perl-*-amd64.tar.xz -C perl/ --strip-components=1
 
             export PATH="$PWD/perl/bin:$PATH"
