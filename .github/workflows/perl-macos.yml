@@ -1,0 +1,19 @@
+name: macOS perl
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [26, 15, 14]
+
+    runs-on: macos-${{ matrix.version }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - run: ./build.sh --prefix="$PWD/out"
