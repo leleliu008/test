@@ -84,6 +84,8 @@ jobs:
 
             command -v curl
 
+            cat /usr/pkg/etc/pkgin/repositories.conf
+
             sudo pkgin -y install python312 bash coreutils findutils gawk gsed grep git curl bsdtar tree jq gcc13 binutils
 
             ls
