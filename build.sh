@@ -448,11 +448,21 @@ inspect_install_arguments() {
         [ -z "$RANLIB"  ] &&  RANLIB="$(xcrun --sdk macosx --find ranlib)"
         [ -z "$SYSROOT" ] && SYSROOT="$(xcrun --sdk macosx --show-sdk-path)"
 
-        [ -z "$MACOSX_DEPLOYMENT_TARGET" ] && MACOSX_DEPLOYMENT_TARGET="$(sw_vers -productVersion)"
+        [ -z "$MACOSX_DEPLOYMENT_TARGET" ] && {
+            NATIVE_PLATFORM_VERS="$(sw_vers -productVersion)"
+            MACOSX_DEPLOYMENT_TARGET="${NATIVE_PLATFORM_VERS%.*}"
+        }
 
-        CC_ARGS="-isysroot $SYSROOT -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET -arch $NATIVE_PLATFORM_ARCH -Qunused-arguments"
-        PP_ARGS="-isysroot $SYSROOT -Qunused-arguments"
-        LD_ARGS="-isysroot $SYSROOT -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET -arch $NATIVE_PLATFORM_ARCH"
+        install -d "$SESSION_DIR"
+
+        WRAPPER_CC="$SESSION_DIR/wrapper-cc"
+
+        tee "$WRAPPER_CC" <<EOF
+#!/bin/sh
+exec $CC -isysroot $SYSROOT -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET -arch $NATIVE_PLATFORM_ARCH -Qunused-arguments "\$@"
+EOF
+        chmod +x "$WRAPPER_CC"
+        export CC="$WRAPPER_CC"
     else
         [ -z "$CC" ] && {
              CC="$(command -v cc  || command -v clang   || command -v gcc)" || abort 1 "C Compiler not found."
@@ -478,13 +488,13 @@ inspect_install_arguments() {
             RANLIB="$(command -v ranlib)" || abort 1 "command not found: ranlib"
         }
 
-        CC_ARGS='-fPIC'
-
         # https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html
         LD_ARGS='-Wl,--as-needed'
     fi
 
     #########################################################################################
+
+    CC_ARGS='-fPIC'
 
     CPP="$CC -E"
 
