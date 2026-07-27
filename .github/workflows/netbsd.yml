@@ -79,7 +79,7 @@ jobs:
             cat /usr/pkg/etc/pkgin/repositories.conf
 
             case ${{ matrix.netbsd-version }} in
-              9.*)  sudo sh -c 'sed -i.bak "$s|${{ matrix.netbsd-version }}|9.0_2026Q1|" /usr/pkg/etc/pkgin/repositories.conf'
+              9.*)  sudo sh -c 'sed -i.bak "\$s|${{ matrix.netbsd-version }}|9.0_2026Q1|" /usr/pkg/etc/pkgin/repositories.conf'
             esac
 
             cat /usr/pkg/etc/pkgin/repositories.conf
