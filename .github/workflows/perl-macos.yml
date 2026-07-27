@@ -16,4 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+        #- run: brew update
+      - run: brew install coreutils findutils grep gnu-sed make
+
       - run: ./build.sh install --prefix="$PWD/out"
