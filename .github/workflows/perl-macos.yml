@@ -16,4 +16,4 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - run: ./build.sh --prefix="$PWD/out"
+      - run: ./build.sh install --prefix="$PWD/out"
