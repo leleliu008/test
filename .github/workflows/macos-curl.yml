@@ -1,0 +1,17 @@
+name: macOS curl
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [26, 15, 14]
+
+    runs-on: macos-${{ matrix.version }}
+
+    steps:
+      - run: curl -v -LO https://curl.se/ca/cacert.pem
