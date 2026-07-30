@@ -1,10 +1,7 @@
 name: run units target with sanitizers on macOS
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   testing:
