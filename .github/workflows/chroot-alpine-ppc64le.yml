@@ -1,0 +1,65 @@
+name: chroot alpine/ppc64le
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testing:
+
+    runs-on: ubuntu-latest
+
+    env:
+      APK_TOOLS_URI: gitlab.alpinelinux.org/api/v4/projects/5/packages/generic/v3.0.7/x86_64/apk.static
+      APK_TOOLS_SHA256: c07bf5356eacc9dd7a8c56bc537f46702f007170287403299d52a04264e74b3c
+
+    steps:
+      - run: |
+          cat > test.c <<EOF
+          #include<linux/limits.h>
+          int main() {
+            char p[PATH_MAX];
+            p[0] = '/';
+            p[1] = '\0';
+            return 0;
+          }
+          EOF
+
+      - run: |
+          cat > run.sh <<EOF
+          set -ex
+          uname -a
+          id
+          pwd
+
+          apk update
+          apk add g++ libc-dev linux-headers rust cargo
+
+          cc -flto -Os -std=c99 test.c
+
+          find / -name 'libgcc*'
+          nm /usr/lib/gcc/ppc64le-alpine-linux-musl/14.2.0/libgcc_eh.a
+          nm /usr/lib/gcc/ppc64le-alpine-linux-musl/14.2.0/libgcc.a
+
+          wget https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
+          chmod a+x ppkg
+
+          export GITHUB_ACTIONS=true
+
+          ./ppkg setup
+          ./ppkg update
+          ./ppkg install b3sum --static
+          ./ppkg bundle  b3sum .tar.xz
+          EOF
+
+      - run: curl -LO https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/master/alpine-chroot-install
+      - run: chmod +x alpine-chroot-install
+      - run: sudo ./alpine-chroot-install -d /alpine -a ppc64le -p wget -p g++
+      - run: /alpine/enter-chroot sh run.sh
+      - run: ls -l
+      - run: /alpine/destroy
+      - run: ls -l
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b3sum---linux-ppc64le.release.tar.xz
+          path: b3sum-*-linux-ppc64le.release.tar.xz
