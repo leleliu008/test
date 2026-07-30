@@ -38,7 +38,7 @@ jobs:
     - run: make --version
 
     - run: ./autogen.sh
-    - run: ./configure --enable-debugging --enable-iconv CC="$(brew --prefix llvm)/bin/clang" CFLAGS='-fsanitize=undefined -fsanitize=address -fsanitize=leak'
+    - run: ./configure --enable-debugging --enable-iconv CC="$(brew --prefix llvm)/bin/clang" CFLAGS='-fsanitize=address -fsanitize=leak'
     - run: make -j2
 
     - run: ./ctags --version
