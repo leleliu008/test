@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target-arch: [powerpc64, loongarch64, aarch64, riscv64, s390x]
+        target-arch: [powerpc64le, loongarch64, aarch64, riscv64, s390x]
 
 
     env:
@@ -25,7 +25,16 @@ jobs:
 
     steps:
       - run: printf 'CC=%s -mlong-double-64\n' "$CC" >> "$GITHUB_ENV"
-        if: matrix.target-arch == 'powerpc64'
+        if: matrix.target-arch == 'powerpc64le'
+
+      - id: musl-arch
+        run: |
+          if [ ${{ matrix.target-arch }} = powerpc64le ] ; then
+            ARCH=powerpc64
+          else
+            ARCH=${{ matrix.target-arch }}
+          fi
+          printf 'ARCH=%s\n' "$ARCH" >> "$GITHUB_OUTPUT"
 
       - run: sudo apt -y update
       - run: sudo apt -y install gcc gcc-${{ matrix.target-arch }}-linux-gnu automake autoconf pkg-config cmake make qemu-user
@@ -39,7 +48,7 @@ jobs:
       - run: tar xf *.tar.gz -C src/musl/ --strip-components=1
 
       - run: cd src/musl/ && ./configure --prefix=${{ github.workspace }}/sysroot
-      - run: cd src/musl/ && make ARCH=${{ matrix.target-arch }}
+      - run: cd src/musl/ && make ARCH=${{ steps.musl-arch.outputs.ARCH }}
       - run: cd src/musl/ && make install
 
       - name: build zlib
@@ -117,6 +126,7 @@ jobs:
       - id: expect-hex
         run: |
           case ${{ matrix.target-arch }} in
+            powerpc64le) HEX=7F454C4602010100000000000000000002001500 ;;
             loongarch64) HEX=7F454C4602010100000000000000000002000201 ;;
             aarch64)     HEX=7F454C460201010000000000000000000200B700 ;;
             riscv64)     HEX=7F454C460201010000000000000000000200F300 ;;
