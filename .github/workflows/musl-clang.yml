@@ -41,7 +41,7 @@ jobs:
       - run: |
           cat >> "$GITHUB_ENV" <<EOF
           CFLAGS=-I${{ github.workspace }}/sysroot/include
-          LDFLAGS=-L${{ github.workspace }}/sysroot/lib"
+          LDFLAGS=-L${{ github.workspace }}/sysroot/lib
           EOF
 
       - name: build zlib
