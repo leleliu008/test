@@ -15,11 +15,11 @@ jobs:
         target-arch: [powerpc64le, loongarch64, aarch64, riscv64, s390x]
 
     env:
-      CC: gcc-${{ matrix.target-arch }}-linux-gnu
+      CC: ${{ matrix.target-arch }}-linux-gnu-gcc
 
     steps:
-      - run: sudo apt-get -y update
-      - run: sudo apt-get -y install clang gcc-${{ matrix.target-arch }}-linux-gnu tree
+      - run: sudo apt -y update
+      - run: sudo apt -y install clang gcc-${{ matrix.target-arch }}-linux-gnu tree
 
       - run: curl -LO http://musl.libc.org/releases/musl-1.2.4.tar.gz
       - run: install -d musl/src/
