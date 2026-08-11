@@ -134,6 +134,9 @@ jobs:
 
       - run: sudo apt-get -y install qemu-user
 
+      - run: readelf -h qemu-${{ matrix.target-arch }}
+      - run: readelf -d qemu-${{ matrix.target-arch }}
+
       - run: qemu-${{ matrix.target-arch }} ./ctags --help
       - run: qemu-${{ matrix.target-arch }} ./ctags --version
 
@@ -146,7 +149,7 @@ jobs:
             eval "\$@"
           }
 
-          run apk add python3 diffutils
+          run apk add bash python3 diffutils
 
           run make check V=1
           run make roundtrip
