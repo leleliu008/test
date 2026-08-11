@@ -140,6 +140,9 @@ jobs:
       - run: /usr/bin/qemu-${{ matrix.target-arch }} ./ctags --help
       - run: /usr/bin/qemu-${{ matrix.target-arch }} ./ctags --version
 
+      - run: ./ctags --help
+      - run: ./ctags --version
+
       - run: |
           cat > run.sh <<EOF
           set -ex
