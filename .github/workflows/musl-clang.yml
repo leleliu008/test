@@ -23,5 +23,5 @@ jobs:
       - run: tar xf *.tar.gz -C musl/src/ --strip-components=1
       - run: cd musl/src && ./configure --prefix="$PWD/../out"  CC=${{ matrix.target-arch }}-linux-gnu-gcc
       - run: cd musl/src && make ARCH=${{ matrix.target-arch }} CC=${{ matrix.target-arch }}-linux-gnu-gcc AS=${{ matrix.target-arch }}-linux-gnu-as AR=${{ matrix.target-arch }}-linux-gnu-ar RANLIB=${{ matrix.target-arch }}-linux-gnu-ranlib
-      - run: cd musl/src && make install
+      - run: cd musl/src && make install DESTDIR="$PWD/../out" PREFIX=/
       - run: tree musl/out
