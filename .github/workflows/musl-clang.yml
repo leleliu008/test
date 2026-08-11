@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target-arch: [powerpc64le, loongarch64, aarch64, riscv64, s390x]
+        target-arch: [powerpc64, loongarch64, aarch64, riscv64, s390x]
 
 
     env:
@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - run: printf 'CC=%s -mlong-double-64\n' "$CC" >> "$GITHUB_ENV"
-        if: matrix.target-arch == 'powerpc64le'
+        if: matrix.target-arch == 'powerpc64'
 
       - run: sudo apt -y update
       - run: sudo apt -y install gcc gcc-${{ matrix.target-arch }}-linux-gnu automake autoconf pkg-config cmake make qemu-user
