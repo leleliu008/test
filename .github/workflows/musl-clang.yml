@@ -36,7 +36,6 @@ jobs:
 
       - run: tree ${{ github.workspace }}/sysroot
 
-      - run: sudo apt-get -y update
       - run: sudo apt-get -y install automake autoconf pkg-config make gcc cmake qemu-user-static
 
       - run: |
@@ -120,5 +119,7 @@ jobs:
       - run: cd ctags && readelf -h ctags
       - run: cd ctags && readelf -d ctags
 
-      - run: cd ctags && ./ctags --help
-      - run: cd ctags && ./ctags --version
+      - run: sudo apt-get -y install qemu-user
+
+      - run: cd ctags && qemu-${{ matrix.target-arch }} ./ctags --help
+      - run: cd ctags && qemu-${{ matrix.target-arch }} ./ctags --version
