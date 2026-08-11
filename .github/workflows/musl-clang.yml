@@ -1,0 +1,27 @@
+name: build musl-libc with clang
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  glibc:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-arch: [powerpc64le, loongarch64, aarch64, riscv64, s390x]
+
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install clang gcc-${{ matrix.target-arch }}-linux-gnu tree
+
+      - run: curl -LO http://musl.libc.org/releases/musl-1.2.4.tar.gz
+      - run: install -d musl/src/
+      - run: tar xf *.tar.gz -C musl/src/
+      - run: musl/src/configure --prefix="$PWD/musl/out"
+      - run: make -C musl/src/
+      - run: make -C musl/src/ install
+      - run: tree musl/out
