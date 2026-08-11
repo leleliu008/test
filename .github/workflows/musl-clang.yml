@@ -12,15 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - target-arch: loongarch64
-            elf-h20-hex: 7F454C4602010100000000000000000002000301
-          - target-arch: aarch64
-            elf-h20-hex: 7F454C460201010000000000000000000200B700
-          - target-arch: riscv64
-            elf-h20-hex: 7F454C460201010000000000000000000200F300
-          - target-arch: s390x
-            elf-h20-hex: 7F454C4602020100000000000000000000020016
+        target-arch: [powerpc64le, loongarch64, aarch64, riscv64, s390x]
+
 
     env:
       CC: ${{ matrix.target-arch }}-linux-gnu-gcc
@@ -122,12 +115,22 @@ jobs:
       - run: readelf -h ctags
       - run: readelf -d ctags
 
-      - id: hex
+      - id: actual-hex
         run: |
           HEX=$(hexdump -n 20 -e '20/1 "%02X" "\n"' ctags)
           printf 'HEX=%s\n' "$HEX" >> "$GITHUB_OUTPUT"
 
-      - run: test ${{ steps.hex.outputs.HEX }} = ${{ matrix.elf-h20-hex }}
+      - id: expect-hex
+        run: |
+          case ${{ matrix.target-arch }} in
+            loongarch64) HEX=7F454C4602010100000000000000000002000201 ;;
+            aarch64)     HEX=7F454C460201010000000000000000000200B700 ;;
+            riscv64)     HEX=7F454C460201010000000000000000000200F300 ;;
+            s390x)       HEX=7F454C4602020100000000000000000000020016 ;;
+          esac
+          printf 'HEX=%s\n' "$HEX" >> "$GITHUB_OUTPUT"
+
+      - run: test ${{ steps.actual-hex.outputs.HEX }} = ${{ steps.expect-hex.outputs.HEX }}
 
       - run: sudo apt-get -y install qemu-user
 
