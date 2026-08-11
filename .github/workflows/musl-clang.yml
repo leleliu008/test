@@ -18,10 +18,10 @@ jobs:
       - run: sudo apt -y update
       - run: sudo apt -y install clang tree
 
-      - run: curl -LO http://musl.libc.org/releases/musl-1.2.4.tar.gz
+      - run: curl -LO http://musl.libc.org/releases/musl-1.2.6.tar.gz
       - run: install -d musl/src/
       - run: tar xf *.tar.gz -C musl/src/ --strip-components=1
       - run: musl/src/configure --prefix="$PWD/musl/out" CC=clang
-      - run: make -C musl/src/ ARCH=${{ matrix.target-arch }}
+      - run: make -C musl/src/ ARCH=${{ matrix.target-arch }} CC=clang
       - run: make -C musl/src/ install
       - run: tree musl/out
