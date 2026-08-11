@@ -21,7 +21,7 @@ jobs:
       - run: curl -LO http://musl.libc.org/releases/musl-1.2.6.tar.gz
       - run: install -d musl/src/
       - run: tar xf *.tar.gz -C musl/src/ --strip-components=1
-      - run: musl/src/configure --prefix="$PWD/musl/out" CC=${{ matrix.target-arch }}-linux-gnu-gcc
-      - run: make -C musl/src/ ARCH=${{ matrix.target-arch }} CC=${{ matrix.target-arch }}-linux-gnu-gcc AS=${{ matrix.target-arch }}-linux-gnu-as AR=${{ matrix.target-arch }}-linux-gnu-ar RANLIB=${{ matrix.target-arch }}-linux-gnu-ranlib
-      - run: make -C musl/src/ install
+      - run: cd musl/src && ./configure --prefix="$PWD/../out"  CC=${{ matrix.target-arch }}-linux-gnu-gcc
+      - run: cd musl/src && make ARCH=${{ matrix.target-arch }} CC=${{ matrix.target-arch }}-linux-gnu-gcc AS=${{ matrix.target-arch }}-linux-gnu-as AR=${{ matrix.target-arch }}-linux-gnu-ar RANLIB=${{ matrix.target-arch }}-linux-gnu-ranlib
+      - run: cd musl/src && make install
       - run: tree musl/out
