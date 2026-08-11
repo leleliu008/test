@@ -23,6 +23,8 @@ jobs:
 
 
     steps:
+      - run: cat /etc/os-release
+
       - run: sudo apt -y update
       - run: sudo apt -y install gcc-${{ matrix.target-arch }}-linux-gnu clang tree
 
