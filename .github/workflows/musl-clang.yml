@@ -68,7 +68,7 @@ jobs:
         run: |
           install -d src/libxml2
           cd         src/libxml2
-          curl -L -o src.tar.gz https://download.gnome.org/sources/libxml2/2.11/libxml2-2.11.6.tar.xz
+          curl -L -o src.tar.gz https://download.gnome.org/sources/libxml2/2.15/libxml2-2.15.3.tar.xz
           tar vxf    src.tar.gz --strip-components=1
           ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --prefix=${{ github.workspace }}/sysroot --with-zlib --without-lzma --without-python --without-readline --without-coverage --enable-ipv6 --enable-static --disable-shared LIBS=-liconv || (cat config.log; exit 1)
           make V=1
@@ -88,7 +88,7 @@ jobs:
         run: |
           install -d src/jansson
           cd         src/jansson
-          curl -L -o src.tar.gz https://github.com/akheron/jansson/releases/download/v2.14/jansson-2.14.tar.gz
+          curl -L -o src.tar.gz https://github.com/akheron/jansson/releases/download/v2.15.0/jansson-2.15.0.tar.gz
           tar vxf    src.tar.gz --strip-components=1
           cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/sysroot -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTING=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
           cmake --build build.d
@@ -98,7 +98,7 @@ jobs:
         run: |
           install -d src/libpcre2
           cd         src/libpcre2
-          curl -L -o src.tar.gz https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.bz2
+          curl -L -o src.tar.gz https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.47/pcre2-10.47.tar.bz2
           tar vxf    src.tar.gz --strip-components=1
           cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/sysroot -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTING=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DCMAKE_C_STANDARD=99 -DCMAKE_C_STANDARD_REQUIRED=ON -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DPCRE2_BUILD_PCRE2GREP=OFF -DPCRE2_BUILD_TESTS=OFF -DPCRE2_SUPPORT_VALGRIND=OFF -DPCRE2_SUPPORT_UNICODE=ON
           cmake --build build.d
