@@ -25,7 +25,8 @@ jobs:
       - run: sudo apt -y update
       - run: sudo apt -y install gcc-${{ matrix.target-arch }}-linux-gnu tree
 
-      - run: curl -LO http://musl.libc.org/releases/musl-1.2.6.tar.gz
+        #- run: curl -LO http://musl.libc.org/releases/musl-1.2.6.tar.gz
+      - run: curl -LO https://archive.ubuntu.com/ubuntu/pool/universe/m/musl/musl_1.2.6.orig.tar.gz
       - run: install -d src/musl/
       - run: tar xf *.tar.gz -C src/musl/ --strip-components=1
 
@@ -36,7 +37,7 @@ jobs:
       - run: tree ${{ github.workspace }}/sysroot
 
       - run: sudo apt-get -y update
-      - run: sudo apt-get -y install automake autoconf pkg-config make gcc cmake
+      - run: sudo apt-get -y install automake autoconf pkg-config make gcc cmake qemu-user-static
 
       - run: |
           cat >> "$GITHUB_ENV" <<EOF
@@ -119,3 +120,5 @@ jobs:
       - run: cd ctags && readelf -h ctags
       - run: cd ctags && readelf -d ctags
 
+      - run: cd ctags && ./ctags --help
+      - run: cd ctags && ./ctags --version
