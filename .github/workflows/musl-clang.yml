@@ -32,7 +32,7 @@ jobs:
       - run: install -d musl/src/
       - run: tar xf *.tar.gz -C musl/src/ --strip-components=1
 
-      - run: cd musl/src && ./configure --prefix="$PWD/../out" –with-long-double-64 --enable-wrapper=all
+      - run: cd musl/src && ./configure --prefix="$PWD/../out" -–with-long-double-64 --enable-wrapper=all
       - run: cd musl/src && make ARCH=${{ matrix.target-arch }}
       - run: cd musl/src && make install
 
