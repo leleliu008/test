@@ -26,25 +26,35 @@ jobs:
       - run: sudo apt -y install gcc-${{ matrix.target-arch }}-linux-gnu tree
 
       - run: curl -LO http://musl.libc.org/releases/musl-1.2.6.tar.gz
-      - run: install -d musl/src/
-      - run: tar xf *.tar.gz -C musl/src/ --strip-components=1
+      - run: install -d src/musl/
+      - run: tar xf *.tar.gz -C src/musl/ --strip-components=1
 
-      - run: cd musl/src && ./configure --prefix="$PWD/../out" -–with-long-double-64 --enable-wrapper=all
-      - run: cd musl/src && make ARCH=${{ matrix.target-arch }}
-      - run: cd musl/src && make install
+      - run: cd src/musl/ && ./configure --prefix=${{ github.workspace }}/sysroot -–with-long-double-64 --enable-wrapper=all
+      - run: cd src/musl/ && make ARCH=${{ matrix.target-arch }}
+      - run: cd src/musl/ && make install
 
-      - run: tree musl/out
+      - run: tree ${{ github.workspace }}/sysroot
+
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install automake autoconf pkg-config make gcc
+
+      - name: build libiconv
+        run: |
+          install -d src/libiconv
+          cd         src/libiconv
+          curl -L -o src.tar.gz https://distfiles.macports.org/libiconv/libiconv-1.19.tar.gz
+          tar vxf    src.tar.gz --strip-components=1
+          ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --prefix=${{ github.workspace }}/sysroot --enable-extra-encodings --enable-static --disable-shared
+          make V=1
+          make install
 
       - uses: actions/checkout@v5
         with:
           repository: universal-ctags/ctags
           path: ctags
 
-      - run: sudo apt-get -y update
-      - run: sudo apt-get -y install automake autoconf pkg-config make gcc
-
       - run: cd ctags && export -p && ./autogen.sh
-      - run: cd ctags && ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging CC=$PWD/../musl/out/bin/musl-gcc || (cat config.log; exit 1)
+      - run: cd ctags && ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging || (cat config.log; exit 1)
       - run: cd ctags && make V=1
 
       - run: cd ctags && readelf -h ctags
