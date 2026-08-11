@@ -15,10 +15,11 @@ jobs:
         target-arch: [powerpc64le, loongarch64, aarch64, riscv64, s390x]
 
     env:
-      CC: ${{ matrix.target-arch }}-linux-gnu-gcc
-      AS: ${{ matrix.target-arch }}-linux-gnu-as
-      AR: ${{ matrix.target-arch }}-linux-gnu-ar
-      RANLIB: ${{ matrix.target-arch }}-linux-gnu-ranlib
+      CROSS_COMPILE: ${{ matrix.target-arch }}-linux-gnu-
+        #CC: ${{ matrix.target-arch }}-linux-gnu-gcc
+        #AS: ${{ matrix.target-arch }}-linux-gnu-as
+        #AR: ${{ matrix.target-arch }}-linux-gnu-ar
+        #RANLIB: ${{ matrix.target-arch }}-linux-gnu-ranlib
 
 
     steps:
@@ -29,7 +30,7 @@ jobs:
       - run: install -d musl/src/
       - run: tar xf *.tar.gz -C musl/src/ --strip-components=1
 
-      - run: cd musl/src && ./configure --prefix="$PWD/../out" --syslibdir="$PWD/../out/lib"
+      - run: cd musl/src && ./configure --prefix="$PWD/../out" --syslibdir="$PWD/../out/lib" --enable-wrapper=all
       - run: cd musl/src && make ARCH=${{ matrix.target-arch }}
       - run: cd musl/src && make install
 
