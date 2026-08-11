@@ -14,6 +14,13 @@ jobs:
       matrix:
         target-arch: [powerpc64le, loongarch64, aarch64, riscv64, s390x]
 
+    env:
+      CC: ${{ matrix.target-arch }}-linux-gnu-gcc
+      AS: ${{ matrix.target-arch }}-linux-gnu-as
+      AR: ${{ matrix.target-arch }}-linux-gnu-ar
+      RANLIB: ${{ matrix.target-arch }}-linux-gnu-ranlib
+
+
     steps:
       - run: sudo apt -y update
       - run: sudo apt -y install gcc-${{ matrix.target-arch }}-linux-gnu clang tree
@@ -21,7 +28,9 @@ jobs:
       - run: curl -LO http://musl.libc.org/releases/musl-1.2.6.tar.gz
       - run: install -d musl/src/
       - run: tar xf *.tar.gz -C musl/src/ --strip-components=1
-      - run: cd musl/src && ./configure --prefix="$PWD/../out"  CC=${{ matrix.target-arch }}-linux-gnu-gcc
-      - run: cd musl/src && make ARCH=${{ matrix.target-arch }} CC=${{ matrix.target-arch }}-linux-gnu-gcc AS=${{ matrix.target-arch }}-linux-gnu-as AR=${{ matrix.target-arch }}-linux-gnu-ar RANLIB=${{ matrix.target-arch }}-linux-gnu-ranlib
-      - run: cd musl/src && make install DESTDIR="$PWD/../out" PREFIX=/
+
+      - run: cd musl/src && ./configure --prefix="$PWD/../out" --syslibdir="$PWD/../out/lib"
+      - run: cd musl/src && make ARCH=${{ matrix.target-arch }}
+      - run: cd musl/src && make install
+
       - run: tree musl/out
