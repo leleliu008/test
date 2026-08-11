@@ -12,7 +12,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target-arch: [powerpc64le, loongarch64, aarch64, riscv64, s390x]
+        include:
+          - target-arch: loongarch64
+            elf-h20-hex: 7F454C4602010100000000000000000002000301
+          - target-arch: aarch64
+            elf-h20-hex: 7F454C460201010000000000000000000200B700
+          - target-arch: riscv64
+            elf-h20-hex: 7F454C460201010000000000000000000200F300
+          - target-arch: s390x
+            elf-h20-hex: 7F454C4602020100000000000000000000020016
 
     env:
       CC: ${{ matrix.target-arch }}-linux-gnu-gcc
@@ -113,6 +121,13 @@ jobs:
 
       - run: readelf -h ctags
       - run: readelf -d ctags
+
+      - id: hex
+        run: |
+          HEX=$(hexdump -n 20 -e '20/1 "%02X" "\n"' ctags)
+          printf 'HEX=%s\n' "$HEX" >> "$GITHUB_OUTPUT"
+
+      - run: test ${{ steps.hex.outputs.HEX }} = ${{ matrix.elf-h20-hex }}
 
       - run: sudo apt-get -y install qemu-user
 
