@@ -42,6 +42,7 @@ jobs:
           cat >> "$GITHUB_ENV" <<EOF
           CFLAGS=-I${{ github.workspace }}/sysroot/include
           LDFLAGS=-L${{ github.workspace }}/sysroot/lib
+          PKG_CONFIG_PATH=${{ github.workspace }}/sysroot/lib/pkgconfig
           EOF
 
       - name: build zlib
@@ -112,7 +113,7 @@ jobs:
           path: ctags
 
       - run: cd ctags && export -p && ./autogen.sh
-      - run: cd ctags && ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging CC=${{ github.workspace }}/sysroot/bin/musl-gcc CFLAGS="-v -Wl,-v" || (cat config.log; exit 1)
+      - run: cd ctags && ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging CC=${{ github.workspace }}/sysroot/bin/musl-gcc || (cat config.log; exit 1)
       - run: cd ctags && make V=1
 
       - run: cd ctags && readelf -h ctags
