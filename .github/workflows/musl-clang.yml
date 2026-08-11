@@ -38,6 +38,12 @@ jobs:
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install automake autoconf pkg-config make gcc cmake
 
+      - run: |
+          cat >> "$GITHUB_ENV" <<EOF
+          CFLAGS=-I${{ github.workspace }}/sysroot/include
+          LDFLAGS=-L${{ github.workspace }}/sysroot/lib"
+          EOF
+
       - name: build zlib
         run: |
           install -d src/libz
