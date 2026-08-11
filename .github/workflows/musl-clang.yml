@@ -28,7 +28,10 @@ jobs:
       - run: sudo apt -y update
       - run: sudo apt -y install gcc-${{ matrix.target-arch }}-linux-gnu tree
 
-        #- run: curl -LO http://musl.libc.org/releases/musl-1.2.6.tar.gz
+      - uses: actions/checkout@v5
+        with:
+          repository: universal-ctags/ctags
+
       - run: curl -LO https://archive.ubuntu.com/ubuntu/pool/universe/m/musl/musl_1.2.6.orig.tar.gz
       - run: install -d src/musl/
       - run: tar xf *.tar.gz -C src/musl/ --strip-components=1
@@ -78,7 +81,7 @@ jobs:
           cd         src/libyaml
           curl -L -o src.tar.gz https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz
           tar vxf    src.tar.gz --strip-components=1
-          ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --prefix=${{ github.workspace }}/sysroot
+          ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --prefix=${{ github.workspace }}/sysroot --enable-static --disable-shared
           make V=1
           make install
 
@@ -104,19 +107,14 @@ jobs:
 
       - run: tree ${{ github.workspace }}/sysroot
 
-      - uses: actions/checkout@v5
-        with:
-          repository: universal-ctags/ctags
-          path: ctags
+      - run: ./autogen.sh
+      - run: ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging --enable-static CC=${{ github.workspace }}/sysroot/bin/musl-gcc || (cat config.log; exit 1)
+      - run: make V=1
 
-      - run: cd ctags && export -p && ./autogen.sh
-      - run: cd ctags && ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging --enable-static CC=${{ github.workspace }}/sysroot/bin/musl-gcc || (cat config.log; exit 1)
-      - run: cd ctags && make V=1
-
-      - run: cd ctags && readelf -h ctags
-      - run: cd ctags && readelf -d ctags
+      - run: readelf -h ctags
+      - run: readelf -d ctags
 
       - run: sudo apt-get -y install qemu-user
 
-      - run: cd ctags && qemu-${{ matrix.target-arch }} ./ctags --help
-      - run: cd ctags && qemu-${{ matrix.target-arch }} ./ctags --version
+      - run: qemu-${{ matrix.target-arch }} ./ctags --help
+      - run: qemu-${{ matrix.target-arch }} ./ctags --version
