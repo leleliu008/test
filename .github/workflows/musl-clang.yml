@@ -1,4 +1,4 @@
-name: build musl-libc with clang
+name: musl-gcc
 
 on:
   workflow_dispatch:
@@ -44,7 +44,7 @@ jobs:
       - run: install -d src/musl/
       - run: tar xf *.tar.gz -C src/musl/ --strip-components=1
 
-      - run: cd src/musl/ && ./configure --prefix=${{ github.workspace }}/sysroot --enable-wrapper=all
+      - run: cd src/musl/ && ./configure --prefix=${{ github.workspace }}/sysroot
       - run: cd src/musl/ && make ARCH=${{ matrix.target-arch }}
       - run: cd src/musl/ && make install
 
