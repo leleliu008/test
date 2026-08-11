@@ -24,10 +24,8 @@ jobs:
       PKG_CONFIG_PATH: ${{ github.workspace }}/sysroot/lib/pkgconfig
 
     steps:
-      - run: cat /etc/os-release
-
       - run: sudo apt -y update
-      - run: sudo apt -y install gcc-${{ matrix.target-arch }}-linux-gnu tree
+      - run: sudo apt -y install gcc gcc-${{ matrix.target-arch }}-linux-gnu automake autoconf pkg-config cmake make qemu-user
 
       - uses: actions/checkout@v5
         with:
@@ -40,11 +38,6 @@ jobs:
       - run: cd src/musl/ && ./configure --prefix=${{ github.workspace }}/sysroot
       - run: cd src/musl/ && make ARCH=${{ matrix.target-arch }}
       - run: cd src/musl/ && make install
-
-      - run: tree ${{ github.workspace }}/sysroot
-
-      - run: sudo apt-get -y install automake autoconf pkg-config make gcc cmake
-
 
       - name: build zlib
         run: |
@@ -106,8 +99,6 @@ jobs:
           cmake --build build.d
           cmake --install build.d
 
-      - run: tree ${{ github.workspace }}/sysroot
-
       - run: ./autogen.sh
       - run: ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging --enable-static CC=${{ github.workspace }}/sysroot/bin/musl-gcc || (cat config.log; exit 1)
       - run: make V=1
@@ -132,13 +123,8 @@ jobs:
 
       - run: test ${{ steps.actual-hex.outputs.HEX }} = ${{ steps.expect-hex.outputs.HEX }}
 
-      - run: sudo apt-get -y install qemu-user
-
       - run: readelf -h /usr/bin/qemu-${{ matrix.target-arch }}
       - run: readelf -d /usr/bin/qemu-${{ matrix.target-arch }}
-
-        #- run: /usr/bin/qemu-${{ matrix.target-arch }} ./ctags --help
-        #- run: /usr/bin/qemu-${{ matrix.target-arch }} ./ctags --version
 
       - run: ./ctags --help
       - run: ./ctags --version
