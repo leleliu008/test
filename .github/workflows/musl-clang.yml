@@ -57,6 +57,6 @@ jobs:
       - run: cd ctags && ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging || (cat config.log; exit 1)
       - run: cd ctags && make
 
-      - run: readelf -h ctags
-      - run: readelf -d ctags
+      - run: cd ctags && readelf -h ctags
+      - run: cd ctags && readelf -d ctags
 
