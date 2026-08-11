@@ -29,7 +29,7 @@ jobs:
       - run: install -d src/musl/
       - run: tar xf *.tar.gz -C src/musl/ --strip-components=1
 
-      - run: cd src/musl/ && ./configure --prefix=${{ github.workspace }}/sysroot -–with-long-double-64 --enable-wrapper=all
+      - run: cd src/musl/ && ./configure --prefix=${{ github.workspace }}/sysroot --enable-wrapper=all
       - run: cd src/musl/ && make ARCH=${{ matrix.target-arch }}
       - run: cd src/musl/ && make install
 
@@ -43,7 +43,7 @@ jobs:
           install -d src/libiconv
           cd         src/libiconv
           curl -L -o src.tar.gz https://distfiles.macports.org/libiconv/libiconv-1.19.tar.gz
-          tar vxf    src.tar.gz --strip-components=1
+          tar xf     src.tar.gz --strip-components=1
           ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --prefix=${{ github.workspace }}/sysroot --enable-extra-encodings --enable-static --disable-shared
           make V=1
           make install
