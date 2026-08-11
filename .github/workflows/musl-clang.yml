@@ -36,7 +36,7 @@ jobs:
 
       - run: tree ${{ github.workspace }}/sysroot
 
-      - run: sudo apt-get -y install automake autoconf pkg-config make gcc cmake qemu-user-static
+      - run: sudo apt-get -y install automake autoconf pkg-config make gcc cmake
 
       - run: |
           cat >> "$GITHUB_ENV" <<EOF
