@@ -136,8 +136,8 @@ jobs:
 
       - run: test ${{ steps.actual-hex.outputs.HEX }} = ${{ steps.expect-hex.outputs.HEX }}
 
-      - run: readelf -h /usr/bin/qemu-${{ matrix.target-arch }}
-      - run: readelf -d /usr/bin/qemu-${{ matrix.target-arch }}
+        #- run: readelf -h /usr/bin/qemu-${{ matrix.target-arch }}
+        #- run: readelf -d /usr/bin/qemu-${{ matrix.target-arch }}
 
       - run: ./ctags --help
       - run: ./ctags --version
