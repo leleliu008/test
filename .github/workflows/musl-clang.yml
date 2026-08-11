@@ -18,6 +18,9 @@ jobs:
       CC: ${{ matrix.target-arch }}-linux-gnu-gcc
       AR: ${{ matrix.target-arch }}-linux-gnu-ar
       RANLIB: ${{ matrix.target-arch }}-linux-gnu-ranlib
+      CFLAGS: -I${{ github.workspace }}/sysroot/include
+      LDFLAGS: -L${{ github.workspace }}/sysroot/lib
+      PKG_CONFIG_PATH: ${{ github.workspace }}/sysroot/lib/pkgconfig
 
     steps:
       - run: cat /etc/os-release
@@ -38,12 +41,6 @@ jobs:
 
       - run: sudo apt-get -y install automake autoconf pkg-config make gcc cmake
 
-      - run: |
-          cat >> "$GITHUB_ENV" <<EOF
-          CFLAGS=-I${{ github.workspace }}/sysroot/include
-          LDFLAGS=-L${{ github.workspace }}/sysroot/lib
-          PKG_CONFIG_PATH=${{ github.workspace }}/sysroot/lib/pkgconfig
-          EOF
 
       - name: build zlib
         run: |
