@@ -64,7 +64,7 @@ jobs:
           cd         src/libxml2
           curl -L -o src.tar.gz https://download.gnome.org/sources/libxml2/2.11/libxml2-2.11.6.tar.xz
           tar vxf    src.tar.gz --strip-components=1
-          ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --prefix=${{ github.workspace }}/sysroot --with-zlib --without-lzma --without-python --without-readline --without-coverage --enable-ipv6 --enable-static --disable-shared LIBS=-liconv
+          ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --prefix=${{ github.workspace }}/sysroot --with-zlib --without-lzma --without-python --without-readline --without-coverage --enable-ipv6 --enable-static --disable-shared LIBS=-liconv || (cat config.log; exit 1)
           make V=1
           make install
 
