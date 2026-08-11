@@ -134,11 +134,11 @@ jobs:
 
       - run: sudo apt-get -y install qemu-user
 
-      - run: readelf -h qemu-${{ matrix.target-arch }}
-      - run: readelf -d qemu-${{ matrix.target-arch }}
+      - run: readelf -h /usr/bin/qemu-${{ matrix.target-arch }}
+      - run: readelf -d /usr/bin/qemu-${{ matrix.target-arch }}
 
-      - run: qemu-${{ matrix.target-arch }} ./ctags --help
-      - run: qemu-${{ matrix.target-arch }} ./ctags --version
+      - run: /usr/bin/qemu-${{ matrix.target-arch }} ./ctags --help
+      - run: /usr/bin/qemu-${{ matrix.target-arch }} ./ctags --version
 
       - run: |
           cat > run.sh <<EOF
