@@ -149,7 +149,7 @@ jobs:
             eval "\$@"
           }
 
-          run apk add bash python3 diffutils
+          run apk add bash python3 diffutils git
 
           run make check V=1
           run make roundtrip
