@@ -15,7 +15,7 @@ jobs:
         target-arch: [powerpc64le, loongarch64, aarch64, riscv64, s390x]
 
     env:
-      CC: gcc-${{ matrix.target-arch }}
+      CC: gcc-${{ matrix.target-arch }}-linux-gnu
 
     steps:
       - run: sudo apt-get -y update
