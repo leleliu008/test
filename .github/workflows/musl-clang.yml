@@ -53,9 +53,9 @@ jobs:
             RANLIB=${{ matrix.target-arch }}-linux-gnu-ranlib
           EOF
 
-      - run: cd ctags && ./autogen.sh
+      - run: cd ctags && export -p && ./autogen.sh
       - run: cd ctags && ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging || (cat config.log; exit 1)
-      - run: cd ctags && make
+      - run: cd ctags && make V=1
 
       - run: cd ctags && readelf -h ctags
       - run: cd ctags && readelf -d ctags
