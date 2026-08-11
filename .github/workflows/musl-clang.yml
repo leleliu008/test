@@ -48,13 +48,15 @@ jobs:
           make V=1
           make install
 
+      - run: tree ${{ github.workspace }}/sysroot
+
       - uses: actions/checkout@v5
         with:
           repository: universal-ctags/ctags
           path: ctags
 
       - run: cd ctags && export -p && ./autogen.sh
-      - run: cd ctags && ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging || (cat config.log; exit 1)
+      - run: cd ctags && ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging CC=${{ github.workspace }}/sysroot/bin/musl-gcc || (cat config.log; exit 1)
       - run: cd ctags && make V=1
 
       - run: cd ctags && readelf -h ctags
