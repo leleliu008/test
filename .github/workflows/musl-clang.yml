@@ -15,18 +15,15 @@ jobs:
         target-arch: [powerpc64le, loongarch64, aarch64, riscv64, s390x]
 
     env:
-      CROSS_COMPILE: ${{ matrix.target-arch }}-linux-gnu-
-        #CC: ${{ matrix.target-arch }}-linux-gnu-gcc
-        #AS: ${{ matrix.target-arch }}-linux-gnu-as
-        #AR: ${{ matrix.target-arch }}-linux-gnu-ar
-        #RANLIB: ${{ matrix.target-arch }}-linux-gnu-ranlib
-
+      CC: ${{ matrix.target-arch }}-linux-gnu-gcc
+      AR: ${{ matrix.target-arch }}-linux-gnu-ar
+      RANLIB: ${{ matrix.target-arch }}-linux-gnu-ranlib
 
     steps:
       - run: cat /etc/os-release
 
       - run: sudo apt -y update
-      - run: sudo apt -y install gcc-${{ matrix.target-arch }}-linux-gnu clang tree
+      - run: sudo apt -y install gcc-${{ matrix.target-arch }}-linux-gnu tree
 
       - run: curl -LO http://musl.libc.org/releases/musl-1.2.6.tar.gz
       - run: install -d musl/src/
@@ -44,10 +41,10 @@ jobs:
           path: ctags
 
       - run: sudo apt-get -y update
-      - run: sudo apt-get -y install automake autoconf pkg-config
+      - run: sudo apt-get -y install automake autoconf pkg-config make gcc
 
       - run: cd ctags && export -p && ./autogen.sh
-      - run: cd ctags && ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging CC=$PWD/../musl/out/bin/musl-clang AR=${{ matrix.target-arch }}-linux-gnu-ar RANLIB=${{ matrix.target-arch }}-linux-gnu-ranlib || (cat config.log; exit 1)
+      - run: cd ctags && ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging CC=$PWD/../musl/out/bin/musl-gcc || (cat config.log; exit 1)
       - run: cd ctags && make V=1
 
       - run: cd ctags && readelf -h ctags
