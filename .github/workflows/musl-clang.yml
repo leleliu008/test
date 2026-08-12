@@ -51,6 +51,8 @@ jobs:
       - run: cd src/musl/ && make ARCH=${{ steps.musl-arch.outputs.ARCH }}
       - run: cd src/musl/ && make install
 
+      - run: printf 'CC=${{ github.workspace }}/sysroot/bin/musl-gcc\n' >> "$GITHUB_ENV"
+
       - name: build zlib
         run: |
           install -d src/libz
@@ -112,7 +114,7 @@ jobs:
           cmake --install build.d
 
       - run: ./autogen.sh
-      - run: ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging --enable-static CC=${{ github.workspace }}/sysroot/bin/musl-gcc || (cat config.log; exit 1)
+      - run: ./configure --host=${{ matrix.target-arch }}-unknown-linux-gnu --enable-debugging --enable-static || (cat config.log; exit 1)
       - run: make V=1
 
       - run: readelf -h ctags
