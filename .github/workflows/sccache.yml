@@ -41,6 +41,10 @@ jobs:
       - run: sudo apt -y update
       - run: sudo apt -y install gcc gcc-${{ matrix.target-arch }}-linux-gnu automake autoconf pkg-config cmake make qemu-user
 
+      - uses: actions/checkout@v5
+        with:
+          repository: universal-ctags/ctags
+
       - uses: mozilla-actions/sccache-action@v0.0.11
 
       - run: |
@@ -92,10 +96,6 @@ jobs:
           EOF
 
       - run: gcc -Os -flto -Wl,-s -static -o launcher launcher.c
-
-      - uses: actions/checkout@v5
-        with:
-          repository: universal-ctags/ctags
 
       - run: curl -LO https://archive.ubuntu.com/ubuntu/pool/universe/m/musl/musl_1.2.6.orig.tar.gz
       - run: install -d src/musl/
