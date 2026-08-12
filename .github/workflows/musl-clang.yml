@@ -18,8 +18,8 @@ jobs:
       CC: ${{ matrix.target-arch }}-linux-gnu-gcc
       AR: ${{ matrix.target-arch }}-linux-gnu-ar
       RANLIB: ${{ matrix.target-arch }}-linux-gnu-ranlib
-      CFLAGS: -I${{ github.workspace }}/sysroot/include
-      LDFLAGS: -L${{ github.workspace }}/sysroot/lib
+      CFLAGS: -fPIC
+      LDFLAGS: -Wl,--as-needed
       PKG_CONFIG_PATH: ${{ github.workspace }}/sysroot/lib/pkgconfig
 
     steps:
