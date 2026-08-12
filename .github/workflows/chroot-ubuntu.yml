@@ -44,7 +44,7 @@ jobs:
           esac
           printf 'arch=%s\n' "$X" >> "$GITHUB_OUTPUT"
 
-      - run: curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.2-base-${{ steps.arch.outputs.arch }}.tar.gz
+      - run: curl -LO https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.4-base-${{ steps.arch.outputs.arch }}.tar.gz
 
       - run: install -d ubuntu-rootfs
       - run: tar xf ubuntu-base-*.tar.gz -C ubuntu-rootfs
@@ -52,10 +52,12 @@ jobs:
       - run: cp -p /etc/resolv.conf ubuntu-rootfs/etc/
       - run: mv ppkg run.sh ubuntu-rootfs/
 
-      - run: sudo mount -o bind  /dev ubuntu-rootfs/dev
       - run: sudo mount -t proc  none ubuntu-rootfs/proc
       - run: sudo mount -t sysfs none ubuntu-rootfs/sys
       - run: sudo mount -t tmpfs none ubuntu-rootfs/tmp
+
+      - run: sudo mount --rbind    /dev ubuntu-rootfs/dev
+      - run: sudo mount --make-rprivate ubuntu-rootfs/dev
 
       - if: matrix.target-arch == 'x86_64'
         run: sudo chroot ubuntu-rootfs /bin/sh run.sh
@@ -69,7 +71,10 @@ jobs:
 
       - run: mv ubuntu-rootfs/sysinfo-*.tar.xz .
 
-      - uses: actions/upload-artifact@v4
+      - id: filename
+        run: printf 'FILENAME=%s\n' "$(ls sysinfo-*.tar.xz)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v6
         with:
-          name: sysinfo---linux-glibc-${{ matrix.target-arch }}.release.tar.xz
-          path: sysinfo-*-linux-glibc-${{ matrix.target-arch }}.release.tar.xz
+          name: ${{ steps.filename.outputs.FILENAME }}
+          path: ${{ steps.filename.outputs.FILENAME }}

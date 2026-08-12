@@ -25,6 +25,7 @@ jobs:
     steps:
       - run: printf 'CFLAGS=%s -mlong-double-64\n' "$CFLAGS" >> "$GITHUB_ENV"
         if: matrix.target-arch == 'powerpc64le'
+        # https://www.openwall.com/lists/musl/2022/06/29/1
 
       - id: musl-arch
         run: |
