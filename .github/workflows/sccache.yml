@@ -15,7 +15,8 @@ jobs:
         target-arch: [powerpc64le, loongarch64, aarch64, riscv64, s390x]
 
     env:
-      CC: ${{ matrix.target-arch }}-linux-gnu-gcc
+      CC: ${{ github.workspace }}/launcher
+      REALCC: ${{ matrix.target-arch }}-linux-gnu-gcc
       AR: ${{ matrix.target-arch }}-linux-gnu-ar
       RANLIB: ${{ matrix.target-arch }}-linux-gnu-ranlib
       CFLAGS: -fPIC
@@ -42,6 +43,56 @@ jobs:
 
       - uses: mozilla-actions/sccache-action@v0.0.11
 
+      - run: |
+          cat > launcher.c <<EOF
+          #include <stdio.h>
+          #include <stdlib.h>
+
+          #include <unistd.h>
+
+          int main(int argc, char* argv[]) {
+              char * sccache = getenv("SCCACHE_PATH");
+
+              if (sccache == NULL || sccache[0] == '\0') {
+                  fprintf(stderr, "SCCACHE_PATH environment variable was not set.\n");
+                  return 1;
+              }
+
+              /////////////////////////////////////
+
+              char * cc = getenv("REALCC");
+
+              if (cc == NULL || cc[0] == '\0') {
+                  fprintf(stderr, "REALCC environment variable was not set.\n");
+                  return 1;
+              }
+
+              /////////////////////////////////////
+
+              char* args[argc + 2];
+
+              args[0] = sccache;
+              args[1] = cc;
+
+              for (int i = 1; i < argc; i++) {
+                  args[i + 1] = argv[i];
+              }
+
+              args[argc + 1] = NULL;
+
+              //for (int i = 0; args[i] != NULL; i++) {
+              //    fprintf(stderr, "%s ", args[i]);
+              //}
+              //fprintf(stderr, "\n");
+
+              execv (sccache, args);
+              perror(sccache);
+              return 255;
+          }
+          EOF
+
+      - run: gcc -Os -flto -Wl,-s -static -o launcher launcher.c
+
       - uses: actions/checkout@v5
         with:
           repository: universal-ctags/ctags
@@ -62,7 +113,7 @@ jobs:
           cd         src/libz
           curl -L -o src.tar.gz https://distfiles.macports.org/zlib/zlib-1.3.2.tar.xz
           tar vxf    src.tar.gz --strip-components=1
-          cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/sysroot -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_C_COMPILER_LAUNCHER="$SCCACHE_PATH" -DZLIB_BUILD_TESTING=OFF -DZLIB_BUILD_STATIC=ON -DZLIB_BUILD_SHARED=OFF
+          cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/sysroot -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -DZLIB_BUILD_TESTING=OFF -DZLIB_BUILD_STATIC=ON -DZLIB_BUILD_SHARED=OFF
           cmake --build build.d
           cmake --install build.d
 
@@ -102,7 +153,7 @@ jobs:
           cd         src/jansson
           curl -L -o src.tar.gz https://github.com/akheron/jansson/releases/download/v2.15.0/jansson-2.15.0.tar.gz
           tar vxf    src.tar.gz --strip-components=1
-          cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/sysroot -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_C_COMPILER_LAUNCHER="$SCCACHE_PATH" -DENABLE_TESTING=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
+          cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/sysroot -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTING=OFF -DJANSSON_BUILD_SHARED_LIBS=OFF -DJANSSON_BUILD_DOCS=OFF -DJANSSON_COVERAGE=OFF -DJANSSON_EXAMPLES=OFF -DJANSSON_WITHOUT_TESTS=ON
           cmake --build build.d
           cmake --install build.d
 
@@ -112,7 +163,7 @@ jobs:
           cd         src/libpcre2
           curl -L -o src.tar.gz https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.47/pcre2-10.47.tar.bz2
           tar vxf    src.tar.gz --strip-components=1
-          cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/sysroot -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_C_COMPILER_LAUNCHER="$SCCACHE_PATH" -DENABLE_TESTING=OFF -DCMAKE_C_STANDARD=99 -DCMAKE_C_STANDARD_REQUIRED=ON -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=OFF -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DPCRE2_BUILD_PCRE2GREP=OFF -DPCRE2_BUILD_TESTS=OFF -DPCRE2_SUPPORT_VALGRIND=OFF -DPCRE2_SUPPORT_UNICODE=ON -DPCRE2_SUPPORT_LIBZ=OFF -DPCRE2_SUPPORT_LIBBZ2=OFF -DPCRE2_SUPPORT_LIBEDIT=OFF -DPCRE2_SUPPORT_LIBREADLINE=OFF
+          cmake -S . -B build.d -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/sysroot -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTING=OFF -DCMAKE_C_STANDARD=99 -DCMAKE_C_STANDARD_REQUIRED=ON -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=OFF -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DPCRE2_BUILD_PCRE2GREP=OFF -DPCRE2_BUILD_TESTS=OFF -DPCRE2_SUPPORT_VALGRIND=OFF -DPCRE2_SUPPORT_UNICODE=ON -DPCRE2_SUPPORT_LIBZ=OFF -DPCRE2_SUPPORT_LIBBZ2=OFF -DPCRE2_SUPPORT_LIBEDIT=OFF -DPCRE2_SUPPORT_LIBREADLINE=OFF
           cmake --build build.d
           cmake --install build.d
 
