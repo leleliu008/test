@@ -1,4 +1,4 @@
-name: sccache
+name: sccache test
 
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
       CFLAGS: -fPIC
       LDFLAGS: -Wl,--as-needed
       PKG_CONFIG_PATH: ${{ github.workspace }}/sysroot/lib/pkgconfig
-      SCCACHE_GHA_ENABLED: true
+      SCCACHE_GHA_ENABLED: 'true'
 
     steps:
       - run: printf 'CFLAGS=%s -mlong-double-64\n' "$CFLAGS" >> "$GITHUB_ENV"
