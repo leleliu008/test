@@ -40,7 +40,7 @@ jobs:
       - run: sudo apt -y update
       - run: sudo apt -y install gcc gcc-${{ matrix.target-arch }}-linux-gnu automake autoconf pkg-config cmake make qemu-user
 
-      - uses: mozilla-actions/sccache-action
+      - uses: mozilla-actions/sccache-action@v0.0.11
 
       - uses: actions/checkout@v5
         with:
