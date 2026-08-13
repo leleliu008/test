@@ -51,12 +51,11 @@ jobs:
         with:
           repository: universal-ctags/ctags
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v6
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ runner.os }}-${{ matrix.target-arch }}
-          restore-keys: |
-            ccache-${{ runner.os }}-${{ matrix.target-arch }}
+          key:          ccache-${{ runner.os }}-${{ matrix.target-arch }}
+          restore-keys: ccache-${{ runner.os }}-${{ matrix.target-arch }}
 
       - run: |
           cat > launcher.c <<EOF
