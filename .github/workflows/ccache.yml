@@ -100,7 +100,7 @@ jobs:
           }
           EOF
 
-      - run: gcc -Os -flto -Wl,-s -static -o launcher launcher.c
+      - run: /usr/bin/gcc -Os -flto -Wl,-s -static -o launcher launcher.c
 
       - run: curl -LO https://archive.ubuntu.com/ubuntu/pool/universe/m/musl/musl_1.2.6.orig.tar.gz
       - run: install -d src/musl/
@@ -167,7 +167,7 @@ jobs:
           }
           EOF
 
-      - run: gcc -Os -flto -Wl,-s -static -o launcher launcher.c
+      - run: /usr/bin/gcc -Os -flto -Wl,-s -static -o launcher launcher.c
 
       - name: build zlib
         run: |
