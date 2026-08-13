@@ -16,9 +16,9 @@ jobs:
 
     env:
       CC: ${{ github.workspace }}/launcher
-      REALCC: ${{ matrix.target-arch }}-linux-gnu-gcc
-      AR: ${{ matrix.target-arch }}-linux-gnu-ar
-      RANLIB: ${{ matrix.target-arch }}-linux-gnu-ranlib
+      REALCC: /usr/bin/${{ matrix.target-arch }}-linux-gnu-gcc
+      AR: /usr/bin/${{ matrix.target-arch }}-linux-gnu-ar
+      RANLIB: /usr/bin/${{ matrix.target-arch }}-linux-gnu-ranlib
       CFLAGS: -fPIC
       LDFLAGS: -Wl,--as-needed
       PKG_CONFIG_PATH: ${{ github.workspace }}/sysroot/lib/pkgconfig
