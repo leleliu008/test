@@ -16,7 +16,6 @@ jobs:
 
     env:
       CC: ${{ github.workspace }}/launcher
-      REALCC: /usr/bin/${{ matrix.target-arch }}-linux-gnu-gcc
       AR: /usr/bin/${{ matrix.target-arch }}-linux-gnu-ar
       RANLIB: /usr/bin/${{ matrix.target-arch }}-linux-gnu-ranlib
       CFLAGS: -fPIC
@@ -41,12 +40,6 @@ jobs:
       - run: sudo apt -y update
       - run: sudo apt -y install gcc gcc-${{ matrix.target-arch }}-linux-gnu automake autoconf pkg-config ccache cmake make qemu-user
 
-        #- run: command -v "$REALCC"
-        #- run: command -v "$AR"
-        #- run: command -v "$RANLIB"
-
-      - run: printf 'CCACHE_PATH=%s\n' "$(command -v ccache)" >> "$GITHUB_ENV"
-
       - uses: actions/checkout@v5
         with:
           repository: universal-ctags/ctags
@@ -58,6 +51,8 @@ jobs:
           restore-keys: ccache-${{ runner.os }}-${{ matrix.target-arch }}
 
       - run: |
+          CCACHE_PATH="$(command -v ccache)"
+
           cat > launcher.c <<EOF
           #include <stdio.h>
           #include <stdlib.h>
@@ -65,23 +60,8 @@ jobs:
           #include <unistd.h>
 
           int main(int argc, char* argv[]) {
-              char * ccache = getenv("CCACHE_PATH");
-
-              if (ccache == NULL || ccache[0] == '\0') {
-                  fprintf(stderr, "SCCACHE_PATH environment variable was not set.\n");
-                  return 1;
-              }
-
-              /////////////////////////////////////
-
-              char * cc = getenv("REALCC");
-
-              if (cc == NULL || cc[0] == '\0') {
-                  fprintf(stderr, "REALCC environment variable was not set.\n");
-                  return 1;
-              }
-
-              /////////////////////////////////////
+              char ccache[] = "$CCACHE_PATH";
+              char gcc[] = "/usr/bin/${{ matrix.target-arch }}-linux-gnu-gcc";
 
               int compile = 0;
 
@@ -93,22 +73,24 @@ jobs:
               }
 
               if (compile == 0) {
-                  argv[0] = cc;
-                  execv (cc, argv);
-                  perror(cc);
+                  argv[0] = gcc;
+                  execv (gcc, argv);
+                  perror(gcc);
               } else {
                   char* args[argc + 2];
 
                   args[0] = ccache;
-                  args[1] = cc;
+                  args[1] = gcc;
 
-                  for (int i = 1; i < argc; i++) {
-                      args[i + 1] = argv[i];
+                  int j = 2;
+
+                  for (int i = 1; i < argc; i++, j++) {
+                      args[j] = argv[i];
                   }
 
-                  args[argc + 1] = NULL;
+                  args[j] = NULL;
 
-                  //for (int i = 0; args[i] != NULL; i++) {
+                  //for (int i = 0; i < j; i++) {
                   //    fprintf(stderr, "%s ", args[i]);
                   //}
                   //fprintf(stderr, "\n");
@@ -131,7 +113,67 @@ jobs:
       - run: cd src/musl/ && make -j2 ARCH=${{ steps.musl-arch.outputs.ARCH }}
       - run: cd src/musl/ && make install
 
-      - run: printf 'CC=${{ github.workspace }}/sysroot/bin/musl-gcc\n' >> "$GITHUB_ENV"
+      - run: |
+          CCACHE_PATH="$(command -v ccache)"
+
+          cat > launcher.c <<EOF
+          #include <stdio.h>
+          #include <stdlib.h>
+
+          #include <unistd.h>
+
+          int main(int argc, char* argv[]) {
+              char ccache[] = "$CCACHE_PATH";
+              char gcc[] = "/usr/bin/${{ matrix.target-arch }}-linux-gnu-gcc";
+
+              int compile = 0;
+
+              for (int i = 1; i < argc; i++) {
+                  if (argv[i][0] == '-' && argv[i][1] == 'c' && argv[i][2] == '\0') {
+                      compile = 1;
+                      break;
+                  }
+              }
+
+              char* args[argc + 4];
+
+              int j;
+
+              if (compile == 0) {
+                args[0] = gcc;
+
+                j = 1;
+              } else {
+                args[0] = ccache;
+                args[1] = gcc;
+
+                j = 2;
+              }
+
+              for (int i = 1; i < argc; i++, j++) {
+                  args[j] = argv[i];
+              }
+
+              char specsArg[] = "-specs";
+              char specsVal[] = "${{ github.workspace }}/sysroot/lib/musl-gcc.specs";
+
+              args[j++] = specsArg;
+              args[j++] = specsVal;
+              args[j] = NULL;
+
+              //for (int i = 0; i < j; i++) {
+              //    fprintf(stderr, "%s ", args[i]);
+              //}
+              //fprintf(stderr, "\n");
+
+              execv (args[0], args);
+              perror(args[0]);
+
+              return 255;
+          }
+          EOF
+
+      - run: gcc -Os -flto -Wl,-s -static -o launcher launcher.c
 
       - name: build zlib
         run: |
