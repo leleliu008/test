@@ -119,3 +119,5 @@ jobs:
 
       - run: sudo ./alpine-chroot-install -d /alpine -a ${{ matrix.target-arch }} -k CCACHE_DIR
       - run: /alpine/enter-chroot sh run.sh
+
+      - run: ccache -s
