@@ -1,10 +1,7 @@
-name: run units target on AlpineLinux
+name: ccache_chroot_qemu
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   chroot_qemu:
@@ -16,7 +13,7 @@ jobs:
       matrix:
         target-arch: [loongarch64, aarch64, ppc64le, riscv64, s390x]
 
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     env:
       CCACHE_DIR: ${{ github.workspace }}/.ccache
