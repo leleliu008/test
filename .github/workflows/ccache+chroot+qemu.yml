@@ -1,0 +1,124 @@
+name: run units target on AlpineLinux
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  chroot_qemu:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-arch: [loongarch64, aarch64, ppc64le, riscv64, s390x]
+
+    timeout-minutes: 45
+
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: universal-ctags/ctags
+
+      - uses: actions/cache@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key:          ccache-chroot-qemu-alpine-${{ matrix.target-arch }}
+          restore-keys: ccache-chroot-qemu-alpine-${{ matrix.target-arch }}
+
+      - run: |
+          cat > launcher.c <<EOF
+          #include <stdio.h>
+
+          #include <unistd.h>
+
+          int main(int argc, char* argv[]) {
+              char ccache[] = "/usr/bin/ccache";
+              char gcc[] = "/usr/bin/gcc";
+
+              int compile = 0;
+
+              for (int i = 1; i < argc; i++) {
+                  if (argv[i][0] == '-' && argv[i][1] == 'c' && argv[i][2] == '\0') {
+                      compile = 1;
+                      break;
+                  }
+              }
+
+              if (compile == 0) {
+                  argv[0] = gcc;
+                  execv (gcc, argv);
+                  perror(gcc);
+              } else {
+                  char* args[argc + 2];
+
+                  args[0] = ccache;
+                  args[1] = gcc;
+
+                  int j = 2;
+
+                  for (int i = 1; i < argc; i++, j++) {
+                      args[j] = argv[i];
+                  }
+
+                  args[j] = NULL;
+
+                  //for (int i = 0; i < j; i++) {
+                  //    fprintf(stderr, "%s ", args[i]);
+                  //}
+                  //fprintf(stderr, "\n");
+
+                  execv (ccache, args);
+                  perror(ccache);
+              }
+
+              return 255;
+          }
+          EOF
+
+      - run: |
+          cat > run.sh <<EOF
+          set -ex
+
+          run() {
+            printf "\033[0;35m==>\033[0m \033[0;32m%b\n\033[0m" "\$*"
+            eval "\$@"
+          }
+
+          run apk add libc-dev gcc ccache make automake autoconf pkgconf python3 diffutils pcre2-dev jansson-dev yaml-dev libxml2-dev
+
+          /usr/bin/gcc -Os -flto -Wl,-s -static -o launcher launcher.c
+
+          export CC="$PWD/launcher"
+
+          run ./autogen.sh
+          run ./configure --enable-debugging
+          run make
+
+          run readelf -h ctags
+          run readelf -d ctags
+
+          run ./ctags --version
+
+          run make check V=1
+          run make roundtrip
+          run make tmain CI=1 CTAGS_DEP= READTAGS_DEP= OPTSCRIPT_DEP=
+          run make units CI=1 CTAGS_DEP=
+          EOF
+
+      - run: curl -LO https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/master/alpine-chroot-install
+      - run: chmod +x alpine-chroot-install
+
+      - run: |
+          sed -i -e '/APK_TOOLS_URI:=/c APK_TOOLS_URI=https://gitlab.alpinelinux.org/api/v4/projects/5/packages/generic/v3.0.7/x86_64/apk.static' \
+                 -e '/APK_TOOLS_SHA256:=/c APK_TOOLS_SHA256=c07bf5356eacc9dd7a8c56bc537f46702f007170287403299d52a04264e74b3c' \
+                 alpine-chroot-install
+
+      - run: sudo ./alpine-chroot-install -d /alpine -a ${{ matrix.target-arch }} -k CCACHE_DIR
+      - run: /alpine/enter-chroot sh run.sh
