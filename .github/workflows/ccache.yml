@@ -40,6 +40,8 @@ jobs:
       - run: sudo apt -y update
       - run: sudo apt -y install gcc gcc-${{ matrix.target-arch }}-linux-gnu automake autoconf pkg-config ccache cmake make qemu-user
 
+      - run: command -v ccache
+
       - uses: actions/checkout@v5
         with:
           repository: universal-ctags/ctags
