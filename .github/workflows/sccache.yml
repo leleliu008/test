@@ -41,6 +41,10 @@ jobs:
       - run: sudo apt -y update
       - run: sudo apt -y install gcc gcc-${{ matrix.target-arch }}-linux-gnu automake autoconf pkg-config cmake make qemu-user
 
+      - run: command -v "$REALCC"
+      - run: command -v "$AR"
+      - run: command -v "$RANLIB"
+
       - uses: actions/checkout@v5
         with:
           repository: universal-ctags/ctags
