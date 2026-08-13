@@ -107,6 +107,8 @@ jobs:
           run make roundtrip
           run make tmain CI=1 CTAGS_DEP= READTAGS_DEP= OPTSCRIPT_DEP=
           run make units CI=1 CTAGS_DEP=
+
+          run ccache -s
           EOF
 
       - run: curl -LO https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/master/alpine-chroot-install
@@ -119,5 +121,3 @@ jobs:
 
       - run: sudo ./alpine-chroot-install -d /alpine -a ${{ matrix.target-arch }} -k CCACHE_DIR
       - run: /alpine/enter-chroot sh run.sh
-
-      - run: ccache -s
