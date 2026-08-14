@@ -109,6 +109,7 @@ jobs:
           run make units CI=1 CTAGS_DEP=
 
           run ccache -s
+          run ccache -p
           EOF
 
       - run: curl -LO https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/master/alpine-chroot-install
