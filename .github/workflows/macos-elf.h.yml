@@ -24,3 +24,11 @@ jobs:
 
       - run: ./elftool --help
       - run: ./elftool --version
+
+      - run: curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/2022.10.08/bzip2-1.0.8-linux-s390x-glibc.tar.xz
+      - run: tar xf *.tar.xz --strip-components=1
+
+      - run: ./elftool print-interpreter bin/bzip2
+      - run: ./elftool print-interpreter lib/libbz2.so
+      - run: ./elftool print-soname      lib/libbz2.so
+      - run: ./elftool print-rpath       lib/libbz2.so
