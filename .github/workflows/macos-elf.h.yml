@@ -25,7 +25,7 @@ jobs:
       - id: cc
         run: printf 'CC=%s\n' "$(brew --prefix llvm)/bin/clang" >> "$GITHUB_OUTPUT"
 
-      - run: ${{ steps.cc.outputs.CC }} -std=gnu99 -O0 -g-fsanitize=undefined -fsanitize=address -fsanitize=leak -o elftool src/*.c src/_elf/*.c -Isrc
+      - run: ${{ steps.cc.outputs.CC }} -std=gnu99 -O0 -g -fsanitize=undefined -fsanitize=address -fsanitize=leak -o elftool src/*.c src/_elf/*.c -Isrc
 
       - run: ./elftool --help
       - run: ./elftool --version
