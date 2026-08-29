@@ -36,7 +36,7 @@ jobs:
       - id: readelf
         run: printf 'READELF=%s\n' "$(brew --prefix llvm)/bin/llvm-readelf" >> "$GITHUB_OUTPUT"
 
-      - run: ${{ steps.readelf.outputs.READELF }} bin/bzip2
+      - run: ${{ steps.readelf.outputs.READELF }} -h bin/bzip2
 
       - run: ./elftool print-interpreter bin/bzip2
       - run: ./elftool print-interpreter lib/libbz2.so
