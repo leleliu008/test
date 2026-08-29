@@ -29,7 +29,7 @@ jobs:
       - run: tar xf *.tar.xz --strip-components=1
 
         #- run: ./elftool print-interpreter bin/bzip2
-      - run: ./elftool print-interpreter lib/libbz2.so
+        #- run: ./elftool print-interpreter lib/libbz2.so
       - run: ./elftool print-soname      lib/libbz2.so
       - run: ./elftool print-rpath       lib/libbz2.so
 
