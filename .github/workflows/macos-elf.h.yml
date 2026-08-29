@@ -25,16 +25,45 @@ jobs:
       - id: cc
         run: printf 'CC=%s\n' "$(brew --prefix llvm)/bin/clang" >> "$GITHUB_OUTPUT"
 
+      #########################
+
       - run: ${{ steps.cc.outputs.CC }} -std=gnu99 -O0 -g -fsanitize=undefined -fsanitize=address -fsanitize=leak -o elftool src/*.c src/_elf/*.c -Isrc
+
+      #########################
 
       - run: ./elftool --help
       - run: ./elftool --version
 
-      - run: curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/2022.10.08/bzip2-1.0.8-linux-s390x-glibc.tar.xz
-      - run: tar xf *.tar.xz --strip-components=1
+      #########################
 
       - id: readelf
         run: printf 'READELF=%s\n' "$(brew --prefix llvm)/bin/llvm-readelf" >> "$GITHUB_OUTPUT"
+
+      #########################
+
+      - run: curl -LO https://github.com/leleliu008/test/releases/download/2023.10.08/typos-linux-glibc-x86_64
+
+      - run: ${{ steps.readelf.outputs.READELF }} -h typos-linux-glibc-x86_64
+
+      - run: ./elftool print-interpreter typos-linux-glibc-x86_64
+      - run: ./elftool print-needed      typos-linux-glibc-x86_64
+      - run: ./elftool print-soname      typos-linux-glibc-x86_64
+      - run: ./elftool print-rpath       typos-linux-glibc-x86_64
+
+      #########################
+
+      - run: curl -LO https://github.com/leleliu008/python-distribution/releases/download/3.12.9/python-3.12.9-linux-any-aarch64.tar.xz
+      - run: tar xf python-*.tar.xz --strip-components=1
+
+      - run: ./elftool print-interpreter bin/python3.11.exe
+      - run: ./elftool print-needed      bin/python3.11.exe
+      - run: ./elftool print-soname      bin/python3.11.exe
+      - run: ./elftool print-rpath       bin/python3.11.exe
+
+      #########################
+
+      - run: curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/2022.10.08/bzip2-1.0.8-linux-s390x-glibc.tar.xz
+      - run: tar xf bzip2-*.tar.xz --strip-components=1
 
       - run: ${{ steps.readelf.outputs.READELF }} -h bin/bzip2
 
@@ -42,10 +71,3 @@ jobs:
       - run: ./elftool print-interpreter lib/libbz2.so
       - run: ./elftool print-soname      lib/libbz2.so
       - run: ./elftool print-rpath       lib/libbz2.so
-
-      - run: curl -LO https://github.com/leleliu008/python-distribution/releases/download/3.12.9/python-3.12.9-linux-any-aarch64.tar.xz
-      - run: tar xf python-*.tar.xz --strip-components=1
-
-      - run: ./elftool print-interpreter bin/python3.11.exe
-      - run: ./elftool print-soname      bin/python3.11.exe
-      - run: ./elftool print-rpath       bin/python3.11.exe
