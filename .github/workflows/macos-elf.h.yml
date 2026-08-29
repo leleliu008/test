@@ -22,5 +22,5 @@ jobs:
 
       - run: cc -std=gnu99 -Os -flto -Wl,-s -o elftool src/*.c src/_elf/*.c -Isrc
 
-      - run: elftool --help
-      - run: elftool --version
+      - run: ./elftool --help
+      - run: ./elftool --version
