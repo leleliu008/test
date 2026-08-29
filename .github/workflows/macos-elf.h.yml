@@ -1,0 +1,26 @@
+name: macOS elf.h
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [26, 15, 14]
+
+    runs-on: macos-${{ matrix.version }}
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          repository: leleliu008/elftool
+
+      - run: curl -L -o src/elf.h 'https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=elf/elf.h;hb=HEAD'
+
+      - run: cc -std=gnu99 -Os -flto -Wl,-s -o elftool src/*.c src/_elf/*.c -Isrc
+
+      - run: elftool --help
+      - run: elftool --version
