@@ -33,6 +33,11 @@ jobs:
       - run: curl -LO https://github.com/leleliu008/uppm-package-repository-linux-s390x-glibc/releases/download/2022.10.08/bzip2-1.0.8-linux-s390x-glibc.tar.xz
       - run: tar xf *.tar.xz --strip-components=1
 
+      - id: readelf
+        run: printf 'READELF=%s\n' "$(brew --prefix llvm)/bin/llvm-readelf" >> "$GITHUB_OUTPUT"
+
+      - run: ${{ steps.readelf.outputs.READELF }} bin/bzip2
+
       - run: ./elftool print-interpreter bin/bzip2
       - run: ./elftool print-interpreter lib/libbz2.so
       - run: ./elftool print-soname      lib/libbz2.so
