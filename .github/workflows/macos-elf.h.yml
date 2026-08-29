@@ -23,7 +23,7 @@ jobs:
       - run: brew install llvm
 
       - id: cc
-        run: printf 'CC=%s\n' "$(brew --prefix llvm)/bin/clang" >> "$GITHUB_ENV"
+        run: printf 'CC=%s\n' "$(brew --prefix llvm)/bin/clang" >> "$GITHUB_OUTPUT"
 
       - run: ${{ steps.cc.outputs.CC }} -std=gnu99 -Os -flto -Wl,-s -fsanitize=undefined -fsanitize=address -fsanitize=leak -o elftool src/*.c src/_elf/*.c -Isrc
 
