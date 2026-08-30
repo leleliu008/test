@@ -55,10 +55,10 @@ jobs:
       - run: curl -LO https://github.com/leleliu008/python-distribution/releases/download/3.12.9/python-3.12.9-linux-any-aarch64.tar.xz
       - run: tar xf python-*.tar.xz --strip-components=1
 
-      - run: ./elftool print-interpreter bin/python3.12.exe
-      - run: ./elftool print-needed      bin/python3.12.exe
-      - run: ./elftool print-soname      bin/python3.12.exe
-      - run: ./elftool print-rpath       bin/python3.12.exe
+      - run: ./elftool print-interpreter bin/python3.12.bin
+      - run: ./elftool print-needed      bin/python3.12.bin
+      - run: ./elftool print-soname      bin/python3.12.bin
+      - run: ./elftool print-rpath       bin/python3.12.bin
 
       #########################
 
