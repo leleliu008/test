@@ -18,4 +18,4 @@ jobs:
       - run: sha256sum *.zip
       - run: unzip *.zip
       - run: cat android-ndk-r${{ matrix.revision }}/source.properties
-      - run: ls  android-ndk-r${{ matrix.revision }}/toolchains/llvm/prebuilt/linux-x86_64/bin
+      - run: ls  android-ndk-r${{ matrix.revision }}/toolchains/llvm/prebuilt/${{ matrix.os }}-x86_64/bin
