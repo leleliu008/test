@@ -1,0 +1,21 @@
+name: Android NDK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cross-compile:
+    strategy:
+      fail-fast: false
+      matrix:
+          os: [darwin, linux]
+          revision: ['29', '30']
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: curl -LO https://dl.google.com/android/repository/android-ndk-r${{ matrix.revision }}-${{ matrix.os }}.zip
+      - run: sha256sum *.zip
+      - run: unzip *.zip
+      - run: cat android-ndk-r${{ matrix.revision }}/source.properties
+      - run: ls  android-ndk-r${{ matrix.revision }}/toolchains/llvm/prebuilt/linux-x86_64/bin
