@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
           os: [darwin, linux]
-          revision: ['29', '30']
+          revision: ['30', '29', '28c', '27d']
 
     runs-on: ubuntu-latest
 
