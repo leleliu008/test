@@ -20,7 +20,7 @@ jobs:
       - run: ./ndk-pkg setup
       - run: ./ndk-pkg about
       - run: ./ndk-pkg update
-      - run: ./ndk-pkg install android-37-arm64-v8a/nushell -x-cargo --static
+      - run: ./ndk-pkg install android-37-arm64-v8a/hurl -v-env -x-cargo --static
 
   ubuntu:
  
@@ -33,7 +33,7 @@ jobs:
       - run: ./ndk-pkg setup
       - run: ./ndk-pkg about
       - run: ./ndk-pkg update
-      - run: ./ndk-pkg install android-37-arm64-v8a/nushell -x-cargo --static
+      - run: ./ndk-pkg install android-37-arm64-v8a/hurl -v-env -x-cargo --static
 
   macos:
  
@@ -46,4 +46,4 @@ jobs:
       - run: ./ndk-pkg setup
       - run: ./ndk-pkg about
       - run: ./ndk-pkg update
-      - run: ./ndk-pkg install android-37-arm64-v8a/nushell -x-cargo --static
+      - run: ./ndk-pkg install android-37-arm64-v8a/hurl -v-env -x-cargo --static
