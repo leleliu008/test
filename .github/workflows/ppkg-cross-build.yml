@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         version: ['15.1', '15.0', '14.5', '14.4', '14.3', '14.2', '14.1', '14.0', '13.5', '13.4', '13.3', '13.2']
-        pkg: ['uctags']
+        pkg: ['xxd']
 
     steps:
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
@@ -21,7 +21,7 @@ jobs:
 
       - run: ./ppkg setup
       - run: ./ppkg update
-      - run: ./ppkg install freebsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --static
+      - run: ./ppkg install freebsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --static -x-cc -x-ld
       - run: ./ppkg bundle  freebsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} .tar.xz
 
       - uses: actions/upload-artifact@v6
@@ -39,7 +39,7 @@ jobs:
       fail-fast: false
       matrix:
         version: ['8.0', '7.9', '7.8', '7.7', '7.6', '7.5', '7.4', '7.3', '7.2']
-        pkg: ['uctags']
+        pkg: ['xxd']
 
     steps:
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
@@ -48,7 +48,7 @@ jobs:
       - run: ./ppkg setup
       - run: ./ppkg update
 
-      - run: ./ppkg install openbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --static
+      - run: ./ppkg install openbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --static -x-cc -x-ld
       - run: ./ppkg bundle  openbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} .tar.xz
 
       - uses: actions/upload-artifact@v6
@@ -65,8 +65,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ['10.2', '10.1', '10.0', '9.4', '9.3', '9.2']
-        pkg: ['uctags']
+        version: ['11.1', '11.0', '10.2', '10.1', '10.0', '9.5', '9.4', '9.3', '9.2']
+        pkg: ['xxd']
 
     steps:
       - run: curl -LO https://raw.githubusercontent.com/leleliu008/ppkg/master/ppkg
@@ -75,7 +75,7 @@ jobs:
       - run: ./ppkg setup
       - run: ./ppkg update
 
-      - run: ./ppkg install netbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --static
+      - run: ./ppkg install netbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} --static -x-cc -x-ld
       - run: ./ppkg bundle  netbsd-${{ matrix.version }}-amd64/${{ matrix.pkg }} .tar.xz
 
       - uses: actions/upload-artifact@v6
