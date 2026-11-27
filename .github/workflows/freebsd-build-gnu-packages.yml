@@ -37,7 +37,7 @@ jobs:
             run sudo pkg install -y gcc gmake
 
             run export LDFLAGS='--static'
-            run ac_cv_func_random_r=no
+            run export ac_cv_func_random_r=no
 
             run ./configure
             run cat config.log
