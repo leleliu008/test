@@ -1,0 +1,41 @@
+name: FreeBSD build GNU packages
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        freebsd-version: ['15.1', '15.0', '14.5', '14.4', '14.3', '14.2', '14.1', '14.0', '13.5', '13.4', '13.3', '13.2']
+
+    steps:
+      - run: curl -LO https://ftp.gnu.org/gnu/sed/sed-4.10.tar.xz
+      - run: tar xf *.tar.xz --strip-components=1
+
+      - uses: cross-platform-actions/action@master
+        with:
+          operating_system: freebsd
+          version: ${{ matrix.freebsd-version }}
+          shell: sh
+          run: |
+            run() {
+              printf '%b\n' "\033[0;35m==>\033[0m \033[0;32m$*\033[0m"
+              "$@"
+            }
+
+            set -ex
+
+            run id
+
+            run uname -r
+
+            run sudo pkg install -y gcc gmake
+
+            run ./configure
+            run cat config.log
+            run gmake
