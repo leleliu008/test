@@ -36,6 +36,8 @@ jobs:
 
             run sudo pkg install -y gcc gmake
 
+            run export LDFLAGS='--static'
+
             run ./configure
             run cat config.log
             run gmake
