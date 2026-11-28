@@ -1,13 +1,7 @@
-# Copyright: 2022 fpliu
-# License: GPL-2.0-or-later
-
-name: macOS
+name: macOS brew
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   good:
